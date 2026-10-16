@@ -82,7 +82,12 @@ export class StageGates {
       const plate = new CanvasPlate(track, LABEL_W, LABEL_H);
       const [num, ...rest] = cfg.vietnameseTitle.split(':');
       const title = rest.join(':').trim() || cfg.vietnameseTitle;
-      plate.draw(cfg.id, (c, w) => {
+      plate.draw(cfg.id, (c, w, h) => {
+        // Dark backing so the label reads over any stage behind it.
+        c.fillStyle = 'rgba(10, 8, 14, 0.62)';
+        c.beginPath();
+        c.roundRect(4, 4, w - 8, h - 8, 18);
+        c.fill();
         c.textAlign = 'center';
         c.textBaseline = 'middle';
         inkText(c, num.trim().toUpperCase(), w / 2, 30, 34, cfg.accentColor, 900, w - 12);

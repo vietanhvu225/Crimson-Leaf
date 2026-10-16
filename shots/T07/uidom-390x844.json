@@ -1,0 +1,71 @@
+{
+  "stage": "spring",
+  "renderer": "three",
+  "loop": 1,
+  "script": "ui",
+  "url": "http://127.0.0.1:58344/?stage=spring&loop=1&renderer=three&seed=7&muted=1&ui=dom",
+  "ui": {
+    "ok": true,
+    "steps": {
+      "title": {
+        "state": "title",
+        "ui": "dom",
+        "seasonId": "spring"
+      },
+      "pick": {
+        "state": "title",
+        "ui": "dom",
+        "seasonId": "winter",
+        "picked": true,
+        "gate": null
+      },
+      "started": true,
+      "hud": {
+        "state": "playing",
+        "ui": "dom",
+        "seasonId": "winter",
+        "boss": {
+          "bossHp": 902,
+          "dist": 235,
+          "combo": 22,
+          "domBossBar": true
+        }
+      },
+      "defeated": true,
+      "defeat": {
+        "state": "gameover",
+        "ui": "dom",
+        "seasonId": "winter"
+      },
+      "retried": true,
+      "won": true,
+      "victory": {
+        "state": "gameover",
+        "ui": "dom",
+        "seasonId": "winter"
+      }
+    }
+  },
+  "pixelStd": 64.85,
+  "pixelMean": 159.94,
+  "gameState": "gameover",
+  "seasonId": "winter",
+  "player": {
+    "x": 39320,
+    "y": 440,
+    "vx": 0,
+    "vy": 0,
+    "onGround": true,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 144,
+    "drawCalls": 80,
+    "triangles": 18054,
+    "geometries": 68,
+    "textures": 32,
+    "entities": 207
+  },
+  "png": "shots/T07/uidom-390x844.png",
+  "errors": []
+}
