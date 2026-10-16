@@ -75,3 +75,8 @@ Worker ~20 phút, $7.20. Merge main (có T04) không xung đột; diff chỉ tro
 
 ## 2026-10-17 05:45 T05 attempt 1 — PARTIAL, giao lại attempt 2
 Worker ~20 phút, $7.07. Merge main (T03+T04): xung đột `scene.ts` MODULES + `shot.mjs` danh sách script, orchestrator giải quyết (union). Gates xanh: typecheck, test 30/30, build, smoke 22/22 (min fps 143.1); 30 enemy: 144 fps, 136 draw calls, 425k tris. **Nhưng** khi chạy chung env thật, `fx=high` làm cả cảnh mờ sữa/nhạt (so `fx=low` cùng seed thì màu đúng); frame parry gần trắng toàn màn. Viết `reports/T05-review-1.md` + ảnh `shots/T05/review1/`, đã merge thêm T06 vào branch. Giao attempt 2 lúc 05:45, time box ~45 phút. T07 chờ T05.
+
+## 2026-10-17 05:59 T05 attempt 2 — PASS, merged
+Worker ~10 phút, $3.73. Nguyên nhân mờ sữa: OutputPass áp ACES lên cả sky/fog/halo của env + viền Huyết Ảnh cộng đỏ gần cả màn + bloom readBuffer chứa sẵn VFX (cộng 2 lần) + bloom mã hoá sRGB trước khi cộng. Sửa: cảnh vẽ thẳng ra màn hình như fx=low, bloom/tint là overlay blend; spark/arc chuẩn hoá theo mật độ; bỏ debuff trùng với T04. Orchestrator kiểm lại: typecheck ✅, test 30/30 ✅, build ✅, smoke 22/22 ✅ (min fps 143.1); ảnh winter-combat seed 3 hết mờ, spring-parry đọc được player, awaken đúng. Draw calls cảnh combat ~110–130, tris ~122–135k.
+
+## 2026-10-17 06:00 giao T07 (attempt 1)
