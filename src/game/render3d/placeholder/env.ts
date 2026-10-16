@@ -297,13 +297,7 @@ function create(ctx: RenderModuleContext): RenderModule {
         glows.add(toX(gp.x), toY(gp.y + bob), LANE_Z[0], 0.13, 0.13, 0.13, cssColor(f.cfg.accentColor));
         props.add(toX(gp.x), toY(gp.y - 40), LANE_Z[0], 0.03, 0.6, 0.03, cssColor('#475569'));
       }
-      if (f.st.seasonId === 'sky_sanctuary') {
-        const boss = world.enemies.find((e) => e.archetype === 'boss');
-        const bossAlive = !boss || boss.hp > 0;
-        const sx = f.cfg.stageLength - 185;
-        props.add(toX(sx), toY(320 - 60), -1.5, 1.4, 1.2, 1.2, cssColor(bossAlive ? '#7c3aed' : '#fde047'));
-        glows.add(toX(sx), toY(320 - 150), -1.5, 0.22, 0.22, 0.22, cssColor('#fef08a'));
-      }
+      // The captive mother shrine is drawn by the actors module (T04).
       props.end();
       glows.end();
 

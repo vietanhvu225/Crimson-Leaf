@@ -65,3 +65,7 @@ Lưu ý: env không vẽ đền mẹ (sky_sanctuary), để T04 vẽ. T06 chờ 
 
 ## 2026-10-17 05:19 giao T06 (attempt 1)
 Slot trống sau khi worker T04 kết thúc.
+
+## 2026-10-17 05:23 T04 attempt 1 — PASS, merged
+Worker ~24 phút, $6.91. Xung đột merge `render3d/scene.ts` (MODULES: envKit của T03 + actorsModule của T04), orchestrator tự giải quyết (giữ cả hai). Trên branch đã merge: typecheck ✅, test 30/30 ✅, build ✅, smoke 22/22 ✅ (min fps 143.3, min std 30.3). Ảnh: gallery (8 archetype + hộ pháp + Mẹ + 11 boss + 10 tư thế) đạt; ảnh orchestrator chụp sau khi gộp env+actors: spring lane 1 thấy player, sky_sanctuary có đền Mẹ bị phong ấn + boss Garuda, winter combat đọc tốt. 30 enemy: 144 fps, 68 draw calls, 413k tris. Draw calls cảnh thường 70–85, tris 108–148k.
+T05 cần chú ý: T04 gợi ý style `glow` (toneMapped:false, renderOrder 3) cho bloom chọn lọc. Khi T05 merge sẽ lại xung đột MODULES; orchestrator xử lý.
