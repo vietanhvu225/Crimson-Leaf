@@ -5,6 +5,7 @@ import type { GameRenderer } from '../view.ts';
 import { poseCamera, viewToWorld, type CameraOptions } from './camera.ts';
 import { S } from './coords.ts';
 import type { RenderFrame3D, RenderModule, RenderModuleDef } from './module.ts';
+import { envKit } from './env/index.ts';
 import { placeholderActors } from './placeholder/actors.ts';
 import { placeholderEnv } from './placeholder/env.ts';
 import { placeholderVfx } from './placeholder/vfx.ts';
@@ -17,7 +18,7 @@ import { Tracker } from './resources.ts';
  * Registered render modules (T03 env, T04 actors, T05 vfx: add exactly one line each).
  * A module registered for a slot replaces the T02 placeholder of that slot.
  */
-const MODULES: RenderModuleDef[] = [];
+const MODULES: RenderModuleDef[] = [envKit];
 
 const PLACEHOLDERS: RenderModuleDef[] = [placeholderEnv, placeholderActors, placeholderVfx];
 
