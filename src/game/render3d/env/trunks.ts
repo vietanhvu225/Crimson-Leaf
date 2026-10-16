@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import type { SeasonId } from '../../rules/index.ts';
+import { computeSubterraneanSlopeY, type SeasonId } from '../../rules/index.ts';
 import type { World } from '../../engine/world.ts';
 import type { ChibiStagePalette } from '../../render/map/stagePalette.ts';
 import { S } from '../coords.ts';
@@ -10,7 +10,9 @@ import { viewAtDepth, type DepthView } from './backdrop.ts';
 
 // World trunks (render/map/trunks.ts + backdrop zDepth -1): giant sakura trunks with blossom puffs
 // (spring), red mooring posts (summer), stone towers with iron bands (autumn), faceted glacier
-// pillars (winter). zDepth 0 stands right behind lane 1, zDepth -1 further back in real depth.
+// pillars (winter); T06: amethyst columns (cavern), jade pillars (celestial), coral columns (ocean),
+// mine timbers on the slope (earth core), wind obelisks (sky). zDepth 0 stands right behind lane 1,
+// zDepth -1 further back in real depth.
 
 /** zDepth 0 trunks: behind lane 1 (z = -3) so they never hide gameplay. */
 export const TRUNK_Z = -4.8;
@@ -25,6 +27,8 @@ export class Trunks {
   private canopy: Batch;
   private studs: Batch;
   private spires: Batch;
+  private shards: Batch;
+  private glows: Batch;
   private v: DepthView = { cx: 0, cy: 0, halfW: 1, halfH: 1 };
 
   constructor(parent: THREE.Object3D, g: EnvGeometries, m: EnvMaterials) {
@@ -34,10 +38,15 @@ export class Trunks {
     this.canopy = new Batch(parent, g.puff, m.sway, 256);
     this.studs = new Batch(parent, g.sphere, m.solid, 128);
     this.spires = new Batch(parent, g.pyramid, m.ice, 32, { renderOrder: 1 });
+    this.shards = new Batch(parent, g.pyramid, m.facet, 64);
+    this.glows = new Batch(parent, g.sphere, m.glow, 64);
+    this.all = [this.cyl, this.box, this.hex, this.canopy, this.studs, this.spires, this.shards, this.glows];
   }
 
+  private all: Batch[];
+
   update(world: World, f: RenderFrame3D, pal: ChibiStagePalette, camera: THREE.PerspectiveCamera, target: THREE.Vector3) {
-    const all = [this.cyl, this.box, this.hex, this.canopy, this.studs, this.spires];
+    const all = this.all;
     for (const b of all) b.begin();
     const seasonId = f.st.seasonId;
     const top = world.camY - 320;
@@ -77,6 +86,57 @@ export class Trunks {
       return;
     }
     const first = Math.floor(top / RING_STEP) * RING_STEP;
+    if (seasonId === 'celestial_altar') {
+      // Floating white-jade dragon pillar with golden cloud rings (canvas: y 140 → 520).
+      this.cyl.at(x, 330, z, 52, 380, 0.52, cssColor('#f8fafc'));
+      this.box.at(x - 12, 330, z + 0.24, 8, 350, 0.04, cssColor('#e2e8f0'));
+      for (const ry of [152, 330, 498]) this.cyl.at(x, ry, z, 68, 14, 0.68, cssColor('#fde047'));
+      this.glows.at(x, 128, z, 22, 22, 0.22, cssColor('#fde68a'));
+      return;
+    }
+    if (seasonId === 'ocean_palace') {
+      // Pearl-inlaid coral column with rose-coral rings (canvas: y 95 → 565).
+      this.cyl.at(x, 330, z, 48, 470, 0.48, cssColor('#0e7490'));
+      this.box.at(x - 12, 330, z + 0.22, 8, 450, 0.04, cssColor('#67e8f9'));
+      for (const ry of [160, 305, 445]) {
+        this.cyl.at(x, ry, z, 68, 14, 0.68, cssColor('#fb7185'));
+        this.glows.at(x, ry, z + 0.36, 14, 14, 0.14, cssColor('#fef08a'));
+      }
+      return;
+    }
+    if (seasonId === 'earth_core') {
+      // Mine-shaft timber pillar anchored on the 45°/90° tunnel floor, iron brackets + amber ore.
+      const colTop = computeSubterraneanSlopeY(x) - 430;
+      this.box.at(x, colTop + 220, z, 48, 440, 0.48, cssColor('#451a03'));
+      this.box.at(x - 9, colTop + 220, z + 0.25, 10, 420, 0.03, cssColor('#92400e'));
+      for (const ry of [70, 230, 390]) {
+        this.box.at(x, colTop + ry, z, 60, 16, 0.6, cssColor('#334155'));
+        this.glows.at(x, colTop + ry, z + 0.32, 13, 13, 0.1, cssColor('#fde047'));
+      }
+      return;
+    }
+    if (seasonId === 'sky_sanctuary') {
+      // Floating wind-totem obelisk with flat golden wind rings (canvas: y 130 → 470).
+      const bob = Math.sin(x * 0.01) * 6;
+      this.cyl.at(x, 300 + bob, z, 40, 340, 0.4, cssColor('#e0f2fe'));
+      this.shards.at(x, 112 + bob, z, 40, 36, 0.4, cssColor('#e0f2fe'), 0, Math.PI / 4);
+      this.shards.at(x, 488 + bob, z, 40, 36, 0.4, cssColor('#e0f2fe'), Math.PI, Math.PI / 4);
+      for (const ry of [175, 300, 425]) this.cyl.at(x, ry + bob, z, 70, 6, 0.7, cssColor('#fde047'));
+      return;
+    }
+    if (seasonId === 'cavern') {
+      // Amethyst crystal column: faceted prism, glowing shards jutting out at every ring step.
+      this.cyl.at(x, cy, z, w, h, w * S, cssColor(pal.trunkFill));
+      this.box.at(x - w * 0.3, cy, z + (w * S) / 2, Math.max(6, w * 0.14), h, 0.02, cssColor(pal.trunkHighlight));
+      for (let ry = first; ry < bottom; ry += RING_STEP) {
+        const side = Math.abs(Math.round(ry / RING_STEP)) % 2 === 0 ? 1 : -1;
+        const sx = x + side * w * 0.55;
+        this.shards.at(sx, ry - 12, z + 0.1, 16, 42, 0.16, cssColor(pal.canopyPrimary), -side * 0.9, Math.PI / 4);
+        this.shards.at(sx + side * 6, ry + 2, z + 0.15, 10, 26, 0.1, cssColor(pal.canopySecondary), -side * 1.3, Math.PI / 4);
+        this.glows.at(sx + side * 14, ry - 26, z + 0.2, 8, 8, 0.08, cssColor('#f5d0fe'));
+      }
+      return;
+    }
     if (seasonId === 'autumn' || seasonId === 'thunder_peak' || seasonId === 'blood_abyss') {
       // Stone wall tower with iron bands and studs.
       this.box.at(x, cy, z, w, h, w * S, cssColor(pal.trunkFill));
@@ -125,12 +185,26 @@ export class Trunks {
       this.canopy.add(x + s * 0.55, top, z + 0.4, s * 0.9, s * 0.7, s * 0.6, cssColor('#fda4af'));
       return;
     }
+    if (seasonId === 'cavern') {
+      // Distant amethyst crystal spire.
+      tmpC.copy(cssColor(pal.canopyPrimary)).multiplyScalar(0.6);
+      this.shards.add(x, (top + bottom) / 2, z, w * 1.2, top - bottom, w, tmpC, 0, Math.PI / 4);
+      return;
+    }
+    if (seasonId === 'ocean_palace' || seasonId === 'celestial_altar' || seasonId === 'sky_sanctuary') {
+      // Distant floating column (no ground to stand on): rounded shaft with a glowing cap.
+      const mid = (top + bottom) / 2 + 1;
+      const h = (top - bottom) * 0.55;
+      this.cyl.add(x, mid, z, w * 0.7, h, w * 0.7, cssColor(pal.trunkShade));
+      this.glows.add(x, mid + h / 2 + w * 0.3, z, w * 0.6, w * 0.6, w * 0.6, cssColor(pal.trunkHighlight));
+      return;
+    }
     // Generic dark pillar (other stages).
     this.box.add(x, (top + bottom) / 2, z, w, top - bottom, w, cssColor(pal.trunkShade));
   }
 
   dispose() {
-    for (const b of [this.cyl, this.box, this.hex, this.canopy, this.studs, this.spires]) b.dispose();
+    for (const b of this.all) b.dispose();
   }
 }
 

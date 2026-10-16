@@ -219,6 +219,7 @@ export function createMaterials(track: Tracker): EnvMaterials {
     ray: track.material(
       new THREE.MeshBasicMaterial({
         map: rayTexture(track),
+        fog: false, // additive: fogging would add the fog colour over the whole card
         transparent: true,
         depthWrite: false,
         blending: THREE.AdditiveBlending,

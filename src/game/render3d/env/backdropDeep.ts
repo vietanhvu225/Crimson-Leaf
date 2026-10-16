@@ -52,7 +52,8 @@ export class DeepBackdrop {
     this.skyRing = new Batch(parent, g.ring, m.skyGlow, 8, { renderOrder: -48 });
     this.skyDisc = new Batch(parent, g.disc, m.skyGlow, 24, { renderOrder: -47 });
     this.skyBox = new Batch(parent, g.box, m.skyGlow, 32, { renderOrder: -47 });
-    this.halo = new Batch(parent, g.quad, m.halo, 96, { renderOrder: 5 });
+    // Fog-free: an additive card far away would otherwise add the fog colour over its whole quad.
+    this.halo = new Batch(parent, g.quad, m.skyHalo, 96, { renderOrder: 5 });
     this.rays = new Batch(parent, g.quad, m.ray, 16, { renderOrder: 4 });
     this.glass = new Batch(parent, g.sphere, m.glass, 48, { renderOrder: 3 });
     this.clouds = new Batch(parent, g.sphere, m.cloud, 160, { renderOrder: 2 });
@@ -144,11 +145,12 @@ export class DeepBackdrop {
     const mz = -28;
     const mv = viewAtDepth(camera, target, mz, this.v);
     const floor = mv.cy - mv.halfH;
-    b.hillRow(camera, target, mz - 3, 6, 0.1, 0.2, pal.nearHillFill, 65);
+    b.hillRow(camera, target, mz - 3, 6, 0.4, 0.55, pal.nearHillFill, 65);
     tiles(mv, 8.5, 8.5, (i, x) => {
-      const s = 1 + hash01(i, 66) * 0.6;
+      const s = 1.4 + hash01(i, 66) * 0.8;
       const stemH = 2.6 * s;
-      const base = floor + mv.halfH * 0.12;
+      // Raised above the crystal water sheet so they are not hidden behind it.
+      const base = mv.cy - mv.halfH * 0.15;
       this.cyl.add(x, base + stemH / 2, mz, 0.85 * s, stemH, 0.85 * s, cssColor('#e9d5ff'));
       const cap = cssColor(Math.abs(i) % 2 === 0 ? '#a855f7' : '#ec4899');
       this.dome.add(x, base + stemH - 0.15, mz, 3.2 * s, 2.2 * s, 3.2 * s, cap);
@@ -186,7 +188,14 @@ export class DeepBackdrop {
       const h = fv.halfH * (0.9 + hash01(i, 71) * 0.9);
       b.facet.add(x, fv.cy - fv.halfH + h / 2 - 2, -64, 6, h, 4, cssColor(b.pal.farHillFill), 0, Math.PI / 4 + hash01(i, 72));
     });
-    b.clouds(camera, target, t, -78, 0.15);
+    // Dark storm cloud banks at the top of the sky.
+    const cv = viewAtDepth(camera, target, -84, this.v2);
+    tiles(cv, cv.halfW * 0.5, cv.halfW * 0.5, (i, x) => {
+      const y = cv.cy + cv.halfH * (0.82 - hash01(i, 78) * 0.15);
+      const s = cv.halfH * 0.16;
+      b.skyGlow.add(x, y, -84, s * 3, s * 1.2, s, cssColor('#1e1b4b'));
+      b.skyGlow.add(x + s, y + s * 0.3, -83.5, s * 2, s * 1.2, s, cssColor('#312e81'));
+    });
     // Far lightning: one bolt flashes every ~2.3 s at a hashed spot, lights the clouds around it.
     const cycle = Math.floor(t / 2.3);
     const phase = t - cycle * 2.3;
