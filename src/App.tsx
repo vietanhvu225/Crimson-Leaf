@@ -17,6 +17,7 @@ import { GddModal } from './ui/GddModal';
 import { GameView } from './ui/GameView';
 import { parseRendererKind, type RendererKind } from './game/view';
 import type { TouchInputState } from './game/engine/entities';
+import { readUiMode, ui3dHost } from './game/render3d/ui3d/host';
 
 // Initial state from URL params (?stage=<SeasonId>&loop=1|2&muted=1). Unknown values are ignored.
 function readUrlParam(name: string): string | null {
@@ -49,6 +50,9 @@ const SIM_SEED: number = (() => {
 const RENDERER = parseRendererKind(readUrlParam('renderer'));
 const DEBUG = readUrlParam('debug') === '1';
 const CAM_FLAT = readUrlParam('cam') === 'flat';
+// ?ui=3d: title fly-through + 3D stage gates, world-space damage/combo/boss bar, 3D result sign
+// (render3d/ui3d). Only with the three renderer; the DOM HUD stays the default and keeps all functions.
+const UI_MODE = readUiMode();
 
 export default function App() {
   const [gameState, setGameState] = useState<GameStateMode>(() => {
@@ -129,6 +133,14 @@ export default function App() {
     setResetToken((t) => t + 1);
     setGameState('playing');
   }, []);
+
+  // 3D UI only exists on the three renderer (F9 to canvas falls back to the full DOM UI).
+  const ui3d = UI_MODE === '3d' && renderer === 'three';
+  useEffect(() => {
+    document.body.dataset.ui = ui3d ? '3d' : 'dom';
+    ui3dHost.selectStage = setSeasonId;
+    ui3dHost.startGame = startGame;
+  }, [ui3d, startGame]);
 
   // Bind Enter and Space on 'title' screen (when GDD modal is closed) to start game
   useEffect(() => {
@@ -247,6 +259,7 @@ export default function App() {
         renderer={renderer}
         debug={DEBUG}
         camFlat={CAM_FLAT}
+        rebuildOnTitle={ui3d}
         onSyncHud={handleSyncHud}
         onStageOutcome={handleStageOutcome}
         onTogglePause={handleTogglePause}
@@ -268,6 +281,7 @@ export default function App() {
           onSelectLoop={setLoopRoute}
           onStartGame={startGame}
           onOpenGdd={() => setShowGddModal(true)}
+          variant={ui3d ? '3d' : 'dom'}
         />
       )}
 
@@ -281,6 +295,7 @@ export default function App() {
           stageProgressPct={stageProgressPct}
           bossHp={bossHp}
           bossMaxHp={bossMaxHp}
+          worldSpaceBossBar={ui3d}
           isPaused={gameState === 'paused'}
           muted={muted}
           touchInputRef={touchInputRef}
@@ -320,6 +335,7 @@ export default function App() {
       {gameState === 'gameover' && runSnapshot && !showGddModal && (
         <OutcomeModal
           snapshot={runSnapshot}
+          layout={ui3d ? 'side' : 'center'}
           onPrimaryAction={handleOutcomePrimaryAction}
           onReturnTitle={() => {
             document.body.dataset.state = 'title';

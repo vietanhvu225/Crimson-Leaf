@@ -9,6 +9,7 @@
 //   --script crowd  adds --count (default 30) enemies around the player, fps/stats before-after
 //   --script bench  uncapped ms/frame (rAF stopped, 600 × __game.step(1)); for fx=high vs fx=low
 //   --script vfx    <name>-weather/-lightning/-parry/-parry2/-debuffs/-awaken.png (T05 effects)
+//   --script ui     <name>-title/-pick/-hud/-defeat/-victory.png, no autostart (T07; --params "ui=3d")
 // Extra flags: --width 1280 --height 720 --duration <ms of input script> --name <png basename>
 //              --params "debug=1&foo=bar" (appended to the URL as-is)
 // Starts its own Vite server on a free port, launches Chromium with PINNED_VERSIONS.chromiumLaunch,
@@ -37,7 +38,7 @@ const STAGES = [
   'earth_core',
   'sky_sanctuary',
 ];
-const SCRIPTS = ['idle', 'run', 'combat', 'boss', 'clear', 'lanes', 'swap', 'crowd', 'vfx', 'bench'];
+const SCRIPTS = ['idle', 'run', 'combat', 'boss', 'clear', 'lanes', 'swap', 'crowd', 'vfx', 'bench', 'ui'];
 const LOCK_PATH = path.join(os.tmpdir(), 'crimson-shot.lock');
 const LOCK_WAIT_MS = 20 * 60 * 1000;
 const LOCK_STALE_MS = 30 * 60 * 1000;
@@ -155,7 +156,7 @@ async function startServer() {
 
 function buildUrl(base, opts) {
   const p = new URLSearchParams();
-  p.set('autostart', '1');
+  if (opts.script !== 'ui') p.set('autostart', '1');
   p.set('stage', opts.stage);
   p.set('loop', String(opts.loop));
   if (opts.renderer) p.set('renderer', opts.renderer);
@@ -537,6 +538,133 @@ async function vfxShots(page, opts) {
 }
 
 /**
+ * `--script ui` (T07): walks every UI state once, like a player, for the ui=dom vs ui=3d comparison
+ * (pass --params "ui=3d"). Loads WITHOUT autostart and writes <name>-<state>.png:
+ *   -title     title screen after the camera has moved a little
+ *   -pick      after choosing stage 4 (ui=3d: a click on its 3D gate, located via window.__ui3d;
+ *              ui=dom: its grid button); checks the selected stage really changed
+ *   -hud       in game: started (ui=3d: click on the lit gate again; dom: start button), immortal,
+ *              teleport to the boss and real-time sword hits (damage numbers, combo, boss bar)
+ *   -defeat    hp set to 0 → real defeat flow → result modal
+ *   -victory   retry from the modal, boss hp set to 0 → real victory flow → result modal
+ * Every step records the game state it reached; `ok` is false if one did not happen.
+ */
+async function uiShots(page, opts) {
+  fs.mkdirSync(opts.out, { recursive: true });
+  const steps = {};
+  const state = () =>
+    page.evaluate(() => {
+      const g = JSON.parse(window.render_game_to_text());
+      return { state: document.body.dataset.state, ui: document.body.dataset.ui, seasonId: g.seasonId };
+    });
+  const snap = async (tag) => {
+    await page.screenshot({ path: path.join(opts.out, `${opts.name}-${tag}.png`) });
+    steps[tag] = await state();
+  };
+  const waitState = (s, ms = 8000) =>
+    page.waitForFunction((s) => document.body.dataset.state === s, s, { timeout: ms }).then(
+      () => true,
+      () => false
+    );
+
+  await sleep(2500);
+  await snap('title');
+  const ui = steps.title.ui;
+
+  // Pick stage 4 (winter).
+  let gate = null;
+  if (ui === '3d') {
+    const gates = await page.evaluate(() => window.__ui3d?.gates() ?? []);
+    gate = gates.find((g) => g.id === 'winter') ?? null;
+    if (gate) await page.mouse.click(gate.x, gate.y);
+  } else {
+    await page.getByRole('button', { name: /Màn 4/ }).first().click();
+  }
+  await sleep(1500);
+  await snap('pick');
+  steps.pick.picked = steps.pick.seasonId === 'winter';
+  steps.pick.gate = gate;
+
+  // Start the run.
+  if (ui === '3d' && gate) {
+    const again = (await page.evaluate(() => window.__ui3d?.gates() ?? [])).find((g) => g.id === 'winter');
+    await page.mouse.click(again.x, again.y);
+  } else {
+    await page.getByTestId('start-game-btn').click();
+  }
+  steps.started = await waitState('playing');
+
+  // In-game HUD: boss fight in real time.
+  await page.evaluate(() => {
+    const g = window.__game;
+    g.toggleImmortal();
+    g.teleportToBoss();
+  });
+  await sleep(700);
+  await page.mouse.move(opts.width * 0.7, opts.height * 0.5);
+  for (let i = 0; i < 14; i++) {
+    // Walk into sword reach of the boss (same lane), then keep hitting.
+    // Stop at half boss hp: the HUD shot needs a live boss (the victory comes later, on purpose).
+    const { dx, half } = await page.evaluate(() => {
+      const w = window.__game.world;
+      const b = w.enemies.find((e) => e.archetype === 'boss');
+      return { dx: b && b.hp > 0 ? b.x - w.player.x : 0, half: !b || b.hp < b.maxHp * 0.7 };
+    });
+    if (half) break;
+    if (Math.abs(dx) > 70) await tap(page, dx > 0 ? 'KeyD' : 'KeyA', 140);
+    await tap(page, 'KeyJ', 50);
+    if (i % 4 === 0) await tap(page, 'KeyK', 40);
+    await sleep(110);
+  }
+  await snap('hud');
+  steps.hud.boss = await page.evaluate(() => {
+    const w = window.__game.world;
+    const b = w.enemies.find((e) => e.archetype === 'boss');
+    return {
+      bossHp: b ? Math.round(b.hp) : null,
+      dist: b ? Math.round(Math.hypot(b.x - w.player.x, b.y - w.player.y)) : null,
+      combo: w.combat.combo,
+      domBossBar: !!document.querySelector('[data-testid=boss-bar-dom]'),
+    };
+  });
+
+  // Defeat through the sim's own outcome check.
+  await page.evaluate(() => {
+    const g = window.__game;
+    g.toggleImmortal();
+    g.world.combat = { ...g.world.combat, hp: 0 };
+  });
+  steps.defeated = await waitState('gameover');
+  await sleep(1800);
+  await snap('defeat');
+
+  // Retry from the modal, then victory.
+  await page.locator('[role=dialog] button').first().click();
+  steps.retried = await waitState('playing');
+  await sleep(400);
+  await page.evaluate(() => {
+    const g = window.__game;
+    g.toggleImmortal();
+    g.teleportToBoss();
+  });
+  await sleep(500);
+  await page.evaluate(() => {
+    const b = window.__game.world.enemies.find((e) => e.archetype === 'boss');
+    if (b) b.hp = 0;
+  });
+  steps.won = await waitState('gameover');
+  await sleep(1800);
+  await snap('victory');
+
+  const ok =
+    steps.pick.picked && steps.started && steps.hud.state === 'playing' && steps.hud.boss.bossHp > 0 &&
+    steps.defeated &&
+    steps.retried && steps.won &&
+    (ui !== '3d' || !steps.hud.boss.domBossBar);
+  return { ok, steps };
+}
+
+/**
  * `--script bench` (T05): vsync caps the rAF fps (144 on PC2) for every config, so it cannot tell
  * fx=high from fx=low. This stops rAF, puts the player in a busy scene (run 2 s, Huyết Ảnh on, a
  * burst of fights), then times `frames` back-to-back __game.step(1) calls (sim + render each) with a
@@ -772,6 +900,9 @@ async function capture(browser, baseUrl, opts) {
       result.vfx = await vfxShots(page, opts);
     } else if (opts.script === 'bench') {
       result.bench = await benchShots(page, 600);
+    } else if (opts.script === 'ui') {
+      result.ui = await uiShots(page, opts);
+      if (!result.ui.ok) errors.push(`harness: ui walk incomplete ${JSON.stringify(result.ui.steps)}`);
     } else {
       const fpsWindow = Math.max(1000, opts.durationMs - 1000);
       const fpsPromise = sleep(500).then(() => measureFps(page, fpsWindow));
@@ -885,6 +1016,7 @@ async function main() {
     if (r?.lanes) console.log(`[shot] lanes ${JSON.stringify(r.lanes)}`);
     if (r?.vfx) console.log(`[shot] vfx ${JSON.stringify(r.vfx)}`);
     if (r?.bench) console.log(`[shot] bench ${JSON.stringify(r.bench)}`);
+    if (r?.ui) console.log(`[shot] ui ${JSON.stringify(r.ui)}`);
     if (r?.swap) console.log(`[shot] swap ${JSON.stringify(r.swap)}`);
     if (r?.crowd) console.log(`[shot] crowd ${JSON.stringify(r.crowd)}`);
     if (r?.stats) console.log(`[shot] stats ${JSON.stringify(r.stats)}`);

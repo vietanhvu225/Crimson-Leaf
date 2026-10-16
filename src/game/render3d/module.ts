@@ -40,6 +40,19 @@ export interface RenderModule {
   render?(): void;
   /** Optional: the drawing buffer was resized to w × h CSS px (after renderer.setSize). */
   resize?(w: number, h: number): void;
+  /**
+   * Optional (T07 ui3d): sim camera origin to frame this frame instead of world.camX/camY (title
+   * fly-through). scene.ts swaps it into the World only for the duration of render() and restores
+   * it, so the sim never sees it. First module returning non-null wins.
+   */
+  viewOverride?(world: World): ViewOverride | null;
+  /** Optional (T07 ui3d): adjusts the posed camera (orbit, dolly) before modules update. */
+  adjustCamera?(camera: THREE.PerspectiveCamera, world: World, f: RenderFrame3D): void;
+}
+
+export interface ViewOverride {
+  camX: number;
+  camY: number;
 }
 
 export interface RenderModuleDef {

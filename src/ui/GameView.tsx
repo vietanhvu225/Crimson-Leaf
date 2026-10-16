@@ -33,6 +33,8 @@ interface GameViewProps extends HostState {
   debug: boolean;
   /** `?cam=flat`: the three camera looks straight down -z (no tilt). */
   camFlat?: boolean;
+  /** `?ui=3d`: rebuild the level when the stage changes on the title too (live 3D preview behind it). */
+  rebuildOnTitle?: boolean;
 }
 
 function createRenderer(
@@ -64,6 +66,7 @@ export const GameView: React.FC<GameViewProps> = ({
   renderer,
   debug,
   camFlat = false,
+  rebuildOnTitle = false,
   ...host
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -82,10 +85,10 @@ export const GameView: React.FC<GameViewProps> = ({
   const { seasonId, loopRoute, gameState } = host;
 
   useEffect(() => {
-    if (worldRef.current && gameState === 'playing') {
+    if (worldRef.current && (gameState === 'playing' || (rebuildOnTitle && gameState === 'title'))) {
       rebuildLevel(worldRef.current, seasonId, loopRoute);
     }
-  }, [seasonId, loopRoute, gameState, resetToken]);
+  }, [seasonId, loopRoute, gameState, resetToken, rebuildOnTitle]);
 
   useEffect(() => {
     if (awakenTriggerToken > 0 && worldRef.current) triggerAwakening(worldRef.current);

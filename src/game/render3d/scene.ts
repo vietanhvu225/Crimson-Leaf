@@ -5,13 +5,14 @@ import type { GameRenderer } from '../view.ts';
 import { actorsModule } from './actors/index.ts';
 import { poseCamera, viewToWorld, type CameraOptions } from './camera.ts';
 import { S } from './coords.ts';
-import type { RenderFrame3D, RenderModule, RenderModuleDef } from './module.ts';
+import type { RenderFrame3D, RenderModule, RenderModuleDef, ViewOverride } from './module.ts';
 import { envKit } from './env/index.ts';
 import { placeholderActors } from './placeholder/actors.ts';
 import { placeholderEnv } from './placeholder/env.ts';
 import { placeholderVfx } from './placeholder/vfx.ts';
 import { Tracker } from './resources.ts';
 import { vfxModule } from './vfx/index.ts';
+import { ui3dModule } from './ui3d/index.ts';
 
 // Three.js renderer: one WebGLRenderer + scene + camera bound to a <canvas>. The picture is built by
 // render modules (module.ts); each one syncs its part from the World every frame.
@@ -24,6 +25,7 @@ const MODULES: RenderModuleDef[] = [
   envKit,
   actorsModule,
   vfxModule,
+  ui3dModule,
 ];
 
 const PLACEHOLDERS: RenderModuleDef[] = [placeholderEnv, placeholderActors, placeholderVfx];
@@ -107,37 +109,25 @@ export function createThreeRenderer(
   return {
     kind: 'three',
     render(world) {
-      updateFrame(world);
-      // Same damped sinusoidal shake as the canvas renderer, driven by sim state.
-      const mag = Math.min(4.5, world.cameraTrauma * world.cameraTrauma * 6);
-      poseCamera(
-        camera,
-        world,
-        opts,
-        Math.sin(world.stageTimeSec * 42) * mag,
-        Math.cos(world.stageTimeSec * 36) * mag
-      );
-
-      // Sun follows the view so its shadow frustum covers what is on screen.
-      const cx = (world.camX + world.viewW / 2) * S;
-      const cy = -(world.camY + world.viewH / 2) * S;
-      sun.position.set(cx - 5, cy + 9, 10);
-      sun.target.position.set(cx, cy, -1.5);
-      sun.target.updateMatrixWorld();
-      const halfW = Math.ceil(world.viewW * S * 0.75) + 1;
-      if (halfW !== shadowHalfW) {
-        shadowHalfW = halfW;
-        const sc = sun.shadow.camera;
-        sc.left = -halfW;
-        sc.right = halfW;
-        sc.top = halfW;
-        sc.bottom = -halfW;
-        sc.updateProjectionMatrix();
+      // A module may frame another part of the level (ui3d title fly-through): swap the camera
+      // origin in for this render only and restore it below, so the sim state is untouched.
+      let override: ViewOverride | null = null;
+      for (const m of modules) {
+        override = m.viewOverride?.(world) ?? null;
+        if (override) break;
       }
-
-      for (const m of modules) m.update(world, frame);
-      if (presenter) presenter.render!();
-      else renderer.render(scene, camera);
+      const simCamX = world.camX;
+      const simCamY = world.camY;
+      if (override) {
+        world.camX = override.camX;
+        world.camY = override.camY;
+      }
+      try {
+        renderFrame(world);
+      } finally {
+        world.camX = simCamX;
+        world.camY = simCamY;
+      }
     },
     resize(viewW, viewH) {
       renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
@@ -167,4 +157,39 @@ export function createThreeRenderer(
       renderer.forceContextLoss();
     },
   };
+
+  function renderFrame(world: World) {
+    updateFrame(world);
+    // Same damped sinusoidal shake as the canvas renderer, driven by sim state.
+    const mag = Math.min(4.5, world.cameraTrauma * world.cameraTrauma * 6);
+    poseCamera(
+      camera,
+      world,
+      opts,
+      Math.sin(world.stageTimeSec * 42) * mag,
+      Math.cos(world.stageTimeSec * 36) * mag
+    );
+    for (const m of modules) m.adjustCamera?.(camera, world, frame);
+
+    // Sun follows the view so its shadow frustum covers what is on screen.
+    const cx = (world.camX + world.viewW / 2) * S;
+    const cy = -(world.camY + world.viewH / 2) * S;
+    sun.position.set(cx - 5, cy + 9, 10);
+    sun.target.position.set(cx, cy, -1.5);
+    sun.target.updateMatrixWorld();
+    const halfW = Math.ceil(world.viewW * S * 0.75) + 1;
+    if (halfW !== shadowHalfW) {
+      shadowHalfW = halfW;
+      const sc = sun.shadow.camera;
+      sc.left = -halfW;
+      sc.right = halfW;
+      sc.top = halfW;
+      sc.bottom = -halfW;
+      sc.updateProjectionMatrix();
+    }
+
+    for (const m of modules) m.update(world, frame);
+    if (presenter) presenter.render!();
+    else renderer.render(scene, camera);
+  }
 }

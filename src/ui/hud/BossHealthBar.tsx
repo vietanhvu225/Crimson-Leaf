@@ -11,7 +11,7 @@ interface BossHealthBarProps {
 /** Boss health bar shown while a boss is engaged. */
 export function BossHealthBar({ loopRoute, cfg, bossHp, bossMaxHp }: BossHealthBarProps) {
   return (
-    <div className="mx-auto w-full max-w-lg px-4 mt-1.5 mb-auto pointer-events-none">
+    <div data-testid="boss-bar-dom" className="mx-auto w-full max-w-lg px-4 mt-1.5 mb-auto pointer-events-none">
       <div
         className="p-2 rounded-lg border border-[#e11d48]/70 shadow-2xl"
         style={{ backgroundColor: 'rgba(14, 8, 16, 0.92)' }}
