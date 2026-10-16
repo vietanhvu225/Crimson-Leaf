@@ -14,7 +14,8 @@ import { TitleScreen } from './ui/TitleScreen';
 import { GameHUD } from './ui/GameHUD';
 import { PauseModal, OutcomeModal, type RunSnapshot } from './ui/GameModals';
 import { GddModal } from './ui/GddModal';
-import { GameCanvas } from './ui/GameCanvas';
+import { GameView } from './ui/GameView';
+import { parseRendererKind } from './game/view';
 import type { TouchInputState } from './game/engine/entities';
 
 // Initial state from URL params (?stage=<SeasonId>&loop=1|2&muted=1). Unknown values are ignored.
@@ -43,6 +44,10 @@ const SIM_SEED: number = (() => {
   if (Number.isFinite(n)) return n >>> 0;
   return RNG_MODE === 'math' ? 0 : (Math.random() * 0x100000000) >>> 0;
 })();
+
+// ?renderer=canvas (T02 adds three) and ?debug=1 (stats overlay).
+const RENDERER = parseRendererKind(readUrlParam('renderer'));
+const DEBUG = readUrlParam('debug') === '1';
 
 export default function App() {
   const [gameState, setGameState] = useState<GameStateMode>(() => {
@@ -213,7 +218,7 @@ export default function App() {
   return (
     <main className="relative w-screen h-screen overflow-hidden bg-[#090a0f] select-none">
       {/* Persistent 2.5D Canvas Engine */}
-      <GameCanvas
+      <GameView
         gameState={showGddModal && gameState === 'playing' ? 'paused' : gameState}
         seasonId={seasonId}
         loopRoute={loopRoute}
@@ -226,6 +231,8 @@ export default function App() {
         touchInputRef={touchInputRef}
         seed={SIM_SEED}
         rngMode={RNG_MODE}
+        renderer={RENDERER}
+        debug={DEBUG}
         onSyncHud={handleSyncHud}
         onStageOutcome={handleStageOutcome}
         onTogglePause={handleTogglePause}
