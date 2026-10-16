@@ -14,3 +14,7 @@ Nguyên nhân (PATH của session desktop khác PATH lúc chạy setup-pc2.mjs):
 Ghi chú: biến shell (`ROOT`, `WT`) không giữ giữa các lần gọi Bash tool, nên orchestrator dùng đường dẫn tuyệt đối `D:/2_dev/crimson-three` và `D:/2_dev/wt`.
 
 Bước 8 (permtest) chưa chạy vì đã dừng ở bước 4. Worktree `_warmup` và branch `task/_warmup` đã dọn.
+
+## 2026-10-17 sửa PATH
+
+Theo yêu cầu người dùng: tạo `~/.bashrc` với `export PATH="/c/Users/Admin/.local/bin:/c/Program Files/nodejs:$PATH"`. Git Bash tự tạo `~/.bash_profile` nạp `.bashrc`. Shell mới (`bash -ic`, `bash -lc`) thấy `claude` và node v24.20.0. Bash tool của session đang chạy vẫn dùng snapshot cũ (node v22.12, không có claude), nên phải khởi động lại session rồi chạy lại warm-up từ đầu.
