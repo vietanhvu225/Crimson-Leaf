@@ -49,3 +49,9 @@ Worker ~30 phút, $4.84. Orchestrator kiểm lại: typecheck ✅, test 30/30 �
 Gợi ý của worker cho T02: thêm 'three' vào RENDERER_KINDS, đặt world.aimSync = null và gọi setAimWorld sau raycast.
 
 ## 2026-10-17 04:30 giao T02 (attempt 1)
+
+## 2026-10-17 04:56 T02 attempt 1 — PASS, merged
+Worker ~22 phút, $6.65. Orchestrator kiểm lại: typecheck ✅, test 30/30 ✅, build ✅, smoke ✅ 22/22 (three + canvas, fps ≥ 116, std ≥ 22), parity canvas 11/11 ✅ (cần `npm install --prefix reference` trong worktree). Bot thắng màn 1 bằng three (không teleport, không bất tử). Ảnh orchestrator tự chụp (seed 7): player đỏ rõ khi combat; lane 1 vẫn bị slab lane 0 che một phần (còn silhouette) → chấp nhận cho placeholder, ghi vào TASKS T03. Draw calls ~31–47, tris ~8–14k.
+
+## 2026-10-17 04:57 giao T03 + T04 song song (nhóm A, attempt 1)
+T05 chờ một slot trống (MAX_PARALLEL=2).

@@ -8,9 +8,9 @@ Dòng **Tham khảo** ở mỗi task chỉ ra file nào trong skill dự án `cr
 |---|---|---|---|---|
 | T00 | Bootstrap project + công cụ chụp ảnh | - | - | DONE |
 | T01 | Gỡ engine khỏi Canvas (rng, World, aim, GameView) | T00 | - | DONE |
-| T02 | Khung Three.js chơi được (placeholder) | T01 | - | IN_PROGRESS (attempt 1) |
-| T03 | Môi trường: kit + màn 1–4 | T02 | A | TODO |
-| T04 | Nhân vật, kẻ địch, boss | T02 | A | TODO |
+| T02 | Khung Three.js chơi được (placeholder) | T01 | - | DONE |
+| T03 | Môi trường: kit + màn 1–4 | T02 | A | IN_PROGRESS (attempt 1) |
+| T04 | Nhân vật, kẻ địch, boss | T02 | A | IN_PROGRESS (attempt 1) |
 | T05 | VFX + post-processing | T02 | A | TODO |
 | T06 | Môi trường: màn 5–11 | T03 | B | TODO |
 | T07 | UI theo hướng Three.js | T04, T05 | B | TODO |
@@ -85,6 +85,8 @@ Bản gốc đã tách sẵn `rules/` · `engine/` · `render/` · `ui/`. Task n
 **Tham khảo skill `crimson-threejs-ref` (`.claude/skills/crimson-threejs-ref/references/`):** `authoring-recipes.md` (ghép primitive, ánh sáng, fog, pipeline), `shader-cookbook.md` (sky dome gradient, `onBeforeCompile`, wind sway cho cây/lá), `technical-art.md` (merge geometry tĩnh, ngân sách draw call). Nước/dung nham phải tự viết.
 
 **Làm:** bộ kit dùng lại được: thân đại thụ, platform theo `PlatformSubType`, nước/dung nham (shader đơn giản: sóng + fresnel), hazard, seal gate, grapple lantern, checkpoint shrine, nền parallax nhiều lớp thật, sky gradient, fog. Bảng màu theo `getChibiStagePalette` (`render/map/stagePalette.ts`); tham khảo hình dạng ở `render/map/*.ts` và bầu trời ở `render/map/sky/<màn>.ts`. Hoàn thiện màn 1–4 (spring, summer, autumn, winter) cho cả `loop=1` và `loop=2`.
+
+**Ghi chú orchestrator (sau T02):** khi player ở lane 1 (z = −3), slab lane 0 phía trước vẫn che phần lớn player (camera nghiêng mặc định). Kit platform mới phải giữ player lane 1 đọc được: làm mờ/cắt slab nằm giữa camera và player, hoặc chỉnh độ dày/độ sâu slab. Kèm ảnh `shots/T03/spring-lane1.png` chứng minh. Đăng ký module theo registry `MODULES` trong `render3d/scene.ts` (xem `reports/T02.md`).
 
 **Tiêu chí đạt:** mỗi màn 1–4 có ảnh `shots/T03/<stage>-l1.png` và `-l2.png`, nhận ra được ngay là màn nào khi đặt cạnh bản canvas · platform hiển thị khớp đúng hitbox (overlay `debug=1` vẽ hitbox wireframe để chứng minh) · draw calls < 300.
 
