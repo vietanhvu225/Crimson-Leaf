@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import type { SkillBranchId } from '../game/rules';
-import { createWorld, type HostState, type World } from '../game/engine/world';
+import { createWorld, setAimWorld, type HostState, type World } from '../game/engine/world';
 import type { TouchInputState } from '../game/engine/entities';
-import { attachInput } from '../game/engine/input';
+import { attachInput, type PointerState } from '../game/engine/input';
 import { rebuildLevel } from '../game/engine/level';
 import { stepSimulation } from '../game/engine/simulation';
 import { installDebugHooks } from '../game/engine/debug';
@@ -105,7 +105,15 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
     const resizeObserver = new ResizeObserver(updateCanvasSize);
     resizeObserver.observe(canvas);
 
-    const detachInput = attachInput(world, () => canvasRect);
+    // Canvas aim: view px + camera of the step that reads input (1 px = 1 sim unit), as the original did.
+    const pointer: PointerState = { viewX: world.viewW * 0.65, viewY: world.viewH * 0.45 };
+    world.aimSync = () =>
+      setAimWorld(world, pointer.viewX + world.camX, pointer.viewY + world.camY);
+    world.onAimReset = (x, y) => {
+      pointer.viewX = x;
+      pointer.viewY = y;
+    };
+    const detachInput = attachInput(world, pointer, () => canvasRect);
     rebuildLevel(world, stateRef.current.seasonId, stateRef.current.loopRoute);
     installDebugHooks(world, () => renderScene(ctx, world));
 

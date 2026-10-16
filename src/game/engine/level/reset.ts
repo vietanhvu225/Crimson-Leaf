@@ -45,8 +45,8 @@ export function resetLevelState(world: World, L: LevelContext) {
   world.player.isAttacking = false;
   world.player.grappleTarget = null;
   world.player.invulnTimer = 1.0;
-  world.mouseClientX = 520;
-  world.mouseClientY = world.player.y - 28;
+  // The original reset the screen-space mouse here; hosts that aim in view px honour it.
+  world.onAimReset?.(520, world.player.y - 28);
   world.player.cloakNodes.forEach((n) => {
     n.x = world.player.x;
     n.y = world.player.y;

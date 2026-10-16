@@ -78,8 +78,6 @@ export function createWorld({
   // Input Tracking
   const keysHeld = new Set<string>();
   const keysJustPressed = new Set<string>();
-  let mouseClientX = viewW * 0.65;
-  let mouseClientY = viewH * 0.45;
   let mouseWorldX = 600;
   let mouseWorldY = 300;
   let lmbJustPressed = false;
@@ -206,10 +204,10 @@ export function createWorld({
     viewH,
     keysHeld,
     keysJustPressed,
-    mouseClientX,
-    mouseClientY,
     mouseWorldX,
     mouseWorldY,
+    aimSync: null as AimSync | null,
+    onAimReset: null as AimReset | null,
     lmbJustPressed,
     rmbJustPressed,
     player,
@@ -254,3 +252,19 @@ export function createWorld({
 }
 
 export type World = ReturnType<typeof createWorld>;
+
+/**
+ * Optional host hook the sim calls once per step, right before reading input, so a host that aims
+ * in screen space (canvas: client px + camera) converts with the camera of that exact step.
+ * Hosts that already know the world point (3D raycast) just call setAimWorld and leave this null.
+ */
+export type AimSync = () => void;
+
+/** Level reset puts the pointer back at a fixed view-px spot (the original wrote mouseClientX/Y). */
+export type AimReset = (viewX: number, viewY: number) => void;
+
+/** Aim point in sim (world) px: where kunai / aimed skills go. */
+export function setAimWorld(world: World, x: number, y: number) {
+  world.mouseWorldX = x;
+  world.mouseWorldY = y;
+}

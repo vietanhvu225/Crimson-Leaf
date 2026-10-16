@@ -5,8 +5,7 @@ import type { World } from '../world.ts';
 // Keyboard / mouse / touch state -> per-frame input flags.
 
 export function readFrameInput(world: World) {
-  world.mouseWorldX = world.mouseClientX + world.camX;
-  world.mouseWorldY = world.mouseClientY + world.camY;
+  world.aimSync?.();
 
   const tInput = world.touchInputRef.current;
   const moveLeft = world.keysHeld.has('KeyA') || world.keysHeld.has('ArrowLeft') || tInput.left;

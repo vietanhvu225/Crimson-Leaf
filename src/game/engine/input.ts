@@ -67,17 +67,28 @@ export function onKeyUp(world: World, e: KeyboardEvent) {
 /** Host-owned view rect (the element the game is drawn into), used to turn client px into view px. */
 export type ViewRectSource = () => { left: number; top: number };
 
-export function onMouseMove(world: World, e: MouseEvent, getRect: ViewRectSource) {
-  const rect = getRect();
-  world.mouseClientX = e.clientX - rect.left;
-  world.mouseClientY = e.clientY - rect.top;
+/** Mouse position in view px (relative to the view rect). Owned by the host; it turns this into an aim. */
+export interface PointerState {
+  viewX: number;
+  viewY: number;
 }
 
-export function onMouseDown(world: World, e: MouseEvent, getRect: ViewRectSource) {
+export function onMouseMove(pointer: PointerState, e: MouseEvent, getRect: ViewRectSource) {
+  const rect = getRect();
+  pointer.viewX = e.clientX - rect.left;
+  pointer.viewY = e.clientY - rect.top;
+}
+
+export function onMouseDown(
+  world: World,
+  pointer: PointerState,
+  e: MouseEvent,
+  getRect: ViewRectSource
+) {
   if (world.stateRef.current.gameState !== 'playing') return;
   const rect = getRect();
-  world.mouseClientX = e.clientX - rect.left;
-  world.mouseClientY = e.clientY - rect.top;
+  pointer.viewX = e.clientX - rect.left;
+  pointer.viewY = e.clientY - rect.top;
   if (e.button === 0) {
     world.lmbJustPressed = true;
   } else if (e.button === 2) {
@@ -96,11 +107,15 @@ export function onVisibilityChange(world: World) {
 }
 
 /** Registers window/document listeners; returns a detach function. */
-export function attachInput(world: World, getRect: ViewRectSource): () => void {
+export function attachInput(
+  world: World,
+  pointer: PointerState,
+  getRect: ViewRectSource
+): () => void {
   const keydown = (e: KeyboardEvent) => onKeyDown(world, e);
   const keyup = (e: KeyboardEvent) => onKeyUp(world, e);
-  const mousemove = (e: MouseEvent) => onMouseMove(world, e, getRect);
-  const mousedown = (e: MouseEvent) => onMouseDown(world, e, getRect);
+  const mousemove = (e: MouseEvent) => onMouseMove(pointer, e, getRect);
+  const mousedown = (e: MouseEvent) => onMouseDown(world, pointer, e, getRect);
   const contextmenu = (e: MouseEvent) => onContextMenu(world, e);
   const blur = () => clearInputs(world);
   const visibility = () => onVisibilityChange(world);

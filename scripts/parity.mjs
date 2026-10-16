@@ -217,7 +217,6 @@ async function openSide(browser, baseUrl, query, stageIndex, seed, viewport) {
   await page.locator('[data-testid="start-game-btn"]').evaluate((el) => el.click());
   await page.waitForFunction(() => document.body.dataset.state === 'playing', null, { timeout: 10000 });
   await sleep(150); // React effects: rebuildLevel, stateRef sync
-  await page.mouse.move(0, 0);
   await page.evaluate((s) => window.__parity.reseed(s), seed);
   return { context, page, errors };
 }
@@ -231,6 +230,7 @@ function inputFor(k) {
   if (k % 8 === 5) keys.push('KeyQ');
   if (k % 10 === 7) keys.push('ShiftLeft');
   if (k % 6 === 4) keys.push('KeyE');
+  if (k === 20) keys.push('KeyR'); // quick restart mid-run: exercises level reset (incl. aim reset)
   const mouse = k % 5 === 3 ? { x: 300 + ((k * 97) % 700), y: 150 + ((k * 53) % 400) } : null;
   const holdRight = Math.floor(k / 12) % 3 !== 2; // mostly run right, sometimes stop
   return { keys, mouse, holdRight };
