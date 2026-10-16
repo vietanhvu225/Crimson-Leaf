@@ -1,0 +1,35 @@
+{
+  "stage": "spring",
+  "renderer": "three",
+  "loop": 1,
+  "script": "bench",
+  "url": "http://127.0.0.1:61747/?autostart=1&stage=spring&loop=1&renderer=three&seed=1&muted=1",
+  "bench": {
+    "frames": 600,
+    "msPerFrame": 0.72,
+    "uncappedFps": 1396.3,
+    "entities": 206
+  },
+  "pixelStd": 50.42,
+  "pixelMean": 62.34,
+  "gameState": "playing",
+  "seasonId": "spring",
+  "player": {
+    "x": 2574,
+    "y": 380,
+    "vx": 207,
+    "vy": -145,
+    "onGround": false,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 144,
+    "drawCalls": 81,
+    "triangles": 13290,
+    "geometries": 16,
+    "textures": 25,
+    "entities": 198
+  },
+  "png": "shots/T05/perf/bench-spring-high.png",
+  "errors": []
+}

@@ -1,0 +1,31 @@
+{
+  "stage": "thunder_peak",
+  "renderer": "three",
+  "loop": 1,
+  "script": "idle",
+  "url": "http://127.0.0.1:57364/?autostart=1&stage=thunder_peak&loop=1&renderer=three&seed=1&muted=1",
+  "fps": 144.2,
+  "worstFrameMs": 7,
+  "pixelStd": 58.98,
+  "pixelMean": 51.25,
+  "gameState": "playing",
+  "seasonId": "thunder_peak",
+  "player": {
+    "x": 200,
+    "y": 29900,
+    "vx": 0,
+    "vy": 0,
+    "onGround": true,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 143.9,
+    "drawCalls": 71,
+    "triangles": 61100,
+    "geometries": 16,
+    "textures": 25,
+    "entities": 190
+  },
+  "png": "shots/T05/thunder_peak-weather.png",
+  "errors": []
+}

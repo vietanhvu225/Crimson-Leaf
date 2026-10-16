@@ -6,6 +6,7 @@
 //   --script clear  bot plays the stage via window.__game until victory/defeat (--max-sim-sec, default 900)
 //   --script lanes  <name>-lane0.png / -lane1.png before/after Q
 //   --script swap   F9 three↔canvas ×20, reports GPU resources / heap / fps before-after
+//   --script bench  uncapped ms/frame (rAF stopped, 600 × __game.step(1)); for fx=high vs fx=low
 //   --script vfx    <name>-weather/-lightning/-parry/-parry2/-debuffs/-awaken.png (T05 effects)
 // Extra flags: --width 1280 --height 720 --duration <ms of input script> --name <png basename>
 //              --params "debug=1&foo=bar" (appended to the URL as-is)
@@ -35,7 +36,7 @@ const STAGES = [
   'earth_core',
   'sky_sanctuary',
 ];
-const SCRIPTS = ['idle', 'run', 'combat', 'boss', 'clear', 'lanes', 'swap', 'vfx'];
+const SCRIPTS = ['idle', 'run', 'combat', 'boss', 'clear', 'lanes', 'swap', 'vfx', 'bench'];
 const LOCK_PATH = path.join(os.tmpdir(), 'crimson-shot.lock');
 const LOCK_WAIT_MS = 20 * 60 * 1000;
 const LOCK_STALE_MS = 30 * 60 * 1000;
@@ -535,6 +536,44 @@ async function vfxShots(page, opts) {
 }
 
 /**
+ * `--script bench` (T05): vsync caps the rAF fps (144 on PC2) for every config, so it cannot tell
+ * fx=high from fx=low. This stops rAF, puts the player in a busy scene (run 2 s, Huyết Ảnh on, a
+ * burst of fights), then times `frames` back-to-back __game.step(1) calls (sim + render each) with a
+ * readPixels at the end to drain the GPU queue. Reports ms/frame and the uncapped fps it implies.
+ */
+async function benchShots(page, frames) {
+  return page.evaluate(async (frames) => {
+    window.requestAnimationFrame = () => 0;
+    const g = window.__game;
+    g.toggleImmortal();
+    g.setInput({ moveRight: true });
+    g.step(120);
+    const w = g.world;
+    w.combat = { ...w.combat, rage: 100 };
+    window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyH', key: 'h' }));
+    const canvas = document.querySelector('canvas');
+    const gl = canvas.getContext('webgl2') || canvas.getContext('2d');
+    const px = new Uint8Array(4);
+    const sync = () => {
+      if (gl && 'readPixels' in gl && gl.readPixels.length >= 7) gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px);
+    };
+    const run = (n) => {
+      for (let i = 0; i < n; i++) {
+        if (i % 20 === 0) g.setInput({ meleePressed: true, kunaiPressed: true });
+        g.step(1);
+      }
+      sync();
+    };
+    run(60); // warm-up (shader compile, pools)
+    const t0 = performance.now();
+    run(frames);
+    const ms = (performance.now() - t0) / frames;
+    const s = g.stats();
+    return { frames, msPerFrame: Math.round(ms * 100) / 100, uncappedFps: Math.round(10000 / ms) / 10, entities: s.entities };
+  }, frames);
+}
+
+/**
  * `--script swap`: presses F9 (three ↔ canvas) `cycles` × 2 times while the run continues, and
  * records GPU resource counts after each return to three plus JS heap, to spot leaks.
  */
@@ -667,6 +706,8 @@ async function capture(browser, baseUrl, opts) {
       result.lanes = await laneShots(page, opts);
     } else if (opts.script === 'vfx') {
       result.vfx = await vfxShots(page, opts);
+    } else if (opts.script === 'bench') {
+      result.bench = await benchShots(page, 600);
     } else {
       const fpsWindow = Math.max(1000, opts.durationMs - 1000);
       const fpsPromise = sleep(500).then(() => measureFps(page, fpsWindow));
@@ -778,6 +819,7 @@ async function main() {
     if (r?.bot) console.log(`[shot] bot ${JSON.stringify(r.bot)}`);
     if (r?.lanes) console.log(`[shot] lanes ${JSON.stringify(r.lanes)}`);
     if (r?.vfx) console.log(`[shot] vfx ${JSON.stringify(r.vfx)}`);
+    if (r?.bench) console.log(`[shot] bench ${JSON.stringify(r.bench)}`);
     if (r?.swap) console.log(`[shot] swap ${JSON.stringify(r.swap)}`);
     if (r?.stats) console.log(`[shot] stats ${JSON.stringify(r.stats)}`);
     if (r?.png) {
