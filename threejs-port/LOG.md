@@ -18,3 +18,15 @@ Bước 8 (permtest) chưa chạy vì đã dừng ở bước 4. Worktree `_warm
 ## 2026-10-17 sửa PATH
 
 Theo yêu cầu người dùng: tạo `~/.bashrc` với `export PATH="/c/Users/Admin/.local/bin:/c/Program Files/nodejs:$PATH"`. Git Bash tự tạo `~/.bash_profile` nạp `.bashrc`. Shell mới (`bash -ic`, `bash -lc`) thấy `claude` và node v24.20.0. Bash tool của session đang chạy vẫn dùng snapshot cũ (node v22.12, không có claude), nên phải khởi động lại session rồi chạy lại warm-up từ đầu.
+
+## 2026-10-17 03:40 warm-up (sau khi khởi động lại session) — OK
+
+Session mới thấy `claude` (`~/.local/bin`) và node v24.20.0 trên PATH.
+
+Chạy thẳng, **không** hiện hộp thoại xin quyền nào (0 lệnh phải xin quyền): `git status`, `git log --oneline -3`, `ROOT=…; WT=…; mkdir -p …`, `git -C … worktree add … -b task/_warmup main`, `claude -p "Reply with exactly: OK" --permission-mode dontAsk --output-format json` chạy nền (`is_error:false`, `result:"OK"`, ~4 s), `sleep 5` chạy nền, `timeout 2m node --version` (v24.20.0), `npm view three version` (0.186.1), `npx tsc --version` (lỗi vì root chưa có typescript, đúng dự kiến), `git -C … worktree remove --force`, `git -C … branch -D task/_warmup`.
+
+Bước 8 permtest: `touch .permtest` chạy thành công, **không bị từ chối và không hỏi**. Kết luận: session orchestrator đang ở chế độ bypass permissions (không phải dontAsk), nên đêm nay session này sẽ không đứng chờ hộp thoại. Vẫn chỉ dùng lệnh trong allowlist theo luật. Đã xoá `.permtest`. Worker vẫn chạy `--permission-mode dontAsk` với allowlist của `.claude/settings.json`.
+
+`.claude/settings.local.json` (untracked, quyền cục bộ từ lần warm-up trước) để nguyên, không commit.
+
+## 2026-10-17 03:40 session start
