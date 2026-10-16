@@ -1,0 +1,31 @@
+{
+  "stage": "autumn",
+  "renderer": "three",
+  "loop": 1,
+  "script": "run",
+  "url": "http://127.0.0.1:50971/?autostart=1&stage=autumn&loop=1&renderer=three&seed=1&muted=1",
+  "fps": 144,
+  "worstFrameMs": 7,
+  "pixelStd": 45.53,
+  "pixelMean": 91.34,
+  "gameState": "playing",
+  "seasonId": "autumn",
+  "player": {
+    "x": 1080,
+    "y": 27828,
+    "vx": 9,
+    "vy": 222,
+    "onGround": false,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 144,
+    "drawCalls": 39,
+    "triangles": 95950,
+    "geometries": 19,
+    "textures": 7,
+    "entities": 177
+  },
+  "png": "shots/T03/autumn-l1.png",
+  "errors": []
+}

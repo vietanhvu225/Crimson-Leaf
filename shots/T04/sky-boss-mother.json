@@ -1,0 +1,31 @@
+{
+  "stage": "sky_sanctuary",
+  "renderer": "three",
+  "loop": 1,
+  "script": "boss",
+  "url": "http://127.0.0.1:58112/?autostart=1&stage=sky_sanctuary&loop=1&renderer=three&seed=1&muted=1",
+  "fps": 144,
+  "worstFrameMs": 7,
+  "pixelStd": 33.32,
+  "pixelMean": 86.65,
+  "gameState": "playing",
+  "seasonId": "sky_sanctuary",
+  "player": {
+    "x": 44920,
+    "y": 168,
+    "vx": 130,
+    "vy": -18,
+    "onGround": false,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 143.9,
+    "drawCalls": 69,
+    "triangles": 131984,
+    "geometries": 47,
+    "textures": 20,
+    "entities": 267
+  },
+  "png": "shots/T04/sky-boss-mother.png",
+  "errors": []
+}

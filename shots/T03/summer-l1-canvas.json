@@ -1,0 +1,29 @@
+{
+  "stage": "summer",
+  "renderer": "canvas",
+  "loop": 1,
+  "script": "run",
+  "url": "http://127.0.0.1:62812/?autostart=1&stage=summer&loop=1&renderer=canvas&seed=1&muted=1",
+  "fps": 144.2,
+  "worstFrameMs": 7,
+  "pixelStd": 37.81,
+  "pixelMean": 75.46,
+  "gameState": "playing",
+  "seasonId": "summer",
+  "player": {
+    "x": 1009,
+    "y": 345,
+    "vx": 124,
+    "vy": 663,
+    "onGround": false,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 144,
+    "drawCalls": null,
+    "triangles": null,
+    "entities": 215
+  },
+  "png": "shots/T03/summer-l1-canvas.png",
+  "errors": []
+}

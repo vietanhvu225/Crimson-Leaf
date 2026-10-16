@@ -1,0 +1,31 @@
+{
+  "stage": "spring",
+  "renderer": "three",
+  "loop": 1,
+  "script": "combat",
+  "url": "http://127.0.0.1:61494/?autostart=1&stage=spring&loop=1&renderer=three&seed=3&muted=1",
+  "fps": 143.9,
+  "worstFrameMs": 14,
+  "pixelStd": 46.91,
+  "pixelMean": 66.47,
+  "gameState": "playing",
+  "seasonId": "spring",
+  "player": {
+    "x": 1205,
+    "y": 560,
+    "vx": 115,
+    "vy": 0,
+    "onGround": true,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 143.9,
+    "drawCalls": 65,
+    "triangles": 98956,
+    "geometries": 46,
+    "textures": 12,
+    "entities": 204
+  },
+  "png": "shots/T04/spring-combat.png",
+  "errors": []
+}

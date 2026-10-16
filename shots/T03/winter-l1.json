@@ -1,0 +1,31 @@
+{
+  "stage": "winter",
+  "renderer": "three",
+  "loop": 1,
+  "script": "run",
+  "url": "http://127.0.0.1:58525/?autostart=1&stage=winter&loop=1&renderer=three&seed=1&muted=1",
+  "fps": 144.2,
+  "worstFrameMs": 7,
+  "pixelStd": 62.4,
+  "pixelMean": 123.88,
+  "gameState": "playing",
+  "seasonId": "winter",
+  "player": {
+    "x": 1092,
+    "y": 324,
+    "vx": 90,
+    "vy": 228,
+    "onGround": false,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 144,
+    "drawCalls": 60,
+    "triangles": 11972,
+    "geometries": 20,
+    "textures": 16,
+    "entities": 228
+  },
+  "png": "shots/T03/winter-l1.png",
+  "errors": []
+}
