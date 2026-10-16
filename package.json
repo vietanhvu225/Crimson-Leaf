@@ -11,7 +11,8 @@
     "test": "node --test src/game/rules/rules.test.ts",
     "copy-reference": "node scripts/copy-reference.mjs",
     "shot": "node scripts/shot.mjs",
-    "smoke": "node scripts/shot.mjs --smoke"
+    "smoke": "node scripts/shot.mjs --smoke",
+    "parity": "node scripts/parity.mjs"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
