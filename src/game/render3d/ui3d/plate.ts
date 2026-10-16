@@ -35,6 +35,26 @@ export class CanvasPlate {
   }
 }
 
+/**
+ * Draws a camera-space UI object over the world-space labels (enemy tags, banners are transparent
+ * with depthTest off, so they render in the transparent pass): every mesh joins that pass, skips
+ * the depth test and gets a renderOrder above them, in child order.
+ */
+export function overlay(root: THREE.Object3D, order: number) {
+  let i = 0;
+  root.traverse((o) => {
+    const mesh = o as THREE.Mesh;
+    if (!mesh.isMesh) return;
+    const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+    for (const m of mats) {
+      m.transparent = true;
+      m.depthTest = false;
+      m.depthWrite = false;
+    }
+    mesh.renderOrder = order + i++;
+  });
+}
+
 /** Outlined text (ink stroke under the fill), like the canvas renderer's banners. */
 export function inkText(
   c: CanvasRenderingContext2D,

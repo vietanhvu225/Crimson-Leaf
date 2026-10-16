@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { SEASONS, type SeasonId } from '../../rules/index.ts';
 import { BLOOM_LAYER } from '../post.ts';
 import type { Tracker } from '../resources.ts';
-import { CanvasPlate, UI_FONT, inkText } from './plate.ts';
+import { CanvasPlate, UI_FONT, inkText, overlay } from './plate.ts';
 
 // Victory / defeat sign (?ui=3d game over): a lacquer board with a gold frame that drops in and
 // sways in camera space, next to (landscape) or above (portrait) the DOM result modal, which keeps
@@ -43,6 +43,7 @@ export class OutcomeSign {
       this.group.add(cord);
     }
     this.group.add(this.frame, board, face);
+    overlay(this.group, 120);
     this.group.visible = false;
   }
 

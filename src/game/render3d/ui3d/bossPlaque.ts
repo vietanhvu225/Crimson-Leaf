@@ -58,7 +58,9 @@ export class BossPlaque {
     const ratio = Math.max(0, Math.min(1, boss.hp / boss.maxHp));
 
     // Anchor over the boss's head, clamped inside the view (side arrow when docked).
-    const margin = W / 2 + 16;
+    // Narrow (phone) views: shrink to fit so the plaque can still follow the boss.
+    const scale = Math.min(1, (world.viewW - 24) / (W * 1.6));
+    const margin = (W * scale) / 2 + 12;
     const minX = world.camX + margin;
     const maxX = world.camX + world.viewW - margin;
     const targetX = Math.max(minX, Math.min(maxX, boss.x));
@@ -91,10 +93,10 @@ export class BossPlaque {
       c.textBaseline = 'middle';
       c.textAlign = 'left';
       const arrowL = dock === -1 ? '◀ ' : '';
-      inkText(c, `${arrowL}${name}`, 34, 44, 30, '#fda4af', 900, w * 0.62);
+      inkText(c, `${arrowL}${name}`, 34, 44, 30, '#fda4af', 900, w * 0.54);
       c.font = `700 19px ${UI_FONT}`;
       c.fillStyle = '#fde047';
-      c.fillText(`Tuyệt Kỹ: ${cfg.bossSkillName}`, 36, 78, w * 0.62);
+      c.fillText(`Tuyệt Kỹ: ${cfg.bossSkillName}`, 36, 80, w - 72);
       c.textAlign = 'right';
       // Right-aligned to a fixed edge so the bar never shifts as the digit count drops.
       inkText(c, `${hp} / ${boss.maxHp}${dock === 1 ? ' ▶' : ''}`, w - 34, 52, 30, '#f8fafc', 800);
@@ -124,6 +126,7 @@ export class BossPlaque {
     // scene, not a flat overlay.
     this.group.position.set(toX(this.x), toY(this.y), LANE_Z[boss.zLane] + 0.8);
     this.group.rotation.set(-0.12, Math.sin(f.t * 1.3) * 0.12, Math.sin(f.t * 0.9) * 0.02);
+    this.group.scale.setScalar(scale);
     this.group.visible = true;
   }
 

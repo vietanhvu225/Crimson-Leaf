@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { SEASONS, SEASON_ORDER, type SeasonId } from '../../rules/index.ts';
 import { BLOOM_LAYER } from '../post.ts';
 import { cssColor, type Tracker } from '../resources.ts';
-import { CanvasPlate, inkText } from './plate.ts';
+import { CanvasPlate, inkText, overlay } from './plate.ts';
 
 // Stage select as 11 clickable torii gates (?ui=3d title). The gates hang in camera space (children
 // of the camera) so the fly-through behind them never pushes them off screen; the layout is fitted
@@ -96,6 +96,11 @@ export class StageGates {
       this.group.add(mesh);
       this.labels.push({ mesh, plate });
     }
+    // Over the world-space enemy tags; portals → pillars → beams → labels (gates never overlap).
+    overlay(this.portals, 112);
+    overlay(this.pillars, 113);
+    overlay(this.beams, 114);
+    for (const l of this.labels) overlay(l.mesh, 115);
     this.group.visible = false;
   }
 

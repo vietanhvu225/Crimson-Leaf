@@ -10,13 +10,19 @@ interface TouchControlsProps {
 /** On-screen buttons for mobile. */
 export function TouchControls({ touchInputRef, seasonId }: TouchControlsProps) {
   return (
-    <div className="flex md:hidden items-end justify-between w-full pointer-events-auto pb-1">
+    // touch-none: the page must not scroll/zoom under held buttons; pointercancel (OS gesture,
+    // incoming call) releases a held direction instead of leaving it stuck.
+    <div
+      className="flex md:hidden items-end justify-between w-full pointer-events-auto pb-1 touch-none"
+      style={{ paddingBottom: 'max(0.25rem, env(safe-area-inset-bottom))' }}
+    >
       <div className="flex items-center gap-1.5">
         <button
           type="button"
           onPointerDown={() => (touchInputRef.current.left = true)}
           onPointerUp={() => (touchInputRef.current.left = false)}
           onPointerLeave={() => (touchInputRef.current.left = false)}
+          onPointerCancel={() => (touchInputRef.current.left = false)}
           className="w-12 h-12 rounded-lg bg-[#141824]/90 border border-[#2c3446] text-white font-bold active:bg-[#e11d48]/40"
         >
           ◀
@@ -26,6 +32,7 @@ export function TouchControls({ touchInputRef, seasonId }: TouchControlsProps) {
           onPointerDown={() => (touchInputRef.current.right = true)}
           onPointerUp={() => (touchInputRef.current.right = false)}
           onPointerLeave={() => (touchInputRef.current.right = false)}
+          onPointerCancel={() => (touchInputRef.current.right = false)}
           className="w-12 h-12 rounded-lg bg-[#141824]/90 border border-[#2c3446] text-white font-bold active:bg-[#e11d48]/40"
         >
           ▶
