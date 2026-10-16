@@ -1,4 +1,4 @@
-import {
+import type {
   TouchInputState,
   PlatformBranch,
   StageHazardZone,
@@ -12,14 +12,15 @@ import {
   PooledParticle,
   LightningBoltArc,
   FloatingBanner,
-} from './entities';
+} from './entities.ts';
 import {
-  PlayerCombatState,
-  SeasonId,
-  GameLoopRoute,
-  GameStateMode,
+  type PlayerCombatState,
+  type SeasonId,
+  type GameLoopRoute,
+  type GameStateMode,
   createInitialPlayerCombatState,
-} from '../rules';
+} from '../rules/index.ts';
+import { mulberry32, type Rng } from './rng.ts';
 
 /** Callbacks + settings the React host exposes to the engine (read every frame). */
 export interface HostState {
@@ -50,23 +51,33 @@ export interface HostState {
   onSelectSeasonQuick: (s: SeasonId) => void;
 }
 
+export interface CreateWorldOptions {
+  stateRef: { current: HostState };
+  touchInputRef: { current: TouchInputState };
+  /** Seed for the default RNG (mulberry32). */
+  seed: number;
+  /** Overrides the RNG (`?rng=math` parity runs share the page-wide global random sequence). */
+  rng?: Rng;
+  /** Visible sim area in px (camera follow, ambient spawns, end-beat). Host keeps it updated. */
+  viewW: number;
+  viewH: number;
+  /** Headless browser / Node: skips purely cosmetic particle spawns (as the original did). */
+  isHeadless: boolean;
+}
+
 /** All mutable game state: input, player, level, actors, pools, camera. */
-export function createWorld(
-  canvas: HTMLCanvasElement,
-  ctx: CanvasRenderingContext2D,
-  stateRef: { current: HostState },
-  touchInputRef: { current: TouchInputState }
-) {
-  const isHeadless =
-    typeof navigator !== 'undefined' && /HeadlessChrome/i.test(navigator.userAgent);
-  let viewW = window.innerWidth;
-  let viewH = window.innerHeight;
-  let canvasRect = canvas.getBoundingClientRect();
+export function createWorld({
+  stateRef,
+  touchInputRef,
+  seed,
+  rng,
+  viewW,
+  viewH,
+  isHeadless,
+}: CreateWorldOptions) {
   // Input Tracking
   const keysHeld = new Set<string>();
   const keysJustPressed = new Set<string>();
-  let mouseClientX = viewW * 0.65;
-  let mouseClientY = viewH * 0.45;
   let mouseWorldX = 600;
   let mouseWorldY = 300;
   let lmbJustPressed = false;
@@ -186,18 +197,17 @@ export function createWorld(
   let hudSyncTimer = 0;
 
   return {
-    canvas,
-    ctx,
+    seed,
+    rng: rng ?? mulberry32(seed),
     isHeadless,
     viewW,
     viewH,
-    canvasRect,
     keysHeld,
     keysJustPressed,
-    mouseClientX,
-    mouseClientY,
     mouseWorldX,
     mouseWorldY,
+    aimSync: null as AimSync | null,
+    onAimReset: null as AimReset | null,
     lmbJustPressed,
     rmbJustPressed,
     player,
@@ -242,3 +252,19 @@ export function createWorld(
 }
 
 export type World = ReturnType<typeof createWorld>;
+
+/**
+ * Optional host hook the sim calls once per step, right before reading input, so a host that aims
+ * in screen space (canvas: client px + camera) converts with the camera of that exact step.
+ * Hosts that already know the world point (3D raycast) just call setAimWorld and leave this null.
+ */
+export type AimSync = () => void;
+
+/** Level reset puts the pointer back at a fixed view-px spot (the original wrote mouseClientX/Y). */
+export type AimReset = (viewX: number, viewY: number) => void;
+
+/** Aim point in sim (world) px: where kunai / aimed skills go. */
+export function setAimWorld(world: World, x: number, y: number) {
+  world.mouseWorldX = x;
+  world.mouseWorldY = y;
+}

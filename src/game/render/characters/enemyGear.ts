@@ -1,7 +1,7 @@
 import { INK } from '../palette';
-import { EnemyPose } from './enemyPose';
+import type { EnemyPose } from './enemyPose';
 import { drawChibiArm } from './parts';
-import { RenderableEnemy } from './types';
+import type { RenderableEnemy } from './types';
 
 // Archetype-specific hair, hats and oversized weapons for regular enemies.
 

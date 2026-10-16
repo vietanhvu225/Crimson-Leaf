@@ -1,4 +1,4 @@
-import { ZLane, PickupItemKind, EnemyArchetype, KageSpawnStyle, ElementalStanceId } from '../rules';
+import type { ZLane, PickupItemKind, EnemyArchetype, KageSpawnStyle, ElementalStanceId } from '../rules/index.ts';
 
 export interface TouchInputState {
   left: boolean;

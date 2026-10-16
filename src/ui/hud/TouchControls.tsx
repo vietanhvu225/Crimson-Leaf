@@ -1,6 +1,6 @@
 import React from 'react';
-import { TouchInputState } from '../../game/engine/entities';
-import { SeasonId } from '../../game/rules';
+import type { TouchInputState } from '../../game/engine/entities';
+import type { SeasonId } from '../../game/rules';
 
 interface TouchControlsProps {
   touchInputRef: React.MutableRefObject<TouchInputState>;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { GDD_MILESTONES, TECH_DIRECTION_COMPARISON } from './gddData';
-import { SEASONS, SEASON_ORDER, PHYSICS_CONSTANTS, SeasonId } from '../game/rules';
+import { SEASONS, SEASON_ORDER, PHYSICS_CONSTANTS, type SeasonId } from '../game/rules';
 
 interface GddModalProps {
   onClose: () => void;

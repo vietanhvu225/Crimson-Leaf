@@ -1,9 +1,9 @@
-import { computeSubterraneanSlopeY } from '../../../rules';
-import { spawnWorldItem } from '../../spawn';
-import { World } from '../../world';
-import { ITEM_ROTATION, pushPlat } from '../builders';
-import { LevelContext } from '../context';
-import { HorizontalLayout } from './layout';
+import { computeSubterraneanSlopeY } from '../../../rules/index.ts';
+import { spawnWorldItem } from '../../spawn.ts';
+import type { World } from '../../world.ts';
+import { ITEM_ROTATION, pushPlat } from '../builders.ts';
+import type { LevelContext } from '../context.ts';
+import type { HorizontalLayout } from './layout.ts';
 
 // Upper stage-specific structures (branches, roofs, lanterns, hazards).
 

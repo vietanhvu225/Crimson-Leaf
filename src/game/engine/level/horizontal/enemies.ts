@@ -1,13 +1,13 @@
 import {
-  EnemyArchetype,
-  KageSpawnStyle,
+  type EnemyArchetype,
+  type KageSpawnStyle,
   ROAD_NINJA_ARCHETYPES,
   computeSubterraneanSlopeY,
   getIntraStageGateScaling,
-} from '../../../rules';
-import { World } from '../../world';
-import { LevelContext } from '../context';
-import { HorizontalLayout } from './layout';
+} from '../../../rules/index.ts';
+import type { World } from '../../world.ts';
+import type { LevelContext } from '../context.ts';
+import type { HorizontalLayout } from './layout.ts';
 
 // Opening squad, road patrols, gate garrisons and the stage boss.
 

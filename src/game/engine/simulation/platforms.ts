@@ -1,6 +1,6 @@
-import { spawnBanner } from '../spawn';
-import { World } from '../world';
-import { Frame } from './frame';
+import { spawnBanner } from '../spawn.ts';
+import type { World } from '../world.ts';
+import type { Frame } from './frame.ts';
 
 // Moving / collapsing platforms.
 

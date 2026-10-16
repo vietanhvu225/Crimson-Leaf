@@ -1,8 +1,8 @@
-import { SeasonConfig, SeasonId, computeSubterraneanSlopeY } from '../../rules';
+import { type SeasonConfig, type SeasonId, computeSubterraneanSlopeY } from '../../rules';
 import { INK } from '../palette';
 import { drawCleanChibiPuff } from './shapes';
 import { getChibiStagePalette } from './stagePalette';
-import { MapTrunk } from './types';
+import type { MapTrunk } from './types';
 
 // Foreground trees, bamboo, crystal spires and forge pillars.
 

@@ -1,12 +1,12 @@
-import { soundEngine } from '../../audio';
-import { PHYSICS_CONSTANTS, applyPlayerDamage, computeSubterraneanSlopeY } from '../../rules';
-import { dealDamageToEnemy } from '../damage';
-import { PlatformBranch } from '../entities';
-import { spawnBanner, spawnWorldItem } from '../spawn';
-import { World } from '../world';
-import { Frame } from './frame';
-import { FrameInput } from './frameInput';
-import { MoveState } from './movement';
+import { soundEngine } from '../../audio.ts';
+import { PHYSICS_CONSTANTS, applyPlayerDamage, computeSubterraneanSlopeY } from '../../rules/index.ts';
+import { dealDamageToEnemy } from '../damage.ts';
+import type { PlatformBranch } from '../entities.ts';
+import { spawnBanner, spawnWorldItem } from '../spawn.ts';
+import type { World } from '../world.ts';
+import type { Frame } from './frame.ts';
+import type { FrameInput } from './frameInput.ts';
+import type { MoveState } from './movement.ts';
 
 // Motion integration and terrain, seal gate, platform and pit collision.
 

@@ -1,6 +1,6 @@
-import { PickupItemKind, ZLane } from '../../rules';
-import { PlatformBranch, PlatformSubType } from '../entities';
-import { World } from '../world';
+import type { PickupItemKind, ZLane } from '../../rules/index.ts';
+import type { PlatformBranch, PlatformSubType } from '../entities.ts';
+import type { World } from '../world.ts';
 
 // Shared level-building helpers.
 

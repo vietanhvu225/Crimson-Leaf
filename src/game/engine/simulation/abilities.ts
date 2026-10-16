@@ -1,12 +1,12 @@
-import { soundEngine } from '../../audio';
-import { PHYSICS_CONSTANTS, applyMeleeHitReward, getEffectiveDashCooldown } from '../../rules';
-import { applyElementalAndRelicOnHit, dealDamageToEnemy } from '../damage';
-import { GrapplePoint } from '../entities';
-import { spawnBanner, spawnParticle, spawnProjectile } from '../spawn';
-import { World } from '../world';
-import { Frame } from './frame';
-import { FrameInput } from './frameInput';
-import { MoveState } from './movement';
+import { soundEngine } from '../../audio.ts';
+import { PHYSICS_CONSTANTS, applyMeleeHitReward, getEffectiveDashCooldown } from '../../rules/index.ts';
+import { applyElementalAndRelicOnHit, dealDamageToEnemy } from '../damage.ts';
+import type { GrapplePoint } from '../entities.ts';
+import { spawnBanner, spawnParticle, spawnProjectile } from '../spawn.ts';
+import type { World } from '../world.ts';
+import type { Frame } from './frame.ts';
+import type { FrameInput } from './frameInput.ts';
+import type { MoveState } from './movement.ts';
 
 // Stage traversal abilities: ice ram, earth drill, water skimming, dash, grapple.
 
@@ -61,7 +61,7 @@ export function updateStageAbilities(world: World, f: Frame, input: FrameInput, 
     world.player.vy = 0;
     world.player.onGround = true;
     world.player.airJumpsUsed = 0;
-    if (Math.random() < 0.35) {
+    if (world.rng() < 0.35) {
       spawnParticle(
         world,
         world.player.x - world.player.facing * 12,
@@ -147,8 +147,8 @@ export function updateStageAbilities(world: World, f: Frame, input: FrameInput, 
         world,
         world.player.x,
         world.player.y - 22,
-        -world.player.facing * (80 + Math.random() * 110),
-        (Math.random() - 0.5) * 60,
+        -world.player.facing * (80 + world.rng() * 110),
+        (world.rng() - 0.5) * 60,
         4,
         world.combat.skills.mobilityLevel >= 3 ? '#fde047' : '#38bdf8',
         0.25,

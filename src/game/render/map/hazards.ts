@@ -1,7 +1,7 @@
-import { SeasonId } from '../../rules';
+import type { SeasonId } from '../../rules';
 import { INK } from '../palette';
 import { drawChibiCloud } from './shapes';
-import { MapHazardZone } from './types';
+import type { MapHazardZone } from './types';
 
 // Environmental hazard zones.
 

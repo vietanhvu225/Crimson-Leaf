@@ -1,5 +1,5 @@
 import { Flame } from 'lucide-react';
-import { GameLoopRoute, SeasonConfig } from '../../game/rules';
+import type { GameLoopRoute, SeasonConfig } from '../../game/rules';
 
 interface BossHealthBarProps {
   loopRoute: GameLoopRoute;

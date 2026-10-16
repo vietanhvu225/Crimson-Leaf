@@ -1,9 +1,9 @@
-import { soundEngine } from '../../audio';
-import { applyMeleeHitReward, getGuardianBladeCount } from '../../rules';
-import { applyElementalAndRelicOnHit, dealDamageToEnemy } from '../damage';
-import { spawnParticle, spawnProjectile } from '../spawn';
-import { World } from '../world';
-import { Frame } from './frame';
+import { soundEngine } from '../../audio.ts';
+import { applyMeleeHitReward, getGuardianBladeCount } from '../../rules/index.ts';
+import { applyElementalAndRelicOnHit, dealDamageToEnemy } from '../damage.ts';
+import { spawnParticle, spawnProjectile } from '../spawn.ts';
+import type { World } from '../world.ts';
+import type { Frame } from './frame.ts';
 
 // Orbiting guardian spirit blades.
 

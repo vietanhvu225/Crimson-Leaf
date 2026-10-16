@@ -1,4 +1,4 @@
-import { SeasonId } from '../../rules';
+import type { SeasonId } from '../../rules';
 
 // Per-stage colour palette (loop 1 / loop 2 variants).
 

@@ -1,15 +1,15 @@
 import {
-  GameLoopRoute,
+  type GameLoopRoute,
   SEASONS,
-  SeasonId,
+  type SeasonId,
   getCheckpointCoordinates,
   getStageDifficultyMultipliers,
   getStageSealGates,
-} from '../../rules';
-import { World } from '../world';
-import { LevelContext } from './context';
-import { buildStageLayout } from './layout';
-import { resetLevelState } from './reset';
+} from '../../rules/index.ts';
+import type { World } from '../world.ts';
+import type { LevelContext } from './context.ts';
+import { buildStageLayout } from './layout.ts';
+import { resetLevelState } from './reset.ts';
 
 // Level construction for each stage (platforms, hazards, enemies, gates).
 

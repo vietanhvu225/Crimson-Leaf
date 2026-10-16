@@ -1,6 +1,6 @@
 import { INK } from '../../palette';
 import { drawChibiMiniPagoda } from '../shapes';
-import { ChibiStagePalette } from '../stagePalette';
+import type { ChibiStagePalette } from '../stagePalette';
 
 /** Sky and celestial phenomena for ocean_palace. */
 export function paintOceanPalaceSky(

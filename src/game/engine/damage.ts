@@ -1,7 +1,7 @@
-import { EnemyActor } from './entities';
-import { spawnLightningBolt, spawnBanner, spawnParticle } from './spawn';
-import { World } from './world';
-import { rollElementalProc } from '../rules';
+import type { EnemyActor } from './entities.ts';
+import { spawnLightningBolt, spawnBanner, spawnParticle } from './spawn.ts';
+import type { World } from './world.ts';
+import { rollElementalProc } from '../rules/index.ts';
 
 // Damage application + elemental / relic on-hit effects.
 
@@ -18,7 +18,7 @@ export function dealDamageToEnemy(world: World, target: EnemyActor, rawDmg: numb
 
 export function applyElementalAndRelicOnHit(world: World, target: EnemyActor) {
   const elem = world.combat.skills.activeElement;
-  const proc = rollElementalProc(elem, Math.random());
+  const proc = rollElementalProc(elem, world.rng());
 
   if (proc.burnDuration > 0) {
     target.burnTimer = Math.max(target.burnTimer, proc.burnDuration);
@@ -27,7 +27,7 @@ export function applyElementalAndRelicOnHit(world: World, target: EnemyActor) {
       const ang = (Math.PI * 2 * f) / 10;
       spawnParticle(
         world,
-        target.x + (Math.random() - 0.5) * 16,
+        target.x + (world.rng() - 0.5) * 16,
         target.y - 24,
         Math.cos(ang) * 155,
         Math.sin(ang) * 145 - 55,

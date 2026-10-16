@@ -1,4 +1,4 @@
-import { soundEngine } from '../../audio';
+import { soundEngine } from '../../audio.ts';
 import {
   ELEMENTAL_STANCES,
   PHYSICS_CONSTANTS,
@@ -8,20 +8,20 @@ import {
   consumeKunaiChakra,
   getEffectiveKodachiStats,
   getEffectiveKunaiDamage,
-} from '../../rules';
-import { triggerAwakening } from '../actions';
-import { applyElementalAndRelicOnHit, dealDamageToEnemy } from '../damage';
+} from '../../rules/index.ts';
+import { triggerAwakening } from '../actions.ts';
+import { applyElementalAndRelicOnHit, dealDamageToEnemy } from '../damage.ts';
 import {
   spawnBanner,
   spawnBloodOrb,
   spawnLightningBolt,
   spawnParticle,
   spawnProjectile,
-} from '../spawn';
-import { World } from '../world';
-import { Frame } from './frame';
-import { FrameInput } from './frameInput';
-import { MoveState } from './movement';
+} from '../spawn.ts';
+import type { World } from '../world.ts';
+import type { Frame } from './frame.ts';
+import type { FrameInput } from './frameInput.ts';
+import type { MoveState } from './movement.ts';
 
 // Player Kodachi melee and 360-degree kunai fire.
 
@@ -98,7 +98,7 @@ export function updateMeleeAttack(world: World, f: Frame, input: FrameInput, mov
           world,
           world.player.x + Math.cos(a) * 34,
           world.player.y - 26 + Math.sin(a) * 24,
-          Math.cos(a) * (170 + Math.random() * 90),
+          Math.cos(a) * (170 + world.rng() * 90),
           Math.sin(a) * 160 - 40,
           4.8,
           f % 2 === 0 ? '#f97316' : '#ef4444',
@@ -169,7 +169,7 @@ export function updateMeleeAttack(world: World, f: Frame, input: FrameInput, mov
           }
         }
         for (let s = 0; s < 10; s++) {
-          const a = Math.random() * Math.PI * 2;
+          const a = world.rng() * Math.PI * 2;
           const hitColor =
             activeElem === 'crimson_fire'
               ? s % 2 === 0

@@ -1,7 +1,7 @@
-import { SeasonConfig, SeasonId, ZLane, computeSubterraneanSlopeY } from '../../rules';
+import { type SeasonConfig, type SeasonId, type ZLane, computeSubterraneanSlopeY } from '../../rules';
 import { INK } from '../palette';
 import { getChibiStagePalette } from './stagePalette';
-import { MapPlatform } from './types';
+import type { MapPlatform } from './types';
 
 // Platforms and ground.
 

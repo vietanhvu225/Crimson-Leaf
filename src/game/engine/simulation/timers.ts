@@ -1,6 +1,6 @@
-import { PHYSICS_CONSTANTS } from '../../rules';
-import { World } from '../world';
-import { Frame } from './frame';
+import { PHYSICS_CONSTANTS } from '../../rules/index.ts';
+import type { World } from '../world.ts';
+import type { Frame } from './frame.ts';
 
 // Player resource regen and cooldown timers.
 

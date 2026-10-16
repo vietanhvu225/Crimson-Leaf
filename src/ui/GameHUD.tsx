@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { TouchInputState } from '../game/engine/entities';
+import type { TouchInputState } from '../game/engine/entities';
 import {
   ELEMENTAL_STANCES,
-  GameLoopRoute,
-  PlayerCombatState,
+  type GameLoopRoute,
+  type PlayerCombatState,
   SEASONS,
-  SeasonId,
-  SkillBranchId,
+  type SeasonId,
+  type SkillBranchId,
 } from '../game/rules';
 import { BossHealthBar } from './hud/BossHealthBar';
 import { ComboPanel } from './hud/ComboPanel';

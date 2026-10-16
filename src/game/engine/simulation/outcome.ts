@@ -1,8 +1,8 @@
-import { soundEngine } from '../../audio';
-import { findBoss, getStageProgressPct, snapshotCombat } from '../hud';
-import { spawnBanner, spawnParticle } from '../spawn';
-import { World } from '../world';
-import { Frame } from './frame';
+import { soundEngine } from '../../audio.ts';
+import { findBoss, getStageProgressPct, snapshotCombat } from '../hud.ts';
+import { spawnBanner, spawnParticle } from '../spawn.ts';
+import type { World } from '../world.ts';
+import type { Frame } from './frame.ts';
 
 // Non-playing states, end-of-stage beat, and victory/defeat detection.
 

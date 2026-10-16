@@ -1,16 +1,16 @@
-import { World } from '../engine/world';
+import type { World } from '../engine/world';
 import { ELEMENTAL_STANCES } from '../rules';
 import { INK } from './palette';
 
 // Kunai, shuriken, sword beams and elemental projectiles.
 
-export function drawProjectiles(world: World) {
+export function drawProjectiles(ctx: CanvasRenderingContext2D, world: World) {
   // 10. Chibi Cel-Shaded Projectiles (Kunai, Shuriken, Sword Beams & Elemental Ice/Lightning/Fire Projectiles)
   for (const proj of world.projectiles) {
     if (!proj.active) continue;
-    world.ctx.save();
-    world.ctx.translate(proj.x, proj.y);
-    world.ctx.rotate(Math.atan2(proj.vy, proj.vx));
+    ctx.save();
+    ctx.translate(proj.x, proj.y);
+    ctx.rotate(Math.atan2(proj.vy, proj.vx));
 
     const pStyle =
       proj.elementalStyle ??
@@ -31,18 +31,18 @@ export function drawProjectiles(world: World) {
         const flameLen = (proj.isSwordBeam ? 36 : 28) - Math.abs(offsetIdx) * 4 + flicker * 0.5;
         const flameW = (proj.isSwordBeam ? 11.5 : 9.5) - Math.abs(offsetIdx) * 1.2;
 
-        world.ctx.save();
-        world.ctx.translate(-Math.abs(offsetIdx) * 4, spreadY);
-        world.ctx.rotate(spreadAng);
+        ctx.save();
+        ctx.translate(-Math.abs(offsetIdx) * 4, spreadY);
+        ctx.rotate(spreadAng);
 
         // 1. Outer Crimson-Red Flame Tongue with S-curved dancing tip (#dc2626)
-        world.ctx.fillStyle = Math.abs(offsetIdx) >= 1.5 ? '#b91c1c' : '#dc2626';
-        world.ctx.strokeStyle = INK;
-        world.ctx.lineWidth = 2.4;
-        world.ctx.lineJoin = 'round';
-        world.ctx.beginPath();
-        world.ctx.moveTo(-flameLen * 0.55, 0);
-        world.ctx.bezierCurveTo(
+        ctx.fillStyle = Math.abs(offsetIdx) >= 1.5 ? '#b91c1c' : '#dc2626';
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 2.4;
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(-flameLen * 0.55, 0);
+        ctx.bezierCurveTo(
           -flameLen * 0.2,
           -flameW * 1.45,
           flameLen * 0.35,
@@ -50,7 +50,7 @@ export function drawProjectiles(world: World) {
           flameLen * 0.75,
           flicker * 0.45
         );
-        world.ctx.bezierCurveTo(
+        ctx.bezierCurveTo(
           flameLen * 0.35,
           flameW * 0.9 + flicker * 0.4,
           -flameLen * 0.2,
@@ -58,58 +58,58 @@ export function drawProjectiles(world: World) {
           -flameLen * 0.55,
           0
         );
-        world.ctx.closePath();
-        world.ctx.fill();
-        world.ctx.stroke();
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
 
         // 2. Side Flame Licks (Ngọn lửa phụ uốn lượn hai bên)
-        world.ctx.fillStyle = '#ea580c';
-        world.ctx.beginPath();
-        world.ctx.moveTo(-flameLen * 0.25, -flameW * 0.55);
-        world.ctx.quadraticCurveTo(
+        ctx.fillStyle = '#ea580c';
+        ctx.beginPath();
+        ctx.moveTo(-flameLen * 0.25, -flameW * 0.55);
+        ctx.quadraticCurveTo(
           flameLen * 0.05,
           -flameW * 1.65,
           flameLen * 0.32,
           -flameW * 0.95
         );
-        world.ctx.quadraticCurveTo(
+        ctx.quadraticCurveTo(
           flameLen * 0.05,
           -flameW * 0.4,
           -flameLen * 0.25,
           -flameW * 0.55
         );
-        world.ctx.fill();
+        ctx.fill();
 
         // 3. Middle Blazing Orange Flame Tongue (#f97316)
-        world.ctx.fillStyle = '#f97316';
-        world.ctx.beginPath();
-        world.ctx.moveTo(-flameLen * 0.42, 0);
-        world.ctx.quadraticCurveTo(0, -flameW * 0.9, flameLen * 0.52, flicker * 0.25);
-        world.ctx.quadraticCurveTo(0, flameW * 0.9, -flameLen * 0.42, 0);
-        world.ctx.closePath();
-        world.ctx.fill();
+        ctx.fillStyle = '#f97316';
+        ctx.beginPath();
+        ctx.moveTo(-flameLen * 0.42, 0);
+        ctx.quadraticCurveTo(0, -flameW * 0.9, flameLen * 0.52, flicker * 0.25);
+        ctx.quadraticCurveTo(0, flameW * 0.9, -flameLen * 0.42, 0);
+        ctx.closePath();
+        ctx.fill();
 
         // 4. Inner Golden-Yellow Flame Heart (#fde047)
-        world.ctx.fillStyle = '#fde047';
-        world.ctx.beginPath();
-        world.ctx.moveTo(-flameLen * 0.28, 0);
-        world.ctx.quadraticCurveTo(
+        ctx.fillStyle = '#fde047';
+        ctx.beginPath();
+        ctx.moveTo(-flameLen * 0.28, 0);
+        ctx.quadraticCurveTo(
           -flameLen * 0.02,
           -flameW * 0.48,
           flameLen * 0.28,
           flicker * 0.12
         );
-        world.ctx.quadraticCurveTo(-flameLen * 0.02, flameW * 0.48, -flameLen * 0.28, 0);
-        world.ctx.closePath();
-        world.ctx.fill();
+        ctx.quadraticCurveTo(-flameLen * 0.02, flameW * 0.48, -flameLen * 0.28, 0);
+        ctx.closePath();
+        ctx.fill();
 
         // 5. White-Hot Flame Spark Tip (#ffffff)
-        world.ctx.fillStyle = '#ffffff';
-        world.ctx.beginPath();
-        world.ctx.ellipse(-flameLen * 0.08, 0, 4.5, 2.2, 0, 0, Math.PI * 2);
-        world.ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.ellipse(-flameLen * 0.08, 0, 4.5, 2.2, 0, 0, Math.PI * 2);
+        ctx.fill();
 
-        world.ctx.restore();
+        ctx.restore();
       }
     } else if (proj.fromPlayer && pStyle === 'lightning_bolt') {
       // LÔI ĐIỆN HỆ (BẮN RA NHỮNG TIA SÉT PHÓNG ĐIỆN ⚡ — TUYỆT ĐỐI KHÔNG VẼ HÌNH CHỮ C!):
@@ -122,9 +122,9 @@ export function drawProjectiles(world: World) {
         const bAng = bIdx * 0.09;
         const jitter = Math.sin(world.stageTimeSec * 58 + b * 2.5 + proj.x * 0.09) * 4.2;
 
-        world.ctx.save();
-        world.ctx.translate(0, yOff);
-        world.ctx.rotate(bAng);
+        ctx.save();
+        ctx.translate(0, yOff);
+        ctx.rotate(bAng);
 
         const boltPts = [
           { x: -30, y: 0 },
@@ -136,42 +136,42 @@ export function drawProjectiles(world: World) {
         ];
 
         // 1. Dark Ink Outline + Cyan Electric Plasma Aura
-        world.ctx.strokeStyle = INK;
-        world.ctx.lineWidth = 9.5;
-        world.ctx.lineCap = 'round';
-        world.ctx.lineJoin = 'miter';
-        world.ctx.beginPath();
-        world.ctx.moveTo(boltPts[0].x, boltPts[0].y);
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 9.5;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'miter';
+        ctx.beginPath();
+        ctx.moveTo(boltPts[0].x, boltPts[0].y);
         for (let i = 1; i < boltPts.length; i++) {
-          world.ctx.lineTo(boltPts[i].x, boltPts[i].y);
+          ctx.lineTo(boltPts[i].x, boltPts[i].y);
         }
-        world.ctx.stroke();
+        ctx.stroke();
 
-        world.ctx.strokeStyle = '#38bdf8';
-        world.ctx.lineWidth = 6.5;
-        world.ctx.stroke();
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 6.5;
+        ctx.stroke();
 
         // 2. Bright Golden-Yellow Jagged Lightning Bolt
-        world.ctx.strokeStyle = '#fde047';
-        world.ctx.lineWidth = 3.8;
-        world.ctx.stroke();
+        ctx.strokeStyle = '#fde047';
+        ctx.lineWidth = 3.8;
+        ctx.stroke();
 
         // 3. White-Hot Electric Core
-        world.ctx.strokeStyle = '#ffffff';
-        world.ctx.lineWidth = 1.6;
-        world.ctx.stroke();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.6;
+        ctx.stroke();
 
         // 4. Forked Side-Branches Crackling Off the Main Lightning Bolt
-        world.ctx.strokeStyle = '#fde047';
-        world.ctx.lineWidth = 2.2;
-        world.ctx.beginPath();
-        world.ctx.moveTo(boltPts[2].x, boltPts[2].y);
-        world.ctx.lineTo(boltPts[2].x + 11, boltPts[2].y + 13);
-        world.ctx.moveTo(boltPts[3].x, boltPts[3].y);
-        world.ctx.lineTo(boltPts[3].x + 12, boltPts[3].y - 13);
-        world.ctx.stroke();
+        ctx.strokeStyle = '#fde047';
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(boltPts[2].x, boltPts[2].y);
+        ctx.lineTo(boltPts[2].x + 11, boltPts[2].y + 13);
+        ctx.moveTo(boltPts[3].x, boltPts[3].y);
+        ctx.lineTo(boltPts[3].x + 12, boltPts[3].y - 13);
+        ctx.stroke();
 
-        world.ctx.restore();
+        ctx.restore();
       }
     } else if (proj.fromPlayer && pStyle === 'ice_shard') {
       // HÀN BĂNG HỆ (BẮN RA MŨI BĂNG TINH NHỌN ❄️ — KHÔNG VẼ HÌNH CHỮ C!):
@@ -179,80 +179,80 @@ export function drawProjectiles(world: World) {
       const halfShards = (shardCount - 1) * 0.5;
       for (let s = 0; s < shardCount; s++) {
         const sIdx = s - halfShards;
-        world.ctx.save();
-        world.ctx.translate(-Math.abs(sIdx) * 5, sIdx * 10);
-        world.ctx.rotate(sIdx * 0.1);
+        ctx.save();
+        ctx.translate(-Math.abs(sIdx) * 5, sIdx * 10);
+        ctx.rotate(sIdx * 0.1);
 
-        world.ctx.fillStyle = '#38bdf8';
-        world.ctx.strokeStyle = INK;
-        world.ctx.lineWidth = 2.4;
-        world.ctx.lineJoin = 'round';
-        world.ctx.beginPath();
-        world.ctx.moveTo(26, 0);
-        world.ctx.lineTo(4, -9);
-        world.ctx.lineTo(-18, 0);
-        world.ctx.lineTo(4, 9);
-        world.ctx.closePath();
-        world.ctx.fill();
-        world.ctx.stroke();
+        ctx.fillStyle = '#38bdf8';
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 2.4;
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(26, 0);
+        ctx.lineTo(4, -9);
+        ctx.lineTo(-18, 0);
+        ctx.lineTo(4, 9);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
 
         // Lateral Ice Crystal Fins
-        world.ctx.fillStyle = '#bae6fd';
-        world.ctx.beginPath();
-        world.ctx.moveTo(2, -8.5);
-        world.ctx.lineTo(-8, -14.5);
-        world.ctx.lineTo(-6, -4);
-        world.ctx.closePath();
-        world.ctx.fill();
-        world.ctx.stroke();
-        world.ctx.beginPath();
-        world.ctx.moveTo(2, 8.5);
-        world.ctx.lineTo(-8, 14.5);
-        world.ctx.lineTo(-6, 4);
-        world.ctx.closePath();
-        world.ctx.fill();
-        world.ctx.stroke();
+        ctx.fillStyle = '#bae6fd';
+        ctx.beginPath();
+        ctx.moveTo(2, -8.5);
+        ctx.lineTo(-8, -14.5);
+        ctx.lineTo(-6, -4);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(2, 8.5);
+        ctx.lineTo(-8, 14.5);
+        ctx.lineTo(-6, 4);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
 
-        world.ctx.fillStyle = '#ffffff';
-        world.ctx.beginPath();
-        world.ctx.moveTo(19, 0);
-        world.ctx.lineTo(4, -4);
-        world.ctx.lineTo(-10, 0);
-        world.ctx.lineTo(4, 4);
-        world.ctx.closePath();
-        world.ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.moveTo(19, 0);
+        ctx.lineTo(4, -4);
+        ctx.lineTo(-10, 0);
+        ctx.lineTo(4, 4);
+        ctx.closePath();
+        ctx.fill();
 
-        world.ctx.restore();
+        ctx.restore();
       }
     } else if (proj.isSwordBeam) {
       // Enemy Claw / Wind-Blade Projectile (3 Sharp Forward Dagger Blades — NO C-shaped arc!)
       const beamColor = proj.customColor ?? '#f43f5e';
       for (const cOff of [-7, 0, 7]) {
-        world.ctx.fillStyle = beamColor;
-        world.ctx.strokeStyle = INK;
-        world.ctx.lineWidth = 2.2;
-        world.ctx.lineJoin = 'round';
-        world.ctx.beginPath();
-        world.ctx.moveTo(20, cOff);
-        world.ctx.lineTo(-6, cOff - 3.5);
-        world.ctx.lineTo(-14, cOff);
-        world.ctx.lineTo(-6, cOff + 3.5);
-        world.ctx.closePath();
-        world.ctx.fill();
-        world.ctx.stroke();
+        ctx.fillStyle = beamColor;
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 2.2;
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(20, cOff);
+        ctx.lineTo(-6, cOff - 3.5);
+        ctx.lineTo(-14, cOff);
+        ctx.lineTo(-6, cOff + 3.5);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
       }
     } else if (proj.isFireball) {
-      world.ctx.fillStyle = proj.parried ? '#fde047' : (proj.customColor ?? '#fb923c');
-      world.ctx.strokeStyle = INK;
-      world.ctx.lineWidth = 2.4;
-      world.ctx.beginPath();
-      world.ctx.arc(0, 0, 11, 0, Math.PI * 2);
-      world.ctx.fill();
-      world.ctx.stroke();
-      world.ctx.fillStyle = '#ffffff';
-      world.ctx.beginPath();
-      world.ctx.arc(-3, -3, 3.2, 0, Math.PI * 2);
-      world.ctx.fill();
+      ctx.fillStyle = proj.parried ? '#fde047' : (proj.customColor ?? '#fb923c');
+      ctx.strokeStyle = INK;
+      ctx.lineWidth = 2.4;
+      ctx.beginPath();
+      ctx.arc(0, 0, 11, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(-3, -3, 3.2, 0, Math.PI * 2);
+      ctx.fill();
     } else if (proj.fromPlayer) {
       const kunaiColor = proj.parried
         ? '#fde047'
@@ -261,53 +261,53 @@ export function drawProjectiles(world: World) {
           : proj.explosive
             ? '#fb923c'
             : '#38bdf8';
-      world.ctx.strokeStyle = INK;
-      world.ctx.lineWidth = 2.2;
-      world.ctx.fillStyle = '#fde047';
-      world.ctx.beginPath();
-      world.ctx.arc(-11, 0, 3.2, 0, Math.PI * 2);
-      world.ctx.fill();
-      world.ctx.stroke();
+      ctx.strokeStyle = INK;
+      ctx.lineWidth = 2.2;
+      ctx.fillStyle = '#fde047';
+      ctx.beginPath();
+      ctx.arc(-11, 0, 3.2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
 
-      world.ctx.fillStyle = kunaiColor;
-      world.ctx.lineJoin = 'round';
-      world.ctx.beginPath();
-      world.ctx.moveTo(16, 0);
-      world.ctx.lineTo(-4, -6.5);
-      world.ctx.lineTo(-2, 0);
-      world.ctx.lineTo(-4, 6.5);
-      world.ctx.closePath();
-      world.ctx.fill();
-      world.ctx.stroke();
+      ctx.fillStyle = kunaiColor;
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      ctx.moveTo(16, 0);
+      ctx.lineTo(-4, -6.5);
+      ctx.lineTo(-2, 0);
+      ctx.lineTo(-4, 6.5);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
 
-      world.ctx.fillStyle = '#ffffff';
-      world.ctx.beginPath();
-      world.ctx.moveTo(12, 0);
-      world.ctx.lineTo(-2, -2.5);
-      world.ctx.lineTo(-1, 0);
-      world.ctx.closePath();
-      world.ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.moveTo(12, 0);
+      ctx.lineTo(-2, -2.5);
+      ctx.lineTo(-1, 0);
+      ctx.closePath();
+      ctx.fill();
     } else {
       // Chibi 4-Point Steel Shuriken with bold ink outline
-      world.ctx.rotate(world.stageTimeSec * 20);
+      ctx.rotate(world.stageTimeSec * 20);
       for (let b = 0; b < 4; b++) {
-        world.ctx.rotate(Math.PI * 0.5);
-        world.ctx.fillStyle = '#e2e8f0';
-        world.ctx.strokeStyle = INK;
-        world.ctx.lineWidth = 2.0;
-        world.ctx.beginPath();
-        world.ctx.moveTo(0, -3.5);
-        world.ctx.lineTo(12, 0);
-        world.ctx.lineTo(0, 3.5);
-        world.ctx.closePath();
-        world.ctx.fill();
-        world.ctx.stroke();
+        ctx.rotate(Math.PI * 0.5);
+        ctx.fillStyle = '#e2e8f0';
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 2.0;
+        ctx.beginPath();
+        ctx.moveTo(0, -3.5);
+        ctx.lineTo(12, 0);
+        ctx.lineTo(0, 3.5);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
       }
-      world.ctx.fillStyle = '#f43f5e';
-      world.ctx.beginPath();
-      world.ctx.arc(0, 0, 3.5, 0, Math.PI * 2);
-      world.ctx.fill();
+      ctx.fillStyle = '#f43f5e';
+      ctx.beginPath();
+      ctx.arc(0, 0, 3.5, 0, Math.PI * 2);
+      ctx.fill();
     }
-    world.ctx.restore();
+    ctx.restore();
   }
 }

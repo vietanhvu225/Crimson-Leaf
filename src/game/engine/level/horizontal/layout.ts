@@ -1,4 +1,4 @@
-import { PlatformSubType } from '../../entities';
+import type { PlatformSubType } from '../../entities.ts';
 
 /** Key x/y anchors of a horizontal stage, derived once per build. */
 export interface HorizontalLayout {

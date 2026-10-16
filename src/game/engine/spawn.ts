@@ -1,6 +1,6 @@
-import { ProjectileActor, PooledParticle } from './entities';
-import { World } from './world';
-import { ZLane, PickupItemKind } from '../rules';
+import type { ProjectileActor, PooledParticle } from './entities.ts';
+import type { World } from './world.ts';
+import type { ZLane, PickupItemKind } from '../rules/index.ts';
 
 // Pooled spawners: particles, projectiles, banners, lightning, pickups.
 

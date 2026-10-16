@@ -1,18 +1,18 @@
-import { soundEngine } from '../audio';
-import { spawnBanner, spawnParticle } from './spawn';
-import { syncHud } from './hud';
-import { World } from './world';
+import { soundEngine } from '../audio.ts';
+import { spawnBanner, spawnParticle } from './spawn.ts';
+import { syncHud } from './hud.ts';
+import type { World } from './world.ts';
 import {
   PHYSICS_CONSTANTS,
   SEASONS,
-  SkillBranchId,
+  type SkillBranchId,
   SKILL_DESCRIPTIONS,
   ELEMENTAL_STANCES,
   upgradeSkillBranch,
   cycleElementalStance,
   toggleImmortality,
   computeSubterraneanSlopeY,
-} from '../rules';
+} from '../rules/index.ts';
 
 // Player-triggered actions: awakening, skill upgrades, element cycling, cheats.
 

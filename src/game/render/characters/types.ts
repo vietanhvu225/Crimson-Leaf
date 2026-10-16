@@ -1,4 +1,4 @@
-import { EnemyArchetype, KageSpawnStyle, ZLane } from '../../rules';
+import type { EnemyArchetype, KageSpawnStyle, ZLane } from '../../rules';
 
 // Minimal shapes the character renderers need from engine entities.
 
