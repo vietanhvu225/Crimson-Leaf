@@ -56,7 +56,7 @@ export interface CreateWorldOptions {
   touchInputRef: { current: TouchInputState };
   /** Seed for the default RNG (mulberry32). */
   seed: number;
-  /** Overrides the RNG (parity tests pass `() => Math.random()` to share the page-wide sequence). */
+  /** Overrides the RNG (`?rng=math` parity runs share the page-wide global random sequence). */
   rng?: Rng;
   /** Visible sim area in px (camera follow, ambient spawns, end-beat). Host keeps it updated. */
   viewW: number;
