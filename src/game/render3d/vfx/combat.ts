@@ -301,13 +301,13 @@ export function createCombatFx(kit: FxKit) {
       const grow = 1 - youngest; // 0 at the moment of impact
       const z = LANE_Z[world.combat.zLane] + 0.3;
       const r = 0.35 + grow * 2.2;
-      c.setRGB(1, 0.92, 0.55).multiplyScalar(1.4 * (1 - grow));
+      c.setRGB(1, 0.92, 0.55).multiplyScalar(1.0 * (1 - grow));
       rings.add(x, y, z, r, r, 1, c);
-      c.setRGB(1, 0.95, 0.7).multiplyScalar((hit ? 0.6 : 0.35) * (1 - grow));
+      c.setRGB(1, 0.95, 0.7).multiplyScalar((hit ? 0.35 : 0.25) * (1 - grow));
       glows.add(x, y, z, 0.6 - grow * 0.3, 0.6 - grow * 0.3, 1, c);
       if (hit) {
         // Parry-strength hits: a cross flare during the freeze.
-        c.setRGB(1, 0.95, 0.75).multiplyScalar(0.9);
+        c.setRGB(1, 0.95, 0.75).multiplyScalar(0.55);
         beams.add(x, y, z + 0.01, 1.6, 0.06, 1, c, 0.3);
         beams.add(x, y, z + 0.01, 0.9, 0.045, 1, c, Math.PI / 2 + 0.3);
       }
@@ -327,7 +327,7 @@ export function createCombatFx(kit: FxKit) {
           const sp = Math.hypot(p.vx, p.vy);
           const len = Math.max(0.05, Math.min(0.4, sp * 0.0008)) * (0.4 + 0.6 * a);
           const ang = Math.atan2(-p.vy, p.vx);
-          c.copy(cssColor(p.color)).multiplyScalar((p.kind === 'spark' ? 0.75 : 0.6) * a);
+          c.copy(cssColor(p.color)).multiplyScalar((p.kind === 'spark' ? 0.6 : 0.55) * a);
           beams.add(x, y, z, len, (p.size + 1) * S * 0.6, 1, c, ang);
           if (p.kind === 'lightning') {
             c.copy(cssColor('#38bdf8')).multiplyScalar(0.4 * a);
