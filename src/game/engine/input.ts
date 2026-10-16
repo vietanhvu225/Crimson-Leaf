@@ -64,15 +64,20 @@ export function onKeyUp(world: World, e: KeyboardEvent) {
   world.keysHeld.delete(e.code);
 }
 
-export function onMouseMove(world: World, e: MouseEvent) {
-  world.mouseClientX = e.clientX - world.canvasRect.left;
-  world.mouseClientY = e.clientY - world.canvasRect.top;
+/** Host-owned view rect (the element the game is drawn into), used to turn client px into view px. */
+export type ViewRectSource = () => { left: number; top: number };
+
+export function onMouseMove(world: World, e: MouseEvent, getRect: ViewRectSource) {
+  const rect = getRect();
+  world.mouseClientX = e.clientX - rect.left;
+  world.mouseClientY = e.clientY - rect.top;
 }
 
-export function onMouseDown(world: World, e: MouseEvent) {
+export function onMouseDown(world: World, e: MouseEvent, getRect: ViewRectSource) {
   if (world.stateRef.current.gameState !== 'playing') return;
-  world.mouseClientX = e.clientX - world.canvasRect.left;
-  world.mouseClientY = e.clientY - world.canvasRect.top;
+  const rect = getRect();
+  world.mouseClientX = e.clientX - rect.left;
+  world.mouseClientY = e.clientY - rect.top;
   if (e.button === 0) {
     world.lmbJustPressed = true;
   } else if (e.button === 2) {
@@ -91,11 +96,11 @@ export function onVisibilityChange(world: World) {
 }
 
 /** Registers window/document listeners; returns a detach function. */
-export function attachInput(world: World): () => void {
+export function attachInput(world: World, getRect: ViewRectSource): () => void {
   const keydown = (e: KeyboardEvent) => onKeyDown(world, e);
   const keyup = (e: KeyboardEvent) => onKeyUp(world, e);
-  const mousemove = (e: MouseEvent) => onMouseMove(world, e);
-  const mousedown = (e: MouseEvent) => onMouseDown(world, e);
+  const mousemove = (e: MouseEvent) => onMouseMove(world, e, getRect);
+  const mousedown = (e: MouseEvent) => onMouseDown(world, e, getRect);
   const contextmenu = (e: MouseEvent) => onContextMenu(world, e);
   const blur = () => clearInputs(world);
   const visibility = () => onVisibilityChange(world);

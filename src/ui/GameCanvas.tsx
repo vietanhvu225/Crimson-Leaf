@@ -81,15 +81,17 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
     if (!ctx) return;
 
     const world = createWorld({
-      canvas,
-      ctx,
       stateRef,
       touchInputRef,
       seed,
       rng: rngMode === 'math' ? () => Math.random() : undefined,
+      viewW: window.innerWidth,
+      viewH: window.innerHeight,
+      isHeadless: /HeadlessChrome/i.test(navigator.userAgent),
     });
     worldRef.current = world;
 
+    let canvasRect = canvas.getBoundingClientRect();
     const updateCanvasSize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       world.viewW = window.innerWidth;
@@ -97,15 +99,15 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
       canvas.width = Math.max(1, Math.floor(world.viewW * dpr));
       canvas.height = Math.max(1, Math.floor(world.viewH * dpr));
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      world.canvasRect = canvas.getBoundingClientRect();
+      canvasRect = canvas.getBoundingClientRect();
     };
     updateCanvasSize();
     const resizeObserver = new ResizeObserver(updateCanvasSize);
     resizeObserver.observe(canvas);
 
-    const detachInput = attachInput(world);
+    const detachInput = attachInput(world, () => canvasRect);
     rebuildLevel(world, stateRef.current.seasonId, stateRef.current.loopRoute);
-    installDebugHooks(world, () => renderScene(world));
+    installDebugHooks(world, () => renderScene(ctx, world));
 
     let rafId = 0;
     const loop = (now: number) => {
@@ -113,7 +115,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
       world.lastTime = now;
       try {
         stepSimulation(world, rawDt);
-        renderScene(world);
+        renderScene(ctx, world);
       } catch (err) {
         console.error('Game loop frame error recovered:', err);
       }

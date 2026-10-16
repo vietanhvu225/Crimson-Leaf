@@ -52,23 +52,29 @@ export interface HostState {
 }
 
 export interface CreateWorldOptions {
-  canvas: HTMLCanvasElement;
-  ctx: CanvasRenderingContext2D;
   stateRef: { current: HostState };
   touchInputRef: { current: TouchInputState };
   /** Seed for the default RNG (mulberry32). */
   seed: number;
   /** Overrides the RNG (parity tests pass `() => Math.random()` to share the page-wide sequence). */
   rng?: Rng;
+  /** Visible sim area in px (camera follow, ambient spawns, end-beat). Host keeps it updated. */
+  viewW: number;
+  viewH: number;
+  /** Headless browser / Node: skips purely cosmetic particle spawns (as the original did). */
+  isHeadless: boolean;
 }
 
 /** All mutable game state: input, player, level, actors, pools, camera. */
-export function createWorld({ canvas, ctx, stateRef, touchInputRef, seed, rng }: CreateWorldOptions) {
-  const isHeadless =
-    typeof navigator !== 'undefined' && /HeadlessChrome/i.test(navigator.userAgent);
-  let viewW = window.innerWidth;
-  let viewH = window.innerHeight;
-  let canvasRect = canvas.getBoundingClientRect();
+export function createWorld({
+  stateRef,
+  touchInputRef,
+  seed,
+  rng,
+  viewW,
+  viewH,
+  isHeadless,
+}: CreateWorldOptions) {
   // Input Tracking
   const keysHeld = new Set<string>();
   const keysJustPressed = new Set<string>();
@@ -195,12 +201,9 @@ export function createWorld({ canvas, ctx, stateRef, touchInputRef, seed, rng }:
   return {
     seed,
     rng: rng ?? mulberry32(seed),
-    canvas,
-    ctx,
     isHeadless,
     viewW,
     viewH,
-    canvasRect,
     keysHeld,
     keysJustPressed,
     mouseClientX,
