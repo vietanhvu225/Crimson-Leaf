@@ -43,3 +43,9 @@ Worker ~9 phút, $2.09. Orchestrator kiểm lại trên branch đã merge main: 
 Phát hiện: luật `Bash(node scripts/:*)` không khớp `node scripts/x.mjs` ở dontAsk; worker đi đường `npm run shot|smoke`. Không sửa settings.json; thêm ghi chú vào WORKER.md cho worker sau.
 
 ## 2026-10-17 03:56 giao T01 (attempt 1)
+
+## 2026-10-17 04:29 T01 attempt 1 — PASS, merged
+Worker ~30 phút, $4.84. Orchestrator kiểm lại: typecheck ✅, test 30/30 ✅, build ✅, smoke canvas 11/11 ✅ (fps ≥ 116.6), **parity 11/11 màn × 41 mốc MATCH** (chạy lại độc lập, vì lần chạy parity cuối của worker bị dontAsk chặn do redirect ra file). Grep engine: không còn Math.random/Canvas/navigator. 3 ảnh (spring debug overlay, sky_sanctuary qua ?stage, thunder_peak l2 boss) đúng. Lưu ý: pixel hash lệch 1/40 mốc ở vài màn dù state trùng (raster GPU không tất định), không tính.
+Gợi ý của worker cho T02: thêm 'three' vào RENDERER_KINDS, đặt world.aimSync = null và gọi setAimWorld sau raycast.
+
+## 2026-10-17 04:30 giao T02 (attempt 1)
