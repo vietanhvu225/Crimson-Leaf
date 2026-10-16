@@ -36,9 +36,11 @@ const TitleScreenDom: React.FC<TitleScreenProps> = ({
   const currentDiff = getStageDifficultyMultipliers(selectedSeason, selectedLoop);
 
   return (
-    <div className="fixed inset-0 z-30 flex flex-col justify-between p-5 sm:p-10 pointer-events-none select-none">
+    // overflow-y-auto + shrink-0 (T07): below ~900 px of height the panel is taller than the view
+    // and the start button was cut off with no way to reach it on touch; now the panel scrolls.
+    <div className="fixed inset-0 z-30 flex flex-col justify-between gap-4 p-5 sm:p-10 pointer-events-none select-none overflow-y-auto">
       {/* Top Archival Martial Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex shrink-0 items-center justify-between">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#d4af37]/35 bg-[#090b12]/80 text-[11px] tracking-[0.18em] uppercase text-[#fde68a]">
           <Sparkles className="w-3.5 h-3.5 text-[#f43f5e]" />
           <span>SPIRITUAL SUCCESSOR TO THE LEGEND OF KAGE · 2.5D WUXIA ACTION</span>
@@ -47,7 +49,7 @@ const TitleScreenDom: React.FC<TitleScreenProps> = ({
 
       {/* Main Left-Aligned Wuxia Lacquer Panel */}
       <div
-        className="my-auto max-w-2xl pointer-events-auto p-6 sm:p-8 rounded-2xl border border-[#d4af37]/40 shadow-2xl"
+        className="my-auto shrink-0 max-w-2xl pointer-events-auto p-6 sm:p-8 rounded-2xl border border-[#d4af37]/40 shadow-2xl"
         style={{
           background:
             'linear-gradient(135deg, rgba(14, 11, 20, 0.94) 0%, rgba(8, 10, 18, 0.88) 100%)',
@@ -223,7 +225,7 @@ const TitleScreenDom: React.FC<TitleScreenProps> = ({
       </div>
 
       {/* Bottom Controls Strip */}
-      <div className="text-[11px] text-[#cbd5e1] flex flex-wrap items-center justify-between gap-2 border-t border-[#d4af37]/20 pt-3">
+      <div className="shrink-0 text-[11px] text-[#cbd5e1] flex flex-wrap items-center justify-between gap-2 border-t border-[#d4af37]/20 pt-3">
         <span>
           <strong className="text-[#fde047]">WASD / Space</strong> Khinh Công & Nhảy Tường ·{' '}
           <strong className="text-[#fb7185]">J / Chuột Trái</strong> Đoản Kiếm & Parry ·{' '}

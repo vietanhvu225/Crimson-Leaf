@@ -608,12 +608,12 @@ async function uiShots(page, opts) {
     const { dx, half } = await page.evaluate(() => {
       const w = window.__game.world;
       const b = w.enemies.find((e) => e.archetype === 'boss');
-      return { dx: b && b.hp > 0 ? b.x - w.player.x : 0, half: !b || b.hp < b.maxHp * 0.6 };
+      return { dx: b && b.hp > 0 ? b.x - w.player.x : 0, half: !b || b.hp < b.maxHp * 0.7 };
     });
     if (half) break;
     if (Math.abs(dx) > 70) await tap(page, dx > 0 ? 'KeyD' : 'KeyA', 140);
     await tap(page, 'KeyJ', 50);
-    if (i % 3 === 0) await tap(page, 'KeyK', 40);
+    if (i % 4 === 0) await tap(page, 'KeyK', 40);
     await sleep(110);
   }
   await snap('hud');
@@ -657,7 +657,8 @@ async function uiShots(page, opts) {
   await snap('victory');
 
   const ok =
-    steps.pick.picked && steps.started && steps.hud.state === 'playing' && steps.defeated &&
+    steps.pick.picked && steps.started && steps.hud.state === 'playing' && steps.hud.boss.bossHp > 0 &&
+    steps.defeated &&
     steps.retried && steps.won &&
     (ui !== '3d' || !steps.hud.boss.domBossBar);
   return { ok, steps };

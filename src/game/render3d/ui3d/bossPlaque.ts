@@ -64,7 +64,13 @@ export class BossPlaque {
     const minX = world.camX + margin;
     const maxX = world.camX + world.viewW - margin;
     const targetX = Math.max(minX, Math.min(maxX, boss.x));
-    const targetY = Math.max(world.camY + H + 70, Math.min(world.camY + world.viewH - 120, boss.y - 205));
+    // Above the boss's damage numbers (floaters.ts, up to ~200 px over its feet).
+    // Kept below the DOM top bar (taller when it stacks on phones).
+    const hudTop = world.viewW < 640 ? 240 : 110;
+    const targetY = Math.max(
+      world.camY + hudTop + H * scale * 0.5,
+      Math.min(world.camY + world.viewH - 120, boss.y - 265)
+    );
     const dock = boss.x < minX - 40 ? -1 : boss.x > maxX + 40 ? 1 : 0;
     // Ease toward the anchor so docking/undocking does not snap.
     if (Number.isNaN(this.x)) {
