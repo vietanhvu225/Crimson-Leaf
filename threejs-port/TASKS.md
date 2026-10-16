@@ -6,7 +6,7 @@ Dòng **Tham khảo** ở mỗi task chỉ ra file nào trong skill dự án `cr
 
 | ID | Task | deps | parallel | status |
 |---|---|---|---|---|
-| T00 | Bootstrap project + công cụ chụp ảnh | - | - | TODO |
+| T00 | Bootstrap project + công cụ chụp ảnh | - | - | IN_PROGRESS (attempt 1) |
 | T01 | Gỡ engine khỏi Canvas (rng, World, aim, GameView) | T00 | - | TODO |
 | T02 | Khung Three.js chơi được (placeholder) | T01 | - | TODO |
 | T03 | Môi trường: kit + màn 1–4 | T02 | A | TODO |

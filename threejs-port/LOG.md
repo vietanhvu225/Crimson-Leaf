@@ -30,3 +30,6 @@ Bước 8 permtest: `touch .permtest` chạy thành công, **không bị từ ch
 `.claude/settings.local.json` (untracked, quyền cục bộ từ lần warm-up trước) để nguyên, không commit.
 
 ## 2026-10-17 03:40 session start
+
+## 2026-10-17 03:41 giao T00 (attempt 1)
+Worktree `../wt/T00`, branch `task/T00`, log `logs/T00-1.json`.
