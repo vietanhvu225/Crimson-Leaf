@@ -15,6 +15,7 @@ Bạn đang chạy headless (`claude -p --permission-mode dontAsk`) trong một 
 ## Luật
 
 - Quyền nằm trong `.claude/settings.json` (allowlist). Lệnh ngoài danh sách sẽ bị từ chối tự động; đừng thử lách, hãy dùng lệnh được phép. Ví dụ: muốn xoá file đã track thì dùng `git rm`; xoá file/thư mục tạm thì dùng Node script trong `scripts/` thay cho `rm -rf`. Tìm trong code thì dùng tool Grep/Glob, không dùng `grep`/`find` qua Bash.
+- **Chạy script Node qua `npm run`** (thêm script vào `package.json` nếu cần): ở chế độ dontAsk, luật `Bash(node scripts/:*)` **không** khớp `node scripts/xxx.mjs`. Đã có `npm run shot -- …`, `npm run smoke`. Ví dụ parity: thêm `"parity": "node scripts/parity.mjs"` rồi `timeout 30m npm run parity`. (Ghi chú của orchestrator sau T00.)
 - Máy là **Windows, shell là Git Bash**: dùng cú pháp bash, đường dẫn `/`. Không gọi `powershell`/`cmd`. Trong script Node thì dùng `path.join`, và `shell: true` khi spawn `npm`/`npx` (trên Windows chúng là file `.cmd`).
 - Mọi lệnh có thể treo (server, browser) phải có giới hạn thời gian: `timeout 15m node scripts/shot.mjs …`. Script phải tự đóng browser và server trong `finally`.
 - Chỉ sửa trong worktree này. Không đụng `reference/` (chỉ đọc).

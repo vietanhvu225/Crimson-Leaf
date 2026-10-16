@@ -37,3 +37,9 @@ Worktree `../wt/T00`, branch `task/T00`, log `logs/T00-1.json`.
 ## 2026-10-17 03:50 T00 attempt 1 — BLOCKED do môi trường, giao lại (không tính vào MAX_ATTEMPTS)
 Worker chỉ có tool PowerShell (mặc định của `claude -p` 2.1.301 trên Windows), allowlist chỉ có `Bash(...)` → mọi lệnh bị dontAsk từ chối; worker để lại nháp chưa commit và report BLOCKED. Đã thử: `--tools Bash` → không có shell tool nào. `CLAUDE_CODE_USE_POWERSHELL_TOOL=0 CLAUDE_CODE_GIT_BASH_PATH='D:\5_setup\Git\bin\bash.exe'` → worker dùng Bash, `node --version` chạy được ở dontAsk.
 Quyết định: mọi worker từ giờ chạy với hai biến này (đã ghi vào ORCHESTRATOR.md § A). Lỗi môi trường giống usage limit nên không tính là lần thử: giao lại T00 "Lần thử: 1", log `logs/T00-1b.json`, kèm `reports/T00-review-1.md` giải thích. Giao lúc 03:50.
+
+## 2026-10-17 03:55 T00 attempt 1 (chạy lại) — PASS, merged
+Worker ~9 phút, $2.09. Orchestrator kiểm lại trên branch đã merge main: typecheck ✅, test 16/16 ✅, build ✅ (cảnh báo chunk > 500 kB), smoke ✅ canvas 11/11 (fps 117–126, std ≥ 31, 0 error; GPU RTX 5070 D3D11). `src/` khớp `reference/src` trừ `App.tsx`. Xem 3 ảnh (spring run, spring boss+parry, sky_sanctuary idle): đúng. Ngưỡng smoke: minFps 20 (trần), minPixelStd 8.
+Phát hiện: luật `Bash(node scripts/:*)` không khớp `node scripts/x.mjs` ở dontAsk; worker đi đường `npm run shot|smoke`. Không sửa settings.json; thêm ghi chú vào WORKER.md cho worker sau.
+
+## 2026-10-17 03:56 giao T01 (attempt 1)
