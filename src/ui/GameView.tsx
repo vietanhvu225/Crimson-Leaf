@@ -12,7 +12,7 @@ import {
   triggerAwakening,
   upgradeSkill,
 } from '../game/engine/actions.ts';
-import type { GameRenderer, RendererKind, SimPoint } from '../game/view.ts';
+import type { GameRenderer, RenderStats, RendererKind, SimPoint } from '../game/view.ts';
 import { createCanvasRenderer } from '../game/render/canvasView.ts';
 import { createThreeRenderer } from '../game/render3d/scene.ts';
 
@@ -70,7 +70,8 @@ export const GameView: React.FC<GameViewProps> = ({
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const worldRef = useRef<World | null>(null);
   const rendererRef = useRef<GameRenderer | null>(null);
-  const statsRef = useRef<HostStats>({ fps: 0, drawCalls: null, triangles: null });
+  // Extra renderer counters (geometries/textures) ride along into __game.stats().
+  const statsRef = useRef<HostStats & RenderStats>({ fps: 0, drawCalls: null, triangles: null });
 
   // Engine reads host state through this ref every frame.
   const stateRef = useRef<HostState>(host);
@@ -155,11 +156,13 @@ export const GameView: React.FC<GameViewProps> = ({
       }
       fpsFrames++;
       if (now - fpsWindowStart >= 500) {
-        const r = rendererRef.current?.stats() ?? { drawCalls: null, triangles: null };
+        const r: RenderStats = rendererRef.current?.stats() ?? { drawCalls: null, triangles: null };
         statsRef.current = {
           fps: Math.round((fpsFrames * 10000) / (now - fpsWindowStart)) / 10,
           drawCalls: r.drawCalls,
           triangles: r.triangles,
+          geometries: r.geometries,
+          textures: r.textures,
         };
         fpsFrames = 0;
         fpsWindowStart = now;

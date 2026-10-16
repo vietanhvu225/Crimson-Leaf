@@ -56,8 +56,14 @@ function create(ctx: RenderModuleContext): RenderModule {
   );
   const silhouette = track.material(new THREE.MeshBasicMaterial({ fog: true }));
 
+  // Platforms of the lane the player is not on are ghosted (canvas: globalAlpha 0.45), so a lane-0
+  // slab in front never hides the player on lane 1.
+  const ghost = track.material(
+    new THREE.MeshStandardMaterial({ roughness: 0.85, transparent: true, opacity: 0.32, depthWrite: false })
+  );
   const platforms = new InstancedBatch(root, box, solid, 512, { castShadow: true, receiveShadow: true });
   const caps = new InstancedBatch(root, box, solid, 512, { receiveShadow: true });
+  const ghostPlatforms = new InstancedBatch(root, box, ghost, 256, { renderOrder: 1 });
   const trunks = new InstancedBatch(root, box, solid, 64, { receiveShadow: true });
   const props = new InstancedBatch(root, box, solid, 64, { castShadow: true, receiveShadow: true });
   const glows = new InstancedBatch(root, sphere, glow, 64);
@@ -177,7 +183,7 @@ function create(ctx: RenderModuleContext): RenderModule {
     }
   }
 
-  function platformColors(p: PlatformBranch, sameLane: boolean, body: THREE.Color, cap: THREE.Color) {
+  function platformColors(p: PlatformBranch, body: THREE.Color, cap: THREE.Color) {
     const typeColor = PLATFORM_TYPE_COLOR[p.type];
     if (p.type === 'ground') {
       body.copy(cssColor(pal.groundBodyFill));
@@ -185,10 +191,6 @@ function create(ctx: RenderModuleContext): RenderModule {
     } else {
       body.copy(cssColor(pal.platformBodyFill));
       cap.copy(cssColor(typeColor ?? pal.platformCapFill));
-    }
-    if (!sameLane) {
-      body.multiplyScalar(0.55);
-      cap.multiplyScalar(0.55);
     }
   }
 
@@ -210,23 +212,30 @@ function create(ctx: RenderModuleContext): RenderModule {
       // Platforms (box per platform: body + coloured cap).
       platforms.begin();
       caps.begin();
+      ghostPlatforms.begin();
       for (const p of world.platforms) {
         if (p.respawnTimer && p.respawnTimer > 0) continue;
         if (p.x + p.w < f.viewMinX || p.x > f.viewMaxX) continue;
         if (p.y > f.viewMaxY + 300 || p.y < f.viewMinY - 300) continue;
         if (isEarthCore && p.type === 'ground' && p.x >= 150 && p.x < f.cfg.stageLength - 980) continue;
         const sameLane = p.zLane === 'both' || p.zLane === zLane;
-        platformColors(p, sameLane, bodyC, capC);
+        platformColors(p, bodyC, capC);
         const { z, depth } = laneSpan(p.zLane);
         const tremble =
           p.collapseTimer && p.collapseTimer > 0 ? Math.sin(f.t * 90 + p.baseX) * 3 : 0;
         const h = p.type === 'ground' ? GROUND_BODY_H : PLATFORM_H;
         const cx = toX(p.x + p.w / 2 + tremble);
-        platforms.add(cx, toY(p.y + h / 2), z, p.w * S, h * S, depth, bodyC);
-        caps.add(cx, toY(p.y + CAP_H / 2 - 2), z, (p.w + 6) * S, CAP_H * S, depth + 0.08, capC);
+        if (sameLane) {
+          platforms.add(cx, toY(p.y + h / 2), z, p.w * S, h * S, depth, bodyC);
+          caps.add(cx, toY(p.y + CAP_H / 2 - 2), z, (p.w + 6) * S, CAP_H * S, depth + 0.08, capC);
+        } else {
+          ghostPlatforms.add(cx, toY(p.y + h / 2), z, p.w * S, h * S, depth, bodyC);
+          ghostPlatforms.add(cx, toY(p.y + CAP_H / 2 - 2), z, (p.w + 6) * S, CAP_H * S, depth + 0.08, capC);
+        }
       }
       platforms.end();
       caps.end();
+      ghostPlatforms.end();
 
       // Trunks behind both lanes (summer: short mooring posts).
       trunks.begin();
@@ -339,6 +348,7 @@ function create(ctx: RenderModuleContext): RenderModule {
     dispose() {
       platforms.dispose();
       caps.dispose();
+      ghostPlatforms.dispose();
       trunks.dispose();
       props.dispose();
       glows.dispose();

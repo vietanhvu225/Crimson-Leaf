@@ -31,7 +31,7 @@ const STAGES = [
   'earth_core',
   'sky_sanctuary',
 ];
-const SCRIPTS = ['idle', 'run', 'combat', 'boss', 'clear', 'lanes'];
+const SCRIPTS = ['idle', 'run', 'combat', 'boss', 'clear', 'lanes', 'swap'];
 const LOCK_PATH = path.join(os.tmpdir(), 'crimson-shot.lock');
 const LOCK_WAIT_MS = 20 * 60 * 1000;
 const LOCK_STALE_MS = 30 * 60 * 1000;
@@ -380,8 +380,61 @@ async function laneShots(page, opts) {
   });
   await sleep(300);
   const z1 = await page.evaluate(() => window.__game.world.combat.zLane);
+  const player = await page.evaluate(() => {
+    const p = window.__game.world.player;
+    const w = window.__game.world;
+    const under = w.platforms
+      .filter((pl) => p.x >= pl.x - 14 && p.x <= pl.x + pl.w + 14)
+      .map((pl) => ({ x: pl.x, w: pl.w, y: pl.y, lane: pl.zLane, type: pl.type }));
+    return { x: p.x, y: p.y, onGround: p.onGround, standing: p.standingPlatform?.y ?? null, under };
+  });
   await page.screenshot({ path: path.join(opts.out, `${opts.name}-lane${z1}.png`) });
-  return { lanes: [z0, z1] };
+  return { lanes: [z0, z1], player };
+}
+
+/**
+ * `--script swap`: presses F9 (three ↔ canvas) `cycles` × 2 times while the run continues, and
+ * records GPU resource counts after each return to three plus JS heap, to spot leaks.
+ */
+async function swapRenderers(page, cycles, warnings) {
+  const heap = () => page.evaluate(() => performance.memory?.usedJSHeapSize ?? null);
+  const readStats = () =>
+    page.evaluate(() => ({
+      renderer: document.querySelector('canvas')?.dataset.renderer ?? null,
+      canvases: document.querySelectorAll('canvas').length,
+      stats: window.__game?.stats(),
+      x: Math.round(window.__game.world.player.x),
+    }));
+  const samples = [];
+  await sleep(1500);
+  const fpsBefore = (await measureFps(page, 2000)).fps;
+  const heapStart = await heap();
+  for (let i = 0; i < cycles; i++) {
+    await page.keyboard.press('F9');
+    await sleep(700);
+    const toCanvas = await readStats();
+    await page.keyboard.press('F9');
+    await sleep(700);
+    const toThree = await readStats();
+    samples.push({ cycle: i + 1, toCanvas: toCanvas.renderer, three: toThree });
+  }
+  const heapEnd = await heap();
+  await sleep(1500);
+  const fpsAfter = (await measureFps(page, 2000)).fps;
+  return {
+    cycles,
+    fpsBefore: Math.round(fpsBefore),
+    fpsAfter: Math.round(fpsAfter),
+    // Same world spot as before the swaps, to compare like with like.
+    playerX: (await readStats()).x,
+    heapStartMB: heapStart && Math.round(heapStart / 1e5) / 10,
+    heapEndMB: heapEnd && Math.round(heapEnd / 1e5) / 10,
+    first: samples[0],
+    last: samples[samples.length - 1],
+    geometriesPerCycle: samples.map((s) => s.three.stats?.geometries ?? null),
+    texturesPerCycle: samples.map((s) => s.three.stats?.textures ?? null),
+    webglWarnings: warnings.filter((w) => /webgl|context/i.test(w)),
+  };
 }
 
 /** Real-time keyboard input script. Keys follow src/game/engine/input.ts + simulation/frameInput.ts. */
@@ -441,7 +494,9 @@ async function capture(browser, baseUrl, opts) {
   const context = await browser.newContext({ viewport: { width: opts.width, height: opts.height } });
   const page = await context.newPage();
   const errors = [];
+  const warnings = [];
   page.on('console', (msg) => {
+    if (msg.type() === 'warning') warnings.push(msg.text());
     if (msg.type() !== 'error') return;
     const where = msg.location()?.url;
     // The reference game ships no favicon; Chromium's automatic /favicon.ico probe is not a game error.
@@ -464,6 +519,8 @@ async function capture(browser, baseUrl, opts) {
     if (opts.script === 'clear') {
       result.bot = await playToClear(page, Number(opts.maxSimSec ?? 900), opts.stage);
       await sleep(800); // outcome modal
+    } else if (opts.script === 'swap') {
+      result.swap = await swapRenderers(page, 20, warnings);
     } else if (opts.script === 'lanes') {
       result.lanes = await laneShots(page, opts);
     } else {
@@ -576,6 +633,7 @@ async function main() {
     const r = results[0];
     if (r?.bot) console.log(`[shot] bot ${JSON.stringify(r.bot)}`);
     if (r?.lanes) console.log(`[shot] lanes ${JSON.stringify(r.lanes)}`);
+    if (r?.swap) console.log(`[shot] swap ${JSON.stringify(r.swap)}`);
     if (r?.stats) console.log(`[shot] stats ${JSON.stringify(r.stats)}`);
     if (r?.png) {
       console.log(`[shot] saved ${r.png}`);

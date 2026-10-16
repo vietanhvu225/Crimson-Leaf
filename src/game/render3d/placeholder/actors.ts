@@ -116,6 +116,22 @@ function create(ctx: RenderModuleContext): RenderModule {
   const scarf = new THREE.Mesh(box, bodyMat('#b91c1c'));
   scarf.castShadow = true;
   player.group.add(scarf);
+  // X-ray silhouette: on the inner lane a lane-0 slab in front can hide the player; this faint
+  // no-depth-test copy keeps them readable (the canvas game shows both lanes on one plane).
+  const xray = new THREE.Mesh(
+    capsule,
+    track.material(
+      new THREE.MeshBasicMaterial({
+        color: '#dc2626',
+        transparent: true,
+        opacity: 0.5,
+        depthTest: false,
+        depthWrite: false,
+      })
+    )
+  );
+  xray.renderOrder = 50;
+  player.group.add(xray);
   const slash = new THREE.Mesh(
     ring,
     track.material(
@@ -145,6 +161,7 @@ function create(ctx: RenderModuleContext): RenderModule {
     player.z += (targetZ - player.z) * 0.3;
     if (Math.abs(targetZ - player.z) < 0.002) player.z = targetZ;
     layout(player, PLAYER_H, PLAYER_R, p.facing);
+    xray.scale.copy(player.body.scale);
     player.group.position.set(toX(p.x), toY(p.y), player.z);
     player.group.scale.set(p.scaleX, p.scaleY, 1);
     const blink = p.invulnTimer > 0 && Math.floor(f.t * 20) % 2 === 0;
