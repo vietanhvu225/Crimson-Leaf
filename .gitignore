@@ -8,3 +8,7 @@ threejs-port/logs/
 # bản clone repo skill gốc (có .git riêng), chỉ để tham khảo. Dấu / đầu dòng để KHÔNG bỏ qua .claude/skills/
 /skills/
 *.log
+# output tạm của shot.mjs (smoke chạy lại mỗi gate; ảnh bằng chứng nằm ở shots/<ID>/)
+/shots/smoke/
+/shots/calib*/
+/shots/manual/
