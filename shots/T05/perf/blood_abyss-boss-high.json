@@ -1,0 +1,31 @@
+{
+  "stage": "blood_abyss",
+  "renderer": "three",
+  "loop": 1,
+  "script": "boss",
+  "url": "http://127.0.0.1:58026/?autostart=1&stage=blood_abyss&loop=1&renderer=three&seed=1&muted=1",
+  "fps": 144,
+  "worstFrameMs": 7,
+  "pixelStd": 43.47,
+  "pixelMean": 112.01,
+  "gameState": "gameover",
+  "seasonId": "blood_abyss",
+  "player": {
+    "x": 44920,
+    "y": 520,
+    "vx": 207,
+    "vy": 437,
+    "onGround": false,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 143.9,
+    "drawCalls": 73,
+    "triangles": 14538,
+    "geometries": 21,
+    "textures": 38,
+    "entities": 251
+  },
+  "png": "shots/T05/perf/blood_abyss-boss-high.png",
+  "errors": []
+}

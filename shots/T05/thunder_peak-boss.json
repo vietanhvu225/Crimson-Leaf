@@ -1,0 +1,31 @@
+{
+  "stage": "thunder_peak",
+  "renderer": "three",
+  "loop": 1,
+  "script": "boss",
+  "url": "http://127.0.0.1:58088/?autostart=1&stage=thunder_peak&loop=1&renderer=three&seed=3&muted=1",
+  "fps": 144.1,
+  "worstFrameMs": 7,
+  "pixelStd": 52.33,
+  "pixelMean": 45.8,
+  "gameState": "playing",
+  "seasonId": "thunder_peak",
+  "player": {
+    "x": 1080,
+    "y": 2610,
+    "vx": 91,
+    "vy": 860,
+    "onGround": false,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 143.9,
+    "drawCalls": 88,
+    "triangles": 67362,
+    "geometries": 21,
+    "textures": 34,
+    "entities": 197
+  },
+  "png": "shots/T05/thunder_peak-boss.png",
+  "errors": []
+}

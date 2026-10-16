@@ -1,0 +1,31 @@
+{
+  "stage": "winter",
+  "renderer": null,
+  "loop": 1,
+  "script": "combat",
+  "url": "http://127.0.0.1:55155/?autostart=1&stage=winter&loop=1&seed=3&muted=1&fxdebug=bloom",
+  "fps": 143.7,
+  "worstFrameMs": 14,
+  "pixelStd": 33.17,
+  "pixelMean": 19.4,
+  "gameState": "playing",
+  "seasonId": "winter",
+  "player": {
+    "x": 1079,
+    "y": 401,
+    "vx": 230,
+    "vy": 0,
+    "onGround": true,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 144,
+    "drawCalls": 24,
+    "triangles": 2856,
+    "geometries": 7,
+    "textures": 16,
+    "entities": 216
+  },
+  "png": "shots/T05/review2/dbg-winter-bloom.png",
+  "errors": []
+}

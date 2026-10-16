@@ -1,0 +1,31 @@
+{
+  "stage": "blood_abyss",
+  "renderer": "three",
+  "loop": 1,
+  "script": "idle",
+  "url": "http://127.0.0.1:63678/?autostart=1&stage=blood_abyss&loop=1&renderer=three&seed=1&muted=1",
+  "fps": 144.3,
+  "worstFrameMs": 7,
+  "pixelStd": 59.57,
+  "pixelMean": 77.05,
+  "gameState": "playing",
+  "seasonId": "blood_abyss",
+  "player": {
+    "x": 200,
+    "y": 474,
+    "vx": 0,
+    "vy": 262,
+    "onGround": false,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 143.9,
+    "drawCalls": 84,
+    "triangles": 13630,
+    "geometries": 18,
+    "textures": 30,
+    "entities": 252
+  },
+  "png": "shots/T05/blood_abyss-weather.png",
+  "errors": []
+}

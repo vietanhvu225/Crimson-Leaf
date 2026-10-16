@@ -11,6 +11,7 @@ import { placeholderActors } from './placeholder/actors.ts';
 import { placeholderEnv } from './placeholder/env.ts';
 import { placeholderVfx } from './placeholder/vfx.ts';
 import { Tracker } from './resources.ts';
+import { vfxModule } from './vfx/index.ts';
 
 // Three.js renderer: one WebGLRenderer + scene + camera bound to a <canvas>. The picture is built by
 // render modules (module.ts); each one syncs its part from the World every frame.
@@ -22,6 +23,7 @@ import { Tracker } from './resources.ts';
 const MODULES: RenderModuleDef[] = [
   envKit,
   actorsModule,
+  vfxModule,
 ];
 
 const PLACEHOLDERS: RenderModuleDef[] = [placeholderEnv, placeholderActors, placeholderVfx];
@@ -62,6 +64,8 @@ export function createThreeRenderer(
   const registered = new Set(MODULES.map((m) => m.slot));
   const defs = [...PLACEHOLDERS.filter((p) => !registered.has(p.slot)), ...MODULES];
   const modules: RenderModule[] = defs.map((d) => d.create({ scene, renderer, camera, track }));
+  /** A module with render() (post-processing) presents the frame. */
+  const presenter = modules.find((m) => m.render);
 
   // Level-change detection: the level builder assigns fresh arrays on rebuild.
   let levelVersion = 0;
@@ -132,11 +136,13 @@ export function createThreeRenderer(
       }
 
       for (const m of modules) m.update(world, frame);
-      renderer.render(scene, camera);
+      if (presenter) presenter.render!();
+      else renderer.render(scene, camera);
     },
     resize(viewW, viewH) {
       renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
       renderer.setSize(Math.max(1, viewW), Math.max(1, viewH), false);
+      for (const m of modules) m.resize?.(Math.max(1, viewW), Math.max(1, viewH));
     },
     stats() {
       return {
