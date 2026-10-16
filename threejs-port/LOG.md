@@ -55,3 +55,6 @@ Worker ~22 phút, $6.65. Orchestrator kiểm lại: typecheck ✅, test 30/30 �
 
 ## 2026-10-17 04:57 giao T03 + T04 song song (nhóm A, attempt 1)
 T05 chờ một slot trống (MAX_PARALLEL=2).
+
+## 2026-10-17 05:14 giao T05 (attempt 1)
+Slot trống sau khi worker T03 kết thúc.
