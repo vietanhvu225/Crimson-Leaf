@@ -1,0 +1,29 @@
+{
+  "stage": "thunder_peak",
+  "renderer": "canvas",
+  "loop": 1,
+  "script": "run",
+  "url": "http://127.0.0.1:62268/?autostart=1&stage=thunder_peak&loop=1&renderer=canvas&seed=3&muted=1",
+  "fps": 144.4,
+  "worstFrameMs": 7,
+  "pixelStd": 35.82,
+  "pixelMean": 45.16,
+  "gameState": "playing",
+  "seasonId": "thunder_peak",
+  "player": {
+    "x": 697,
+    "y": 29900,
+    "vx": 70,
+    "vy": 0,
+    "onGround": true,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 143.9,
+    "drawCalls": null,
+    "triangles": null,
+    "entities": 207
+  },
+  "png": "shots/T06/thunder_peak-l1-canvas.png",
+  "errors": []
+}

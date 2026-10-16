@@ -1,0 +1,31 @@
+{
+  "stage": "earth_core",
+  "renderer": "three",
+  "loop": 1,
+  "script": "run",
+  "url": "http://127.0.0.1:56953/?autostart=1&stage=earth_core&loop=1&renderer=three&seed=3&muted=1",
+  "fps": 144.1,
+  "worstFrameMs": 7,
+  "pixelStd": 35.31,
+  "pixelMean": 38.43,
+  "gameState": "playing",
+  "seasonId": "earth_core",
+  "player": {
+    "x": 727,
+    "y": 614,
+    "vx": 0,
+    "vy": 639,
+    "onGround": false,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 143.9,
+    "drawCalls": 55,
+    "triangles": 41428,
+    "geometries": 23,
+    "textures": 12,
+    "entities": 247
+  },
+  "png": "shots/T06/earth_core-l1.png",
+  "errors": []
+}

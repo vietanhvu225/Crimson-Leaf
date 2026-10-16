@@ -1,0 +1,29 @@
+{
+  "stage": "sky_sanctuary",
+  "renderer": "canvas",
+  "loop": 1,
+  "script": "run",
+  "url": "http://127.0.0.1:49978/?autostart=1&stage=sky_sanctuary&loop=1&renderer=canvas&seed=3&muted=1",
+  "fps": 144.6,
+  "worstFrameMs": 7,
+  "pixelStd": 52.78,
+  "pixelMean": 114.31,
+  "gameState": "playing",
+  "seasonId": "sky_sanctuary",
+  "player": {
+    "x": 763,
+    "y": 218,
+    "vx": 142,
+    "vy": -18,
+    "onGround": false,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 144,
+    "drawCalls": null,
+    "triangles": null,
+    "entities": 255
+  },
+  "png": "shots/T06/sky_sanctuary-l1-canvas.png",
+  "errors": []
+}

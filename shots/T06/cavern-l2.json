@@ -1,0 +1,31 @@
+{
+  "stage": "cavern",
+  "renderer": "three",
+  "loop": 2,
+  "script": "run",
+  "url": "http://127.0.0.1:61079/?autostart=1&stage=cavern&loop=2&renderer=three&seed=3&muted=1",
+  "fps": 144.6,
+  "worstFrameMs": 7,
+  "pixelStd": 48.09,
+  "pixelMean": 78.23,
+  "gameState": "playing",
+  "seasonId": "cavern",
+  "player": {
+    "x": 701,
+    "y": 332,
+    "vx": 83,
+    "vy": -192,
+    "onGround": false,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 143.9,
+    "drawCalls": 60,
+    "triangles": 53736,
+    "geometries": 24,
+    "textures": 8,
+    "entities": 225
+  },
+  "png": "shots/T06/cavern-l2.png",
+  "errors": []
+}
