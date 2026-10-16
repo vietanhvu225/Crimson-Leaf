@@ -2,7 +2,7 @@
   "_calibration": "T00, 3 smoke runs on canvas renderer, chromiumLaunch = new-headless + GPU (ANGLE D3D11, NVIDIA GeForce RTX 5070). Min fps measured 143.3 (vsync-capped ~144) -> x0.6 = 86 -> clamped to ceiling 20. Min pixel std measured 30.83 (earth_core); blank canvas = ~0 -> minPixelStd 8.",
   "minFps": 20,
   "minPixelStd": 8,
-  "renderers": ["canvas"],
+  "renderers": ["three", "canvas"],
   "durationMs": 4000,
   "width": 1280,
   "height": 720

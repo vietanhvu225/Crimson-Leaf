@@ -15,7 +15,7 @@ import { GameHUD } from './ui/GameHUD';
 import { PauseModal, OutcomeModal, type RunSnapshot } from './ui/GameModals';
 import { GddModal } from './ui/GddModal';
 import { GameView } from './ui/GameView';
-import { parseRendererKind } from './game/view';
+import { parseRendererKind, type RendererKind } from './game/view';
 import type { TouchInputState } from './game/engine/entities';
 
 // Initial state from URL params (?stage=<SeasonId>&loop=1|2&muted=1). Unknown values are ignored.
@@ -45,9 +45,10 @@ const SIM_SEED: number = (() => {
   return RNG_MODE === 'math' ? 0 : (Math.random() * 0x100000000) >>> 0;
 })();
 
-// ?renderer=canvas (T02 adds three) and ?debug=1 (stats overlay).
+// ?renderer=three|canvas (default three), ?debug=1 (stats overlay), ?cam=flat (no camera tilt).
 const RENDERER = parseRendererKind(readUrlParam('renderer'));
 const DEBUG = readUrlParam('debug') === '1';
+const CAM_FLAT = readUrlParam('cam') === 'flat';
 
 export default function App() {
   const [gameState, setGameState] = useState<GameStateMode>(() => {
@@ -79,6 +80,18 @@ export default function App() {
     return initial;
   });
   const [showGddModal, setShowGddModal] = useState<boolean>(false);
+  const [renderer, setRenderer] = useState<RendererKind>(RENDERER);
+
+  // F9 swaps three ↔ canvas mid-run (same World; the old renderer is disposed).
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.code !== 'F9') return;
+      e.preventDefault();
+      setRenderer((r) => (r === 'three' ? 'canvas' : 'three'));
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
 
   const [combatHud, setCombatHud] = useState<PlayerCombatState>(() =>
     createInitialPlayerCombatState()
@@ -231,8 +244,9 @@ export default function App() {
         touchInputRef={touchInputRef}
         seed={SIM_SEED}
         rngMode={RNG_MODE}
-        renderer={RENDERER}
+        renderer={renderer}
         debug={DEBUG}
+        camFlat={CAM_FLAT}
         onSyncHud={handleSyncHud}
         onStageOutcome={handleStageOutcome}
         onTogglePause={handleTogglePause}

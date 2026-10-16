@@ -1,0 +1,31 @@
+{
+  "stage": "spring",
+  "renderer": "three",
+  "loop": 1,
+  "script": "boss",
+  "url": "http://127.0.0.1:52924/?autostart=1&stage=spring&loop=1&renderer=three&seed=1&muted=1&debug=1",
+  "fps": 118.2,
+  "worstFrameMs": 21,
+  "pixelStd": 45.66,
+  "pixelMean": 68.21,
+  "gameState": "playing",
+  "seasonId": "spring",
+  "player": {
+    "x": 35920,
+    "y": 547,
+    "vx": 131,
+    "vy": 422,
+    "onGround": false,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 93.9,
+    "drawCalls": 32,
+    "triangles": 7762,
+    "geometries": 12,
+    "textures": 9,
+    "entities": 220
+  },
+  "png": "shots/T02/spring-three-boss.png",
+  "errors": []
+}
