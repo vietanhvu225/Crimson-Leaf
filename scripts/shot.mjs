@@ -3,6 +3,9 @@
 //   node scripts/shot.mjs --stage spring --renderer canvas --loop 1 --seed 1 --script run --out shots/T00/
 //   node scripts/shot.mjs --smoke [--out shots/smoke/] [--renderers canvas,three]
 //
+//   --script clear  bot plays the stage via window.__game until victory/defeat (--max-sim-sec, default 900)
+//   --script lanes  <name>-lane0.png / -lane1.png before/after Q
+//   --script swap   F9 three↔canvas ×20, reports GPU resources / heap / fps before-after
 // Extra flags: --width 1280 --height 720 --duration <ms of input script> --name <png basename>
 //              --params "debug=1&foo=bar" (appended to the URL as-is)
 // Starts its own Vite server on a free port, launches Chromium with PINNED_VERSIONS.chromiumLaunch,
