@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "test": "node --test src/game/rules/rules.test.ts",
+    "test": "node --test src/game/rules/rules.test.ts src/game/engine/engine.test.ts",
     "copy-reference": "node scripts/copy-reference.mjs",
     "shot": "node scripts/shot.mjs",
     "smoke": "node scripts/shot.mjs --smoke",
