@@ -1,0 +1,81 @@
+{
+  "stage": "spring",
+  "renderer": null,
+  "loop": 1,
+  "script": "vfx",
+  "url": "http://127.0.0.1:54646/?autostart=1&stage=spring&loop=1&seed=3&muted=1",
+  "vfx": {
+    "bolts": 12,
+    "parried": {
+      "ok": true,
+      "step": 25,
+      "hitstop": 0.09
+    },
+    "shots": {
+      "weather": {
+        "hitstop": 0,
+        "trauma": 0,
+        "awakened": 0,
+        "particles": 0,
+        "bolts": 0
+      },
+      "lightning": {
+        "hitstop": 0.023333333333333334,
+        "trauma": 0.25,
+        "awakened": 0,
+        "particles": 135,
+        "bolts": 12
+      },
+      "parry": {
+        "hitstop": 0.09,
+        "trauma": 0.55,
+        "awakened": 0,
+        "particles": 72,
+        "bolts": 2
+      },
+      "parry2": {
+        "hitstop": 0.04000000000000001,
+        "trauma": 0.55,
+        "awakened": 0,
+        "particles": 38,
+        "bolts": 1
+      },
+      "debuffs": {
+        "hitstop": 0,
+        "trauma": 0,
+        "awakened": 0,
+        "particles": 0,
+        "bolts": 0
+      },
+      "awaken": {
+        "hitstop": 0,
+        "trauma": 0,
+        "awakened": 11.249999999999963,
+        "particles": 0,
+        "bolts": 0
+      }
+    }
+  },
+  "pixelStd": 55.51,
+  "pixelMean": 89.27,
+  "gameState": "playing",
+  "seasonId": "spring",
+  "player": {
+    "x": 592,
+    "y": 545,
+    "vx": 0,
+    "vy": 0,
+    "onGround": true,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 137.9,
+    "drawCalls": 109,
+    "triangles": 134516,
+    "geometries": 60,
+    "textures": 26,
+    "entities": 187
+  },
+  "png": "shots/T05/review2/spring-l1-default-vfx.png",
+  "errors": []
+}

@@ -1,0 +1,31 @@
+{
+  "stage": "winter",
+  "renderer": null,
+  "loop": 1,
+  "script": "combat",
+  "url": "http://127.0.0.1:49185/?autostart=1&stage=winter&loop=1&seed=3&muted=1&fx=low",
+  "fps": 143.9,
+  "worstFrameMs": 14,
+  "pixelStd": 65.02,
+  "pixelMean": 134.38,
+  "gameState": "playing",
+  "seasonId": "winter",
+  "player": {
+    "x": 999,
+    "y": 401,
+    "vx": 146,
+    "vy": 0,
+    "onGround": true,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 144,
+    "drawCalls": 77,
+    "triangles": 78634,
+    "geometries": 66,
+    "textures": 19,
+    "entities": 216
+  },
+  "png": "shots/T05/review2/winter-combat-fxlow.png",
+  "errors": []
+}
