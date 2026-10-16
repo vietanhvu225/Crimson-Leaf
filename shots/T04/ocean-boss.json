@@ -1,0 +1,31 @@
+{
+  "stage": "ocean_palace",
+  "renderer": "three",
+  "loop": 1,
+  "script": "boss",
+  "url": "http://127.0.0.1:52704/?autostart=1&stage=ocean_palace&loop=1&renderer=three&seed=1&muted=1",
+  "fps": 143.9,
+  "worstFrameMs": 14,
+  "pixelStd": 28.42,
+  "pixelMean": 47.88,
+  "gameState": "playing",
+  "seasonId": "ocean_palace",
+  "player": {
+    "x": 43920,
+    "y": 205,
+    "vx": 164,
+    "vy": 24,
+    "onGround": false,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 143.9,
+    "drawCalls": 69,
+    "triangles": 135810,
+    "geometries": 46,
+    "textures": 16,
+    "entities": 276
+  },
+  "png": "shots/T04/ocean-boss.png",
+  "errors": []
+}
