@@ -84,14 +84,14 @@ export function updateFreeSwimOrFlight(world: World, f: Frame, input: FrameInput
 
     if (
       (input.moveLeft || input.moveRight || input.jumpHeld || move.swimDownHeld) &&
-      Math.random() < 0.35
+      world.rng() < 0.35
     ) {
       spawnParticle(
         world,
         world.player.x - world.player.facing * 16,
         world.player.y - 16,
-        -world.player.vx * 0.25 + (Math.random() - 0.5) * 40,
-        -55 - Math.random() * 45,
+        -world.player.vx * 0.25 + (world.rng() - 0.5) * 40,
+        -55 - world.rng() * 45,
         3.6,
         '#a5f3fc',
         0.35,
@@ -125,14 +125,14 @@ export function updateFreeSwimOrFlight(world: World, f: Frame, input: FrameInput
 
     if (
       (input.moveLeft || input.moveRight || input.jumpHeld || move.swimDownHeld) &&
-      Math.random() < 0.38
+      world.rng() < 0.38
     ) {
       spawnParticle(
         world,
         world.player.x - world.player.facing * 16,
         world.player.y - 12,
-        -world.player.vx * 0.25 + (Math.random() - 0.5) * 50,
-        (Math.random() - 0.5) * 50,
+        -world.player.vx * 0.25 + (world.rng() - 0.5) * 50,
+        (world.rng() - 0.5) * 50,
         3.8,
         '#fde047',
         0.32,

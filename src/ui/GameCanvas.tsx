@@ -21,6 +21,10 @@ interface GameCanvasProps extends HostState {
   immortalToggleToken: number;
   skillUpgradeRequest: { branch: SkillBranchId; token: number } | null;
   elementCycleToken: number;
+  /** Sim RNG seed (`?seed`). */
+  seed: number;
+  /** `math`: sim draws from the global Math.random (parity tests only, `?rng=math`). */
+  rngMode: 'seeded' | 'math';
 }
 
 /** React host for the canvas engine: owns the <canvas>, the rAF loop and prop → engine wiring. */
@@ -31,6 +35,8 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
   immortalToggleToken,
   skillUpgradeRequest,
   elementCycleToken,
+  seed,
+  rngMode,
   ...host
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -74,7 +80,14 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const world = createWorld(canvas, ctx, stateRef, touchInputRef);
+    const world = createWorld({
+      canvas,
+      ctx,
+      stateRef,
+      touchInputRef,
+      seed,
+      rng: rngMode === 'math' ? () => Math.random() : undefined,
+    });
     worldRef.current = world;
 
     const updateCanvasSize = () => {
@@ -114,7 +127,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
       detachInput();
       worldRef.current = null;
     };
-  }, [touchInputRef]);
+  }, [touchInputRef, seed, rngMode]);
 
   return (
     <canvas

@@ -61,7 +61,7 @@ export function updateStageAbilities(world: World, f: Frame, input: FrameInput, 
     world.player.vy = 0;
     world.player.onGround = true;
     world.player.airJumpsUsed = 0;
-    if (Math.random() < 0.35) {
+    if (world.rng() < 0.35) {
       spawnParticle(
         world,
         world.player.x - world.player.facing * 12,
@@ -147,8 +147,8 @@ export function updateStageAbilities(world: World, f: Frame, input: FrameInput, 
         world,
         world.player.x,
         world.player.y - 22,
-        -world.player.facing * (80 + Math.random() * 110),
-        (Math.random() - 0.5) * 60,
+        -world.player.facing * (80 + world.rng() * 110),
+        (world.rng() - 0.5) * 60,
         4,
         world.combat.skills.mobilityLevel >= 3 ? '#fde047' : '#38bdf8',
         0.25,

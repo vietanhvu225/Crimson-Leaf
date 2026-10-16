@@ -6,12 +6,12 @@ import type { Frame } from './frame.ts';
 
 export function updateAmbientEffects(world: World, f: Frame) {
   // Ambient Seasonal Particles (including rising underwater bubbles on Stage 9)
-  if (!world.isHeadless && Math.random() < 0.45) {
+  if (!world.isHeadless && world.rng() < 0.45) {
     const isBubbles = f.cfg.particleType === 'bubbles';
-    const px = world.camX + Math.random() * world.viewW;
+    const px = world.camX + world.rng() * world.viewW;
     const py = isBubbles
-      ? world.camY + world.viewH * (0.55 + Math.random() * 0.45)
-      : world.camY - 20 + Math.random() * (world.viewH * 0.4);
+      ? world.camY + world.viewH * (0.55 + world.rng() * 0.45)
+      : world.camY - 20 + world.rng() * (world.viewH * 0.4);
     const color =
       f.cfg.particleType === 'petals'
         ? '#fda4af'
@@ -28,8 +28,8 @@ export function updateAmbientEffects(world: World, f: Frame) {
       world,
       px,
       py,
-      isBubbles ? (Math.random() - 0.5) * 35 : -35 - Math.random() * 45,
-      isBubbles ? -65 - Math.random() * 65 : 45 + Math.random() * 55,
+      isBubbles ? (world.rng() - 0.5) * 35 : -35 - world.rng() * 45,
+      isBubbles ? -65 - world.rng() * 65 : 45 + world.rng() * 55,
       isBubbles ? 4.2 : 3.5,
       color,
       3.2,

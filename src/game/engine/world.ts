@@ -20,6 +20,7 @@ import {
   type GameStateMode,
   createInitialPlayerCombatState,
 } from '../rules/index.ts';
+import { mulberry32, type Rng } from './rng.ts';
 
 /** Callbacks + settings the React host exposes to the engine (read every frame). */
 export interface HostState {
@@ -50,13 +51,19 @@ export interface HostState {
   onSelectSeasonQuick: (s: SeasonId) => void;
 }
 
+export interface CreateWorldOptions {
+  canvas: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D;
+  stateRef: { current: HostState };
+  touchInputRef: { current: TouchInputState };
+  /** Seed for the default RNG (mulberry32). */
+  seed: number;
+  /** Overrides the RNG (parity tests pass `() => Math.random()` to share the page-wide sequence). */
+  rng?: Rng;
+}
+
 /** All mutable game state: input, player, level, actors, pools, camera. */
-export function createWorld(
-  canvas: HTMLCanvasElement,
-  ctx: CanvasRenderingContext2D,
-  stateRef: { current: HostState },
-  touchInputRef: { current: TouchInputState }
-) {
+export function createWorld({ canvas, ctx, stateRef, touchInputRef, seed, rng }: CreateWorldOptions) {
   const isHeadless =
     typeof navigator !== 'undefined' && /HeadlessChrome/i.test(navigator.userAgent);
   let viewW = window.innerWidth;
@@ -186,6 +193,8 @@ export function createWorld(
   let hudSyncTimer = 0;
 
   return {
+    seed,
+    rng: rng ?? mulberry32(seed),
     canvas,
     ctx,
     isHeadless,

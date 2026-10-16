@@ -64,30 +64,30 @@ export function updateProjectiles(world: World, f: Frame) {
     }
 
     // In-Flight Elemental Trail Particles (Flames for Hỏa Viêm, Electric Bolts for Lôi Điện, Ice Crystals for Hàn Băng)
-    if (!world.isHeadless && proj.fromPlayer && Math.random() < 0.65) {
+    if (!world.isHeadless && proj.fromPlayer && world.rng() < 0.65) {
       const pStyle =
         proj.elementalStyle ?? ELEMENTAL_STANCES[world.combat.skills.activeElement].projectileStyle;
       if (pStyle === 'fire_burst') {
         spawnParticle(
           world,
-          proj.x - proj.vx * 0.015 + (Math.random() - 0.5) * 10,
-          proj.y - proj.vy * 0.015 + (Math.random() - 0.5) * 10,
-          -proj.vx * 0.12 + (Math.random() - 0.5) * 40,
-          -45 - Math.random() * 45,
+          proj.x - proj.vx * 0.015 + (world.rng() - 0.5) * 10,
+          proj.y - proj.vy * 0.015 + (world.rng() - 0.5) * 10,
+          -proj.vx * 0.12 + (world.rng() - 0.5) * 40,
+          -45 - world.rng() * 45,
           4.2,
-          Math.random() < 0.5 ? '#f97316' : '#ef4444',
+          world.rng() < 0.5 ? '#f97316' : '#ef4444',
           0.22,
           'ember'
         );
       } else if (pStyle === 'lightning_bolt') {
         spawnParticle(
           world,
-          proj.x + (Math.random() - 0.5) * 14,
-          proj.y + (Math.random() - 0.5) * 14,
-          (Math.random() - 0.5) * 90,
-          (Math.random() - 0.5) * 90,
+          proj.x + (world.rng() - 0.5) * 14,
+          proj.y + (world.rng() - 0.5) * 14,
+          (world.rng() - 0.5) * 90,
+          (world.rng() - 0.5) * 90,
           4.0,
-          Math.random() < 0.6 ? '#fde047' : '#38bdf8',
+          world.rng() < 0.6 ? '#fde047' : '#38bdf8',
           0.18,
           'lightning'
         );
@@ -96,10 +96,10 @@ export function updateProjectiles(world: World, f: Frame) {
           world,
           proj.x - proj.vx * 0.015,
           proj.y - proj.vy * 0.015,
-          (Math.random() - 0.5) * 45,
-          (Math.random() - 0.5) * 45,
+          (world.rng() - 0.5) * 45,
+          (world.rng() - 0.5) * 45,
           3.8,
-          Math.random() < 0.5 ? '#38bdf8' : '#e0f2fe',
+          world.rng() < 0.5 ? '#38bdf8' : '#e0f2fe',
           0.22,
           'snow'
         );
@@ -175,13 +175,13 @@ export function updateProjectiles(world: World, f: Frame) {
         soundEngine.playParry();
         spawnBanner(world, proj.x, proj.y - 30, 'PARRY HOÀN HẢO!', '#fbbf24');
         for (let s = 0; s < 18; s++) {
-          const a = Math.random() * Math.PI * 2;
+          const a = world.rng() * Math.PI * 2;
           spawnParticle(
             world,
             proj.x,
             proj.y,
-            Math.cos(a) * (180 + Math.random() * 200),
-            Math.sin(a) * (180 + Math.random() * 200),
+            Math.cos(a) * (180 + world.rng() * 200),
+            Math.sin(a) * (180 + world.rng() * 200),
             4.5,
             s % 2 === 0 ? '#fef08a' : '#38bdf8',
             0.36,
@@ -202,7 +202,7 @@ export function updateProjectiles(world: World, f: Frame) {
         world.combat = hitRes.nextState;
         if (hitRes.blockedByImmortality) {
           for (let s = 0; s < 8; s++) {
-            const a = Math.random() * Math.PI * 2;
+            const a = world.rng() * Math.PI * 2;
             spawnParticle(
               world,
               world.player.x,
@@ -220,7 +220,7 @@ export function updateProjectiles(world: World, f: Frame) {
           world.cameraTrauma = 0.45;
           soundEngine.playPlayerHurt();
           for (let s = 0; s < 12; s++) {
-            const a = Math.random() * Math.PI * 2;
+            const a = world.rng() * Math.PI * 2;
             spawnParticle(
               world,
               world.player.x,
@@ -272,7 +272,7 @@ export function updateProjectiles(world: World, f: Frame) {
             proj.elementalStyle ??
             ELEMENTAL_STANCES[world.combat.skills.activeElement].projectileStyle;
           for (let s = 0; s < (proj.explosive ? 14 : 10); s++) {
-            const a = Math.random() * Math.PI * 2;
+            const a = world.rng() * Math.PI * 2;
             const pColor = proj.parried
               ? '#fbbf24'
               : hitStyle === 'fire_burst'

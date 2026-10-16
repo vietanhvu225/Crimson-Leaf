@@ -32,6 +32,18 @@ function initialLoopFromUrl(): GameLoopRoute {
   return readUrlParam('loop') === '2' ? 2 : 1;
 }
 
+// ?rng=math (parity tests only): the sim shares the page-wide Math.random sequence.
+const RNG_MODE: 'seeded' | 'math' = readUrlParam('rng') === 'math' ? 'math' : 'seeded';
+
+// ?seed=<n>: sim RNG seed. Without it a random one is picked (not under rng=math, which must not
+// draw from Math.random before the game does).
+const SIM_SEED: number = (() => {
+  const raw = readUrlParam('seed');
+  const n = raw === null ? NaN : Number(raw);
+  if (Number.isFinite(n)) return n >>> 0;
+  return RNG_MODE === 'math' ? 0 : (Math.random() * 0x100000000) >>> 0;
+})();
+
 export default function App() {
   const [gameState, setGameState] = useState<GameStateMode>(() => {
     if (typeof window !== 'undefined') {
@@ -212,6 +224,8 @@ export default function App() {
         elementCycleToken={elementCycleToken}
         skillUpgradeRequest={skillUpgradeRequest}
         touchInputRef={touchInputRef}
+        seed={SIM_SEED}
+        rngMode={RNG_MODE}
         onSyncHud={handleSyncHud}
         onStageOutcome={handleStageOutcome}
         onTogglePause={handleTogglePause}
