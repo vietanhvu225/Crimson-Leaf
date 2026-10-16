@@ -317,9 +317,14 @@ export function createCombatFx(kit: FxKit) {
   function particles(world: World, f: RenderFrame3D) {
     // A parry dumps ~70 sparks on one spot; summed additively they burn into a white blob that hides
     // the actors. Dim each spark as the burst gets denser so the total stays roughly constant.
-    let sparks = 0;
-    for (const p of world.particles) if (p.active && p.kind === 'spark') sparks++;
+    let sparks = 0, zaps = 0;
+    for (const p of world.particles) {
+      if (!p.active) continue;
+      if (p.kind === 'spark') sparks++;
+      else if (p.kind === 'lightning') zaps++;
+    }
     const sparkGain = Math.min(1, Math.sqrt(10 / Math.max(1, sparks)));
+    const zapGain = Math.min(1, Math.sqrt(10 / Math.max(1, zaps)));
     for (const p of world.particles) {
       if (!p.active || p.kind === 'env') continue;
       const x = toX(p.x);
@@ -332,10 +337,10 @@ export function createCombatFx(kit: FxKit) {
           const sp = Math.hypot(p.vx, p.vy);
           const len = Math.max(0.05, Math.min(0.4, sp * 0.0008)) * (0.4 + 0.6 * a);
           const ang = Math.atan2(-p.vy, p.vx);
-          c.copy(cssColor(p.color)).multiplyScalar((p.kind === 'spark' ? 0.75 * sparkGain : 0.55) * a);
+          c.copy(cssColor(p.color)).multiplyScalar((p.kind === 'spark' ? 0.75 * sparkGain : 0.6 * zapGain) * a);
           beams.add(x, y, z, len, (p.size + 1) * S * 0.6, 1, c, ang);
           if (p.kind === 'lightning') {
-            c.copy(cssColor('#38bdf8')).multiplyScalar(0.4 * a);
+            c.copy(cssColor('#38bdf8')).multiplyScalar(0.4 * zapGain * a);
             glows.add(x, y, z, 0.2, 0.2, 1, c);
           }
           break;
