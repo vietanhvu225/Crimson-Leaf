@@ -6,6 +6,7 @@
 //   --script clear  bot plays the stage via window.__game until victory/defeat (--max-sim-sec, default 900)
 //   --script lanes  <name>-lane0.png / -lane1.png before/after Q
 //   --script swap   F9 three↔canvas ×20, reports GPU resources / heap / fps before-after
+//   --script vfx    <name>-weather/-lightning/-parry/-parry2/-debuffs/-awaken.png (T05 effects)
 // Extra flags: --width 1280 --height 720 --duration <ms of input script> --name <png basename>
 //              --params "debug=1&foo=bar" (appended to the URL as-is)
 // Starts its own Vite server on a free port, launches Chromium with PINNED_VERSIONS.chromiumLaunch,
@@ -34,7 +35,7 @@ const STAGES = [
   'earth_core',
   'sky_sanctuary',
 ];
-const SCRIPTS = ['idle', 'run', 'combat', 'boss', 'clear', 'lanes', 'swap'];
+const SCRIPTS = ['idle', 'run', 'combat', 'boss', 'clear', 'lanes', 'swap', 'vfx'];
 const LOCK_PATH = path.join(os.tmpdir(), 'crimson-shot.lock');
 const LOCK_WAIT_MS = 20 * 60 * 1000;
 const LOCK_STALE_MS = 30 * 60 * 1000;
@@ -396,6 +397,141 @@ async function laneShots(page, opts) {
 }
 
 /**
+ * `--script vfx` (T05): stops the real-time loop (rAF → no-op), then drives the sim with
+ * __game.step and captures one PNG per effect. Mechanics are triggered for real where the sim allows:
+ *   -weather   ambient stage particles after a short run
+ *   -lightning thunder element + melee on an enemy placed in reach → LightningArc + chain + stun
+ *   -parry     enemy fireball flying at the player + melee timed by distance → frame of hit-stop
+ *   -parry2    3 steps later (sparks spreading, sim still frozen)
+ *   -debuffs   burn / freeze / stun timers set on three enemies (injected: the procs are random)
+ *   -awaken    H (Huyết Ảnh) like the player would, after the banner settles
+ * Each capture records hitstopTimer etc. in the result.
+ */
+async function vfxShots(page, opts) {
+  fs.mkdirSync(opts.out, { recursive: true });
+  const shots = {};
+  const snap = async (tag) => {
+    await sleep(120);
+    const file = path.join(opts.out, `${opts.name}-${tag}.png`);
+    await page.screenshot({ path: file });
+    shots[tag] = await page.evaluate(() => {
+      const w = window.__game.world;
+      return {
+        hitstop: w.hitstopTimer,
+        trauma: Math.round(w.cameraTrauma * 100) / 100,
+        awakened: w.combat.awakenedTimer,
+        particles: w.particles.filter((p) => p.active).length,
+        bolts: w.lightningBolts.filter((b) => b.active).length,
+      };
+    });
+  };
+  await page.evaluate(() => {
+    window.requestAnimationFrame = () => 0;
+    const g = window.__game;
+    g.toggleImmortal(); // keep the run alive; turned off again before the shots
+    g.setInput({ moveRight: true });
+    g.step(150);
+    g.setInput({ moveRight: false });
+    g.step(30);
+    g.toggleImmortal();
+    g.step(1);
+  });
+  await snap('weather');
+
+  // Put enemy #i at dx px in front of the player, same lane, harmless for a while.
+  const placeEnemies = (dxs) =>
+    page.evaluate((dxs) => {
+      const w = window.__game.world;
+      const p = w.player;
+      const alive = w.enemies.filter((e) => e.hp > 0 && e.archetype !== 'boss');
+      dxs.forEach((dx, i) => {
+        const e = alive[i];
+        if (!e) return;
+        e.x = p.x + p.facing * dx;
+        e.baseX = e.x;
+        e.y = p.y;
+        e.vx = 0;
+        e.vy = 0;
+        e.zLane = w.combat.zLane;
+        e.attackCooldown = 9;
+        e.windupTimer = 0;
+        e.ambushEntryTimer = 0;
+      });
+      return alive.length;
+    }, dxs);
+
+  // Lightning: thunder stance, melee an enemy in reach.
+  await placeEnemies([40, 150]);
+  const bolts = await page.evaluate(() => {
+    const g = window.__game;
+    const w = g.world;
+    w.combat = { ...w.combat, skills: { ...w.combat.skills, activeElement: 'thunder_lightning' } };
+    for (let i = 0; i < 40; i++) {
+      if (i % 12 === 0) g.setInput({ meleePressed: true });
+      g.step(1);
+      if (w.lightningBolts.some((b) => b.active)) break;
+    }
+    g.step(2);
+    return w.lightningBolts.filter((b) => b.active).length;
+  });
+  await snap('lightning');
+
+  // Parry: enemy fireball at the player, melee when it is close.
+  const parried = await page.evaluate(() => {
+    const g = window.__game;
+    const w = g.world;
+    g.step(40);
+    const p = w.player;
+    const slot = w.projectiles.find((q) => !q.active) ?? w.projectiles[0];
+    Object.assign(slot, {
+      active: true, x: p.x + p.facing * 220, y: p.y - 24, vx: -p.facing * 420, vy: 0,
+      fromPlayer: false, parried: false, piercing: false, explosive: false, homing: false,
+      crossZ: false, isSwordBeam: false, isFireball: true, damage: 10, zLane: w.combat.zLane,
+      life: 3, gravity: 0, waveAmp: 0, boomerangReturn: false, customColor: undefined,
+    });
+    let pressed = false;
+    for (let i = 0; i < 60; i++) {
+      if (!pressed && Math.abs(slot.x - p.x) < 70) {
+        g.setInput({ meleePressed: true });
+        pressed = true;
+      }
+      g.step(1);
+      if (slot.parried && w.hitstopTimer > 0) return { ok: true, step: i, hitstop: w.hitstopTimer };
+    }
+    return { ok: false };
+  });
+  await snap('parry');
+  await page.evaluate(() => window.__game.step(3));
+  await snap('parry2');
+
+  // Elemental debuffs (timers injected on three enemies in a row).
+  await page.evaluate(() => window.__game.step(30));
+  await placeEnemies([140, 240, 340]);
+  await page.evaluate(() => {
+    const w = window.__game.world;
+    const p = w.player;
+    const row = w.enemies
+      .filter((e) => e.hp > 0 && e.zLane === w.combat.zLane && Math.abs(e.y - p.y) < 2)
+      .sort((a, b) => Math.abs(a.x - p.x) - Math.abs(b.x - p.x));
+    if (row[0]) row[0].burnTimer = 3;
+    if (row[1]) row[1].freezeTimer = 3;
+    if (row[2]) row[2].stunTimer = 3;
+    window.__game.step(2);
+  });
+  await snap('debuffs');
+
+  // Huyết Ảnh: the real H key path (input.ts keydown → triggerAwakening).
+  await page.evaluate(() => {
+    const w = window.__game.world;
+    w.combat = { ...w.combat, rage: 100 };
+  });
+  await page.keyboard.press('KeyH');
+  await page.evaluate(() => window.__game.step(45));
+  await snap('awaken');
+  return { bolts, parried, shots };
+}
+
+/**
  * `--script swap`: presses F9 (three ↔ canvas) `cycles` × 2 times while the run continues, and
  * records GPU resource counts after each return to three plus JS heap, to spot leaks.
  */
@@ -526,6 +662,8 @@ async function capture(browser, baseUrl, opts) {
       result.swap = await swapRenderers(page, 20, warnings);
     } else if (opts.script === 'lanes') {
       result.lanes = await laneShots(page, opts);
+    } else if (opts.script === 'vfx') {
+      result.vfx = await vfxShots(page, opts);
     } else {
       const fpsWindow = Math.max(1000, opts.durationMs - 1000);
       const fpsPromise = sleep(500).then(() => measureFps(page, fpsWindow));
@@ -636,6 +774,7 @@ async function main() {
     const r = results[0];
     if (r?.bot) console.log(`[shot] bot ${JSON.stringify(r.bot)}`);
     if (r?.lanes) console.log(`[shot] lanes ${JSON.stringify(r.lanes)}`);
+    if (r?.vfx) console.log(`[shot] vfx ${JSON.stringify(r.vfx)}`);
     if (r?.swap) console.log(`[shot] swap ${JSON.stringify(r.swap)}`);
     if (r?.stats) console.log(`[shot] stats ${JSON.stringify(r.stats)}`);
     if (r?.png) {

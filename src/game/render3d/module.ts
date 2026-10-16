@@ -36,6 +36,10 @@ export interface RenderFrame3D {
 export interface RenderModule {
   update(world: World, f: RenderFrame3D): void;
   dispose(): void;
+  /** Optional (T05 post-processing): draws the frame instead of renderer.render(scene, camera). */
+  render?(): void;
+  /** Optional: the drawing buffer was resized to w × h CSS px (after renderer.setSize). */
+  resize?(w: number, h: number): void;
 }
 
 export interface RenderModuleDef {
