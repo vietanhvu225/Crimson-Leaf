@@ -9,17 +9,36 @@ import type { RenderFrame3D, RenderModule, RenderModuleContext, RenderModuleDef 
 import { cssColor } from '../resources.ts';
 import { Backdrop, viewAtDepth, type DepthView } from './backdrop.ts';
 import { HitboxOverlay } from './hitboxes.ts';
-import { Batch, createGeometries, createMaterials, setSwayTime } from './kit.ts';
+import { Batch, caustics, createGeometries, createMaterials, setSwayTime } from './kit.ts';
 import { SkyDome } from './sky.ts';
 import { Trunks } from './trunks.ts';
 import { WaterSurface, waterLook } from './water.ts';
 
 // T03 environment kit (slot `env`): sky dome + fog, multi-layer backdrop in real depth, world trunks,
 // platforms per PlatformSubType, water/magma shader, hazards, seal gates, grapple lanterns,
-// checkpoint shrines, earth-core slope, and the `?debug=1` hitbox overlay. Stages 1–4 are finished;
-// 5–11 use the same kit with their palette (T06 adds their specific looks).
+// checkpoint shrines, earth-core slope, and the `?debug=1` hitbox overlay. Stages 1–4 by T03;
+// T06 adds 5–11: reef/jellyfish platforms + caustics + dense fog underwater, iron bridges over
+// the magma, sky-rock islands, bagua pads, amethyst clusters, earth-core crust cap + 45°/90° callouts,
+// and each stage's grapple item.
 
 const GROUND_BODY_H = 240;
+/** Fog [near, far] offsets from the camera-to-target distance (T06: closer, denser in caves / underwater). */
+const FOG_DEFAULT: [number, number] = [2, 95];
+const FOG_SHAPE: Partial<Record<SeasonId, [number, number]>> = {
+  cavern: [0, 70],
+  ocean_palace: [-3, 48],
+  earth_core: [0, 70],
+  blood_abyss: [1, 80],
+};
+/** Enclosed stages fade into darkness, not into a bright horizon colour. */
+const FOG_COLOR: Partial<Record<SeasonId, string>> = {
+  cavern: '#2a0d52',
+  ocean_palace: '#0b5e6e',
+  earth_core: '#2e190b',
+  blood_abyss: '#4a0a0a',
+  thunder_peak: '#1e1b4b',
+  celestial_altar: '#1f0d45',
+};
 /** Checkpoint shrines stand behind lane 1 so they never cover the player. */
 const SHRINE_Z = -3.9;
 /** Player-in-lane-1 occlusion cut: lane-0 slabs within this sim box around the player are cut away. */
@@ -62,6 +81,11 @@ function haloColor(seasonId: SeasonId): string {
       return '#6ee7b7';
     case 'blood_abyss':
       return '#ef4444';
+    case 'earth_core':
+      return '#fbbf24';
+    case 'celestial_altar':
+    case 'sky_sanctuary':
+      return '#fde68a';
     default:
       return '#fda4af';
   }
@@ -128,6 +152,7 @@ function create(ctx: RenderModuleContext): RenderModule {
   let builtVersion = -1;
   let pal: ChibiStagePalette = getChibiStagePalette('spring', false);
   let seasonId: SeasonId = 'spring';
+  let baguaSpin = 0;
 
   function rebuildLevel(f: RenderFrame3D) {
     seasonId = f.st.seasonId;
@@ -137,8 +162,10 @@ function create(ctx: RenderModuleContext): RenderModule {
     const glow = seasonId === 'autumn' ? 0.35 : 0;
     const glowColor = '#fb923c';
     sky.setPalette(pal, cssColor, glowColor, glow, glowDir);
-    // Aerial perspective: far layers fade toward the lower sky colour.
+    // Aerial perspective: far layers fade toward the lower sky colour (underwater: dense cyan tint).
     fog.color.copy(cssColor(pal.skyBottom)).lerp(cssColor(pal.skyMid), 0.35);
+    const fogColor = FOG_COLOR[seasonId];
+    if (fogColor) fog.color.copy(cssColor(f.isLoop2 ? '#4c0d28' : fogColor));
     backdrop.setStage(seasonId, f.isLoop2, pal);
     water.setLook(waterLook(seasonId, f.isLoop2), cssColor);
     rebuildSlope(f);
@@ -186,6 +213,83 @@ function create(ctx: RenderModuleContext): RenderModule {
     slopeMesh = new THREE.Mesh(slopeGeom, slopeMat);
     slopeMesh.receiveShadow = true;
     root.add(slopeMesh);
+  }
+
+  // ---------- earth core: slope crust cap, 45°/90° callouts (T06) ----------
+
+  const slopeLabels: TextSprite[] = [];
+  const segA = new THREE.Vector2();
+
+  function slopeDetails(f: RenderFrame3D) {
+    let li = 0;
+    if (seasonId === 'earth_core') {
+      const { z, depth } = laneSpan('both');
+      const front = z + depth / 2;
+      const x0 = Math.max(160, Math.floor(f.viewMinX / 30) * 30);
+      const x1 = Math.min(f.cfg.stageLength - 980, f.viewMaxX);
+      const cap = cssColor(pal.groundCapFill);
+      const gold = cssColor('#fde047');
+      // Crust cap along the floor: one rotated slab per 30 px chord (cliffs give a vertical chord).
+      let px = x0;
+      let py = computeSubterraneanSlopeY(x0);
+      for (let sx = x0 + 30; sx <= x1 + 30; sx += 30) {
+        const sy = computeSubterraneanSlopeY(sx);
+        const modX = (((sx - 180) % 900) + 900) % 900;
+        let nx = sx;
+        let ny = sy;
+        if (modX >= 540 && modX < 570) {
+          // Pass the 90° drop: go to the ledge corner, then straight down.
+          const cliffX = sx - modX + 540;
+          const top = computeSubterraneanSlopeY(cliffX - 1);
+          capChord(px, py, cliffX, top, front, depth, cap, gold);
+          capChord(cliffX, top, cliffX, computeSubterraneanSlopeY(cliffX + 1), front, depth, cap, gold);
+          px = cliffX;
+          py = computeSubterraneanSlopeY(cliffX + 1);
+        }
+        capChord(px, py, nx, ny, front, depth, cap, gold);
+        px = nx;
+        py = ny;
+      }
+      // Callouts (canvas: ramp depth plate + 90° shaft plate and dashed guide).
+      const c0 = Math.max(0, Math.floor((x0 - 180) / 900));
+      const c1 = Math.floor((x1 - 180) / 900) + 1;
+      for (let c = c0; c <= c1; c++) {
+        const rampX = 180 + c * 900 + 210;
+        if (rampX >= x0 && rampX <= x1) {
+          const ry = computeSubterraneanSlopeY(rampX);
+          li = slopeLabel(li, `↘ DỐC CHÉO 45° (-${Math.round(120 + c * 180)}m)`, '#fde047', rampX, ry + 52, front);
+        }
+        const cliffX = 180 + c * 900 + 540;
+        if (cliffX >= x0 && cliffX <= x1) {
+          const top = computeSubterraneanSlopeY(cliffX - 2);
+          const bot = computeSubterraneanSlopeY(cliffX + 2);
+          for (let gy = top + 10; gy < bot - 14; gy += 18) {
+            hGlow.rect(cliffX + 42, gy, cliffX + 46, gy + 10, front - 0.4, 0.04, cssColor('#fbbf24'));
+          }
+          li = slopeLabel(li, '⬇ HỐ THẲNG ĐỨNG 90°', '#fef08a', cliffX + 75, top - 33, front);
+        }
+      }
+    }
+    for (let i = li; i < slopeLabels.length; i++) slopeLabels[i].hide();
+  }
+
+  function capChord(ax: number, ay: number, bx: number, by: number, front: number, depth: number, cap: THREE.Color, gold: THREE.Color) {
+    segA.set(bx - ax, by - ay);
+    const len = segA.length();
+    if (len < 0.5) return;
+    const rot = -Math.atan2(by - ay, bx - ax);
+    const cx = (ax + bx) / 2;
+    const cy = (ay + by) / 2;
+    pBody.at(cx, cy + 4, laneSpan('both').z, len + 8, 14, depth + 0.12, cap, rot);
+    pDetail.at(cx, cy - 2, front + 0.07, len + 2, 4, 0.04, gold, rot);
+  }
+
+  function slopeLabel(li: number, text: string, color: string, x: number, y: number, front: number) {
+    if (li >= slopeLabels.length) slopeLabels.push(new TextSprite(track, root));
+    const label = slopeLabels[li];
+    label.set(text, color, 'rgba(15,23,42,0.85)');
+    label.place(toX(x), toY(y), front + 0.3, 1);
+    return li + 1;
   }
 
   // ---------- platforms ----------
@@ -276,9 +380,18 @@ function create(ctx: RenderModuleContext): RenderModule {
         }
         break;
       }
-      case 'bagua_pad':
+      case 'bagua_pad': {
+        // Bagua launch pad: glowing trigram ring spinning above the slab + yin-yang core.
         pRound.at(cx, py + 13, front + 0.03, 22, 22, 0.08, cssColor('#1e293b'));
+        pRound.at(cx - 4, py + 13, front + 0.07, 9, 9, 0.04, cssColor('#f8fafc'));
+        const a0 = baguaSpin;
+        for (let k = 0; k < 8; k++) {
+          const a = a0 + (k * Math.PI) / 4;
+          const r = Math.min(pw * 0.42, 60);
+          glows.at(cx + Math.cos(a) * r, py - 8, z + Math.sin(a) * Math.min(depth * 0.45, 1), 14, 3, 0.08, cssColor('#fde047'), 0, -a);
+        }
         break;
+      }
       default:
         break;
     }
@@ -294,11 +407,115 @@ function create(ctx: RenderModuleContext): RenderModule {
     batch.rect(px - 3, p.y - 2, px + p.w + 3, p.y + 11, z, depth + 0.1, cap);
   }
 
+  // ---------- T06: stage-specific platform looks (5–11) ----------
+
+  /** Underwater ground: no dirt, a reef of open pearl clams, staghorn coral and swaying kelp. */
+  function reefGround(p: PlatformBranch, px: number, z: number, depth: number, f: RenderFrame3D) {
+    const py = p.y;
+    pRound.at(px + p.w / 2, py + 14, z, p.w + 10, 26, depth, cssColor(pal.groundBodyFill));
+    const n = Math.max(3, Math.floor(p.w / 88));
+    const step = p.w / n;
+    const rows = depth > 2 ? [z + depth / 2 - 0.5, z - depth / 2 + 0.6] : [z];
+    for (let m = 0; m < n; m++) {
+      const mx = px + (m + 0.5) * step;
+      if (mx < f.viewMinX - 100 || mx > f.viewMaxX + 100) continue;
+      const rx = step * 0.48;
+      const even = m % 2 === 0;
+      for (const rz of rows) {
+        // Kelp fronds (two segments, swaying).
+        for (const k of [-0.55, 0.55]) {
+          const kx = mx + k * rx;
+          const a = Math.sin(f.t * 1.6 + kx * 0.02) * 0.25;
+          const kelp = cssColor(even ? '#10b981' : '#22d3ee');
+          pDetail.at(kx, py - 12, rz - 0.15, 6, 32, 0.06, kelp, a * 0.5);
+          pDetail.at(kx - Math.sin(a) * 30, py - 40, rz - 0.15, 6, 30, 0.06, kelp, a);
+        }
+        // Staghorn coral.
+        const coral = cssColor(even ? '#fb7185' : '#fde047');
+        pDetail.at(mx, py - 12, rz - 0.3, 8, 40, 0.08, coral);
+        pDetail.at(mx - 10, py - 18, rz - 0.3, 6, 26, 0.07, coral, 0.8);
+        pDetail.at(mx + 10, py - 24, rz - 0.3, 6, 26, 0.07, coral, -0.8);
+        // Open clam: lower cradle, tilted upper valve, glowing pearl.
+        pRound.at(mx, py + 8, rz, rx * 1.76, 26, 0.5, cssColor(even ? '#f472b6' : '#0284c7'));
+        pRound.at(mx - 4, py - 4, rz - 0.12, rx * 1.56, 22, 0.4, cssColor(even ? '#c084fc' : '#38bdf8'), -0.35);
+        glows.at(mx + 2, py + 1, rz + 0.18, 17, 17, 0.17, cssColor('#fef08a'));
+      }
+      halos.at(mx, py, z + depth / 2 + 0.1, 70, 50, 1, cssColor('#67e8f9'));
+    }
+  }
+
+  /** Mid-water floating platform: glowing jellyfish bell with tentacles and a pearl crown. */
+  function jellyCushion(p: PlatformBranch, px: number, z: number, depth: number, f: RenderFrame3D) {
+    const cx = px + p.w / 2;
+    const py = p.y;
+    const d = Math.min(depth, 1.4);
+    pRound.at(cx, py + 12, z, p.w * 0.96, 30, d, cssColor('#0891b2'));
+    pRound.at(cx, py + 8, z + 0.05, p.w * 0.84, 22, d * 0.9, cssColor('#22d3ee'));
+    for (let t = -3; t <= 3; t++) {
+      const tx = cx + t * p.w * 0.12;
+      const a = Math.sin(f.t * 3 + t) * 0.25;
+      pDetail.at(tx, py + 34, z, 4, 34, 0.05, cssColor(Math.abs(t) % 2 === 0 ? '#67e8f9' : '#f472b6'), a);
+    }
+    pRound.at(cx - 18, py + 2, z + 0.1, 12, 12, 0.12, cssColor('#f472b6'));
+    pRound.at(cx + 18, py + 2, z + 0.1, 12, 12, 0.12, cssColor('#f472b6'));
+    glows.at(cx, py - 1, z + 0.12, 15, 15, 0.15, cssColor('#fef08a'));
+  }
+
+  /** Blood abyss: every bridge is a red-hot iron girder (canvas: "toàn bộ cầu sắt đều sập"). */
+  function ironBridge(p: PlatformBranch, px: number, z: number, depth: number, f: RenderFrame3D) {
+    const py = p.y;
+    const pw = p.w;
+    const front = z + depth / 2;
+    const shaking = !!p.collapseTimer && p.collapseTimer > 0;
+    pBody.rect(px, py + 2, px + pw, py + 22, z, depth, cssColor('#27272a'));
+    pBody.rect(px - 3, py - 2, px + pw + 3, py + 6, z, depth + 0.08, cssColor('#52525b'));
+    // Truss Xs under the deck.
+    const n = Math.max(1, Math.floor(pw / 40));
+    for (let i = 0; i < n; i++) {
+      const bx = px + ((i + 0.5) * pw) / n;
+      pDetail.at(bx, py + 13, front + 0.02, 32, 3, 0.04, cssColor('#18181b'), 0.5);
+      pDetail.at(bx, py + 13, front + 0.02, 32, 3, 0.04, cssColor('#18181b'), -0.5);
+      pRound.at(bx, py + 2, front + 0.03, 6, 6, 0.06, cssColor('#a1a1aa'));
+    }
+    // Glowing hot seam: orange, flashing yellow while it is about to collapse.
+    const hot = shaking ? (Math.sin(f.t * 40) > 0 ? '#fef08a' : '#f97316') : '#ea580c';
+    hGlow.rect(px, py + 20, px + pw, py + 24, front - 0.05, 0.1, cssColor(hot));
+  }
+
+  /** Thunder peak: slabs are floating sky-rock islands (inverted rock cone under the slab). */
+  function skyRock(p: PlatformBranch, px: number, z: number, depth: number) {
+    pCone.at(px + p.w / 2, p.y + 24 + p.w * 0.22, z, p.w * 0.9, p.w * 0.44, Math.min(depth, 1.2), cssColor('#312e81'), Math.PI);
+  }
+
   function drawPlatform(p: PlatformBranch, px: number, z: number, depth: number, f: RenderFrame3D) {
-    if (seasonId === 'sky_sanctuary') cloudCushion(p, px, z, depth);
+    // Same rule as the canvas: the ocean palace, and anything sunk below a stage's water line, is reef.
+    const wl = f.cfg.waterLevelY;
+    // (Summer keeps T03's lotus pads.)
+    if (seasonId === 'ocean_palace' || (wl !== null && seasonId !== 'summer' && p.y >= wl + 12)) {
+      if (p.type === 'ground') reefGround(p, px, z, depth, f);
+      else jellyCushion(p, px, z, depth, f);
+    } else if (seasonId === 'sky_sanctuary') cloudCushion(p, px, z, depth);
     else if (seasonId === 'summer' && p.type !== 'roof') lotusPad(p, px, z, depth);
-    else if (p.type === 'ground' && seasonId !== 'ocean_palace') groundPlatform(p, px, z, depth, f);
-    else slabPlatform(p, px, z, depth);
+    else if (seasonId === 'blood_abyss' && (p.type === 'collapsing' || p.type === 'moving')) ironBridge(p, px, z, depth, f);
+    else if (p.type === 'ground') {
+      groundPlatform(p, px, z, depth, f);
+      if (seasonId === 'cavern') crystalCluster(p, z, depth, f);
+    } else {
+      slabPlatform(p, px, z, depth);
+      if (seasonId === 'thunder_peak' && p.type !== 'moving') skyRock(p, px, z, depth);
+    }
+  }
+
+  /** Cavern ground: amethyst clusters growing out of the crystal cap every ~260 px. */
+  function crystalCluster(p: PlatformBranch, z: number, depth: number, f: RenderFrame3D) {
+    const x0 = Math.max(p.x + 60, Math.floor((f.viewMinX - p.x) / 260) * 260 + p.x + 60);
+    const x1 = Math.min(p.x + p.w - 40, f.viewMaxX);
+    const back = z - depth / 2 + 0.4;
+    for (let x = x0; x < x1; x += 260) {
+      glowOcta.at(x, p.y - 14, back, 16, 34, 0.16, cssColor('#c084fc'), -0.35);
+      glowOcta.at(x + 12, p.y - 20, back, 20, 46, 0.2, cssColor('#e879f9'));
+      glowOcta.at(x + 26, p.y - 12, back, 14, 28, 0.14, cssColor('#a855f7'), 0.4);
+    }
   }
 
   function platforms(world: World, f: RenderFrame3D) {
@@ -348,6 +565,8 @@ function create(ctx: RenderModuleContext): RenderModule {
     const lanes = [LANE_Z[0], LANE_Z[1]];
     for (const hz of world.hazards) {
       if (hz.x + hz.w < f.viewMinX || hz.x > f.viewMaxX) continue;
+      const hy = hz.fallY ?? hz.y;
+      if (Math.max(hz.y, hy) + hz.h < f.viewMinY - 200 || Math.min(hz.y, hy) > f.viewMaxY + 200) continue;
       switch (hz.kind) {
         case 'spike_trap':
           spikes(hz, lanes);
@@ -442,6 +661,7 @@ function create(ctx: RenderModuleContext): RenderModule {
     let li = 0;
     for (const cp of world.checkpoints) {
       if (cp.x < f.viewMinX - 200 || cp.x > f.viewMaxX + 200) continue;
+      if (cp.y < f.viewMinY - 200 || cp.y > f.viewMaxY + 300) continue;
       const main = cssColor(cp.activated ? '#10b981' : '#f43f5e');
       const dark = cssColor(cp.activated ? '#047857' : '#be123c');
       const z = SHRINE_Z;
@@ -519,10 +739,15 @@ function create(ctx: RenderModuleContext): RenderModule {
     const haloC = cssColor(haloColor(seasonId));
     for (const gp of world.grapples) {
       if (gp.x < f.viewMinX || gp.x > f.viewMaxX) continue;
+      if (gp.y < f.viewMinY - 100 || gp.y > f.viewMaxY + 100) continue; // vertical stages
       const sway = Math.sin(f.t * 3.5 + gp.x * 0.02) * 2.5;
       const x = gp.x + sway;
       const y = gp.y;
-      propBox.at(gp.x + sway * 0.3, y - 25, z, 3, 26, 0.03, cssColor(seasonId === 'autumn' ? '#94a3b8' : '#1a0f0a'), -sway * 0.02);
+      if (seasonId !== 'celestial_altar') {
+        // Tether: kelp underwater, iron chain at the forge / castle, cord elsewhere (celestial levitates).
+        const tether = seasonId === 'ocean_palace' ? '#10b981' : seasonId === 'autumn' || seasonId === 'blood_abyss' ? '#94a3b8' : '#1a0f0a';
+        propBox.at(gp.x + sway * 0.3, y - 25, z, 3, 26, 0.03, cssColor(tether), -sway * 0.02);
+      }
       halos.at(x, y, z - 0.05, 80, 80, 1, haloC);
       switch (seasonId) {
         case 'spring':
@@ -549,6 +774,68 @@ function create(ctx: RenderModuleContext): RenderModule {
           // Frost crystal prism.
           glowOcta.at(x, y, z, 24, 34, 0.24, cssColor('#bae6fd'), f.t * 1.2);
           break;
+        case 'cavern':
+          // Amethyst geode cluster: three glowing shards.
+          glowOcta.at(x - 7, y + 2, z, 12, 26, 0.12, cssColor('#9333ea'), -0.35);
+          glowOcta.at(x + 7, y + 2, z, 12, 26, 0.12, cssColor('#c084fc'), 0.35);
+          glowOcta.at(x, y - 3, z + 0.05, 16, 34, 0.16, cssColor('#e879f9'));
+          break;
+        case 'thunder_peak':
+          // Raijin thunder-drum orb: indigo sphere, golden ring, bolt core.
+          propRound.at(x, y, z, 26, 26, 0.26, cssColor('#312e81'));
+          propDisc.at(x, y, z + 0.1, 19, 19, 0.04, cssColor('#fde047'));
+          glows.at(x, y, z + 0.14, 10, 10, 0.06, cssColor('#fef08a'));
+          glowOcta.at(x, y, z + 0.16, 6, 14, 0.04, cssColor('#ffffff'), 0.4);
+          break;
+        case 'blood_abyss':
+          // Hellfire chain cage with a molten core.
+          propRound.at(x, y, z, 27, 27, 0.27, cssColor('#1f2937'));
+          glows.at(x, y, z + 0.06, 19, 19, 0.2, cssColor('#ef4444'));
+          glows.at(x, y, z + 0.1, 10, 10, 0.12, cssColor('#fef08a'));
+          propBox.at(x, y, z + 0.16, 26, 4, 0.04, cssColor('#374151'));
+          propBox.at(x, y, z + 0.16, 4, 26, 0.04, cssColor('#374151'));
+          break;
+        case 'celestial_altar':
+          // White-jade bi-disc with jade ring, golden core and silk ribbons; astral ring above.
+          propDisc.at(x, y, z, 27, 27, 0.08, cssColor('#ecfdf5'));
+          propDisc.at(x, y, z + 0.03, 20, 20, 0.08, cssColor('#34d399'));
+          propDisc.at(x, y, z + 0.06, 14, 14, 0.08, cssColor('#ecfdf5'));
+          glows.at(x, y, z + 0.08, 9, 9, 0.06, cssColor('#fde047'));
+          propBox.at(x - 12, y + 15, z, 3, 14, 0.02, cssColor('#fbbf24'), 0.3);
+          propBox.at(x + 12, y + 15, z, 3, 14, 0.02, cssColor('#fbbf24'), -0.3);
+          glows.at(x, y - 18, z, 24, 4, 0.24, cssColor('#fde047'));
+          break;
+        case 'ocean_palace':
+          // Giant clam shell cradling a glowing moon-pearl, coral starfish clasp.
+          propRound.at(x, y + 5, z, 30, 15, 0.3, cssColor('#22d3ee'));
+          propRound.at(x, y - 4, z - 0.05, 28, 16, 0.26, cssColor('#0e7490'));
+          propRound.at(x, y + 2, z + 0.08, 22, 10, 0.2, cssColor('#fda4af'));
+          glows.at(x, y, z + 0.16, 15, 15, 0.15, cssColor('#fef08a'));
+          propRound.at(x - 9, y - 9, z + 0.1, 9, 9, 0.09, cssColor('#fb7185'));
+          break;
+        case 'earth_core': {
+          // Spinning brass mine-pulley wheel with an amber hub.
+          const a = f.t * 2.6;
+          propDisc.at(x, y, z, 25, 25, 0.12, cssColor('#b45309'), a);
+          for (let k = 0; k < 6; k++) {
+            const ka = a + (k * Math.PI) / 3;
+            propBox.at(x + Math.cos(ka) * 14, y + Math.sin(ka) * 14, z, 5, 7, 0.1, cssColor('#b45309'), ka + Math.PI / 2);
+          }
+          glows.at(x, y, z + 0.08, 12, 12, 0.08, cssColor('#fde047'));
+          break;
+        }
+        case 'sky_sanctuary': {
+          // Celestial wind-wheel: four cyan/gold pinwheel blades inside a golden ring.
+          const a = f.t * 3.4;
+          for (let k = 0; k < 4; k++) {
+            const ka = a + (k * Math.PI) / 2;
+            propBox.at(x + Math.cos(ka) * 8, y + Math.sin(ka) * 8, z, 16, 6, 0.06, cssColor(k % 2 === 0 ? '#38bdf8' : '#fde047'), ka);
+          }
+          propDisc.at(x, y, z - 0.04, 28, 28, 0.02, cssColor('#fde047'));
+          propDisc.at(x, y, z - 0.03, 23, 23, 0.02, cssColor('#0284c7'));
+          glows.at(x, y, z + 0.06, 11, 11, 0.1, cssColor('#ffffff'));
+          break;
+        }
         default:
           glows.at(x, y, z, 24, 24, 0.24, cssColor(f.cfg.accentColor));
       }
@@ -584,11 +871,16 @@ function create(ctx: RenderModuleContext): RenderModule {
       target.set((world.camX + world.viewW / 2) * S, -(world.camY + world.viewH / 2) * S, 0);
       sky.follow(camera);
       const dist = camera.position.distanceTo(target);
-      fog.near = dist + 2;
-      fog.far = dist + 95;
+      const fogShape = FOG_SHAPE[seasonId] ?? FOG_DEFAULT;
+      fog.near = dist + fogShape[0];
+      fog.far = dist + fogShape[1];
       setSwayTime(m.sway, f.t);
+      caustics.uCaustic.value = seasonId === 'ocean_palace' ? 0.55 : 0;
+      caustics.uCausticTime.value = f.t;
+      baguaSpin = f.t * 1.2;
 
       for (const b of batches) b.begin();
+      slopeDetails(f);
       platforms(world, f);
       hazards(world, f);
       shrines(world, f);

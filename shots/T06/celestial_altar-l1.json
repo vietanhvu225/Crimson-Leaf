@@ -1,0 +1,31 @@
+{
+  "stage": "celestial_altar",
+  "renderer": "three",
+  "loop": 1,
+  "script": "run",
+  "url": "http://127.0.0.1:49622/?autostart=1&stage=celestial_altar&loop=1&renderer=three&seed=3&muted=1",
+  "fps": 144.4,
+  "worstFrameMs": 7,
+  "pixelStd": 55.52,
+  "pixelMean": 61.9,
+  "gameState": "playing",
+  "seasonId": "celestial_altar",
+  "player": {
+    "x": 707,
+    "y": 253,
+    "vx": 211,
+    "vy": -364,
+    "onGround": false,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 143.9,
+    "drawCalls": 59,
+    "triangles": 54500,
+    "geometries": 22,
+    "textures": 10,
+    "entities": 268
+  },
+  "png": "shots/T06/celestial_altar-l1.png",
+  "errors": []
+}

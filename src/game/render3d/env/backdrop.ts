@@ -2,11 +2,12 @@ import * as THREE from 'three';
 import type { SeasonId } from '../../rules/index.ts';
 import type { ChibiStagePalette } from '../../render/map/stagePalette.ts';
 import { cssColor } from '../resources.ts';
+import { DeepBackdrop } from './backdropDeep.ts';
 import { Batch, hash01, type EnvGeometries, type EnvMaterials } from './kit.ts';
 
 // Multi-layer backdrop in real depth (z = -16 … -90) instead of canvas fake parallax: every layer is
 // world-fixed tiles (hash per tile index, no RNG state), so the camera's perspective does the
-// parallax. Stage looks follow render/map/sky/<stage>.ts; stages 5–11 get the generic hills (T06).
+// parallax. Stage looks follow render/map/sky/<stage>.ts; stages 5–11 live in backdropDeep.ts (T06).
 
 /** What the camera sees on the plane z (centre + half extents, three units). */
 export interface DepthView {
@@ -29,25 +30,26 @@ export function viewAtDepth(camera: THREE.PerspectiveCamera, target: THREE.Vecto
   return out;
 }
 
-function tiles(v: DepthView, spacing: number, margin: number, cb: (i: number, x: number) => void) {
+export function tiles(v: DepthView, spacing: number, margin: number, cb: (i: number, x: number) => void) {
   const i0 = Math.floor((v.cx - v.halfW - margin) / spacing);
   const i1 = Math.ceil((v.cx + v.halfW + margin) / spacing);
   for (let i = i0; i <= i1; i++) cb(i, i * spacing);
 }
 
 export class Backdrop {
-  private facet: Batch;
-  private hills: Batch;
-  private decor: Batch;
-  private round: Batch;
-  private arches: Batch;
-  private discs: Batch;
-  private skyGlow: Batch;
-  private skyHalo: Batch;
+  readonly facet: Batch;
+  readonly hills: Batch;
+  readonly decor: Batch;
+  readonly round: Batch;
+  readonly arches: Batch;
+  readonly discs: Batch;
+  readonly skyGlow: Batch;
+  readonly skyHalo: Batch;
   private v: DepthView = { cx: 0, cy: 0, halfW: 1, halfH: 1 };
   private seasonId: SeasonId = 'spring';
   private isLoop2 = false;
-  private pal!: ChibiStagePalette;
+  pal!: ChibiStagePalette;
+  private deep: DeepBackdrop;
 
   constructor(parent: THREE.Object3D, g: EnvGeometries, m: EnvMaterials) {
     this.facet = new Batch(parent, g.pyramid, m.facet, 64);
@@ -58,6 +60,7 @@ export class Backdrop {
     this.discs = new Batch(parent, g.disc, m.solid, 32);
     this.skyGlow = new Batch(parent, g.sphere, m.skyGlow, 48, { renderOrder: -50 });
     this.skyHalo = new Batch(parent, g.quad, m.skyHalo, 128, { renderOrder: -49 });
+    this.deep = new DeepBackdrop(this, parent, g, m);
   }
 
   setStage(seasonId: SeasonId, isLoop2: boolean, pal: ChibiStagePalette) {
@@ -69,6 +72,7 @@ export class Backdrop {
   update(camera: THREE.PerspectiveCamera, target: THREE.Vector3, t: number, isAwakened: boolean) {
     const all = [this.facet, this.hills, this.decor, this.round, this.arches, this.discs, this.skyGlow, this.skyHalo];
     for (const b of all) b.begin();
+    this.deep.begin();
     switch (this.seasonId) {
       case 'spring':
         this.spring(camera, target, t, isAwakened);
@@ -83,20 +87,22 @@ export class Backdrop {
         this.winter(camera, target, t);
         break;
       default:
-        this.generic(camera, target, t);
+        if (!this.deep.update(this.seasonId, this.isLoop2, camera, target, t)) this.generic(camera, target, t);
     }
     for (const b of all) b.end();
+    this.deep.end();
   }
 
   dispose() {
     for (const b of [this.facet, this.hills, this.decor, this.round, this.arches, this.discs, this.skyGlow, this.skyHalo]) {
       b.dispose();
     }
+    this.deep.dispose();
   }
 
   // ---------- shared pieces ----------
 
-  private celestial(camera: THREE.PerspectiveCamera, target: THREE.Vector3, fx: number, fy: number, r: number, body: string, halo: string) {
+  celestial(camera: THREE.PerspectiveCamera, target: THREE.Vector3, fx: number, fy: number, r: number, body: string, halo: string) {
     const v = viewAtDepth(camera, target, -95, this.v);
     const x = v.cx + v.halfW * fx;
     const y = v.cy + v.halfH * fy;
@@ -105,7 +111,7 @@ export class Backdrop {
     this.skyGlow.add(x, y, -95, d, d, d, cssColor(body));
   }
 
-  private clouds(camera: THREE.PerspectiveCamera, target: THREE.Vector3, t: number, z: number, top: number) {
+  clouds(camera: THREE.PerspectiveCamera, target: THREE.Vector3, t: number, z: number, top: number) {
     const v = viewAtDepth(camera, target, z, this.v);
     const fill = cssColor(this.pal.cloudFill);
     const shade = cssColor(this.pal.cloudShade);
@@ -125,7 +131,7 @@ export class Backdrop {
   }
 
   /** Rolling hills (half-buried puffs) rising from the bottom of the view at depth z. */
-  private hillRow(camera: THREE.PerspectiveCamera, target: THREE.Vector3, z: number, spacing: number, hMin: number, hMax: number, color: string, salt: number, onTop?: (i: number, x: number, topY: number) => void) {
+  hillRow(camera: THREE.PerspectiveCamera, target: THREE.Vector3, z: number, spacing: number, hMin: number, hMax: number, color: string, salt: number, onTop?: (i: number, x: number, topY: number) => void) {
     const v = viewAtDepth(camera, target, z, this.v);
     const base = v.cy - v.halfH;
     const c = cssColor(color);
@@ -138,7 +144,7 @@ export class Backdrop {
   }
 
   /** Mini pagoda: stacked tiers with pyramid roofs (canvas drawChibiMiniPagoda). */
-  private pagoda(x: number, baseY: number, z: number, s: number, roof: string) {
+  pagoda(x: number, baseY: number, z: number, s: number, roof: string) {
     const body = cssColor('#7f1d1d');
     const r = cssColor(roof);
     let y = baseY;
