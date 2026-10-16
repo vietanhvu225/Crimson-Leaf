@@ -312,14 +312,15 @@ export class DeepBackdrop {
     const ev = viewAtDepth(camera, target, -92, this.v);
     const ex = ev.cx + ev.halfW * 0.04;
     const ey = ev.cy + ev.halfH * 0.44;
-    const R = ev.halfH * 0.2;
-    b.skyHalo.add(ex, ey, -94, R * 6, R * 6, 1, cssColor('#f43f5e'));
+    const R = ev.halfH * 0.15;
+    b.skyHalo.add(ex, ey, -94, R * 5, R * 5, 1, cssColor('#9f1239'));
     b.skyGlow.add(ex, ey, -93.5, R * 2, R * 2, 0.1, cssColor('#f43f5e'));
     this.skyDisc.add(ex, ey, -92.5, R * 1.68, R * 1.68, 0.1, cssColor('#1a0f0a'));
     this.skyRing.add(ex, ey, -92.4, R * 1.7, R * 1.7, R, cssColor('#fde047'));
     const a0 = t * 0.32;
-    this.skyRing.add(ex, ey, -92.6, R * 3.3, R * 3.3, R, cssColor('#fde047'));
-    this.skyRing.add(ex, ey, -92.6, R * 2.7, R * 2.7, R, cssColor('#fde047'));
+    c1.copy(cssColor('#fde047')).multiplyScalar(0.7);
+    this.skyRing.add(ex, ey, -92.6, R * 3.3, R * 3.3, R, c1);
+    this.skyRing.add(ex, ey, -92.6, R * 2.7, R * 2.7, R, c1);
     for (let k = 0; k < 8; k++) {
       const a = a0 + (k * Math.PI) / 4;
       this.skyBox.add(ex + Math.cos(a) * R * 1.55, ey + Math.sin(a) * R * 1.55, -92.5, R * 0.42, R * 0.15, 0.1, cssColor('#f43f5e'), a + Math.PI / 2);
