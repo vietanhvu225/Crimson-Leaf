@@ -165,7 +165,9 @@ function create(ctx: RenderModuleContext): RenderModule {
     player.group.position.set(toX(p.x), toY(p.y), player.z);
     player.group.scale.set(p.scaleX, p.scaleY, 1);
     const blink = p.invulnTimer > 0 && Math.floor(f.t * 20) % 2 === 0;
-    player.group.visible = !blink;
+    // Invulnerability blink: the body flickers, the faint silhouette stays so the player never vanishes.
+    player.body.visible = !blink;
+    scarf.visible = !blink;
     player.body.material = world.combat.awakenedTimer > 0 ? bodyMat('#f43f5e') : bodyMat('#dc2626');
     // Scarf trails opposite to velocity.
     const sway = Math.max(-1, Math.min(1, -p.vx / 400));

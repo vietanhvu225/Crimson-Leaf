@@ -257,20 +257,28 @@ function create(ctx: RenderModuleContext): RenderModule {
       }
       trunks.end();
 
-      // Hazards: translucent volume across both lanes, bright when active.
+      // Props (spikes, checkpoint torii, mother shrine) + glows (checkpoint orbs, grapple lanterns).
+      props.begin();
+      glows.begin();
+
+      // Hazards: zones (updraft, geyser, lightning) = translucent volume across both lanes, bright
+      // when active; contact damage (spikes, icicles) = solid red-tipped blocks so they read as danger.
       hazards.begin();
       for (const hz of world.hazards) {
         if (hz.x + hz.w < f.viewMinX || hz.x > f.viewMaxX) continue;
+        const { z, depth } = laneSpan('both');
+        if (hz.kind === 'spike_trap' || hz.kind === 'icicle') {
+          tmp.copy(cssColor(hz.kind === 'spike_trap' ? '#e11d48' : '#7dd3fc'));
+          if (!hz.active) tmp.multiplyScalar(0.5);
+          props.add(toX(hz.x + hz.w / 2), toY(hz.y + hz.h / 2), z, hz.w * S, Math.max(8, hz.h) * S, depth * 0.6, tmp);
+          continue;
+        }
         tmp.copy(cssColor(HAZARD_COLOR[hz.kind]));
         if (!hz.active) tmp.multiplyScalar(0.35);
-        const { z, depth } = laneSpan('both');
         hazards.add(toX(hz.x + hz.w / 2), toY(hz.y + hz.h / 2), z, hz.w * S, hz.h * S, depth, tmp);
       }
       hazards.end();
 
-      // Props (checkpoint torii, mother shrine) + glows (checkpoint orbs, grapple lanterns).
-      props.begin();
-      glows.begin();
       for (const cp of world.checkpoints) {
         if (cp.x < f.viewMinX - 200 || cp.x > f.viewMaxX + 200) continue;
         const main = cssColor(cp.activated ? '#10b981' : '#f43f5e');
