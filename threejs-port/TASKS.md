@@ -9,10 +9,10 @@ Dòng **Tham khảo** ở mỗi task chỉ ra file nào trong skill dự án `cr
 | T00 | Bootstrap project + công cụ chụp ảnh | - | - | DONE |
 | T01 | Gỡ engine khỏi Canvas (rng, World, aim, GameView) | T00 | - | DONE |
 | T02 | Khung Three.js chơi được (placeholder) | T01 | - | DONE |
-| T03 | Môi trường: kit + màn 1–4 | T02 | A | IN_PROGRESS (attempt 1) |
+| T03 | Môi trường: kit + màn 1–4 | T02 | A | DONE |
 | T04 | Nhân vật, kẻ địch, boss | T02 | A | IN_PROGRESS (attempt 1) |
-| T05 | VFX + post-processing | T02 | A | TODO |
-| T06 | Môi trường: màn 5–11 | T03 | B | TODO |
+| T05 | VFX + post-processing | T02 | A | IN_PROGRESS (attempt 1) |
+| T06 | Môi trường: màn 5–11 | T03 | B | IN_PROGRESS (attempt 1) |
 | T07 | UI theo hướng Three.js | T04, T05 | B | TODO |
 | T08 | Hiệu năng + bot playtest 11 màn | T06, T07 | - | TODO |
 | T09 | FINAL_REPORT | T08 | - | TODO |
