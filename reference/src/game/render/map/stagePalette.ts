@@ -1,0 +1,284 @@
+import { SeasonId } from '../../rules';
+
+// Per-stage colour palette (loop 1 / loop 2 variants).
+
+export interface ChibiStagePalette {
+  skyTop: string;
+  skyMid: string;
+  skyBottom: string;
+  cloudFill: string;
+  cloudShade: string;
+  farHillFill: string;
+  nearHillFill: string;
+  trunkFill: string;
+  trunkShade: string;
+  trunkHighlight: string;
+  canopyPrimary: string;
+  canopySecondary: string;
+  groundBodyFill: string;
+  groundBrickFill: string;
+  groundCapFill: string;
+  groundCapHighlight: string;
+  platformBodyFill: string;
+  platformCapFill: string;
+}
+
+export function getChibiStagePalette(seasonId: SeasonId, isLoop2: boolean): ChibiStagePalette {
+  if (isLoop2) {
+    return {
+      skyTop: '#2a0818',
+      skyMid: '#4c0d28',
+      skyBottom: '#7f1d1d',
+      cloudFill: '#fda4af',
+      cloudShade: '#f43f5e',
+      farHillFill: '#3b0a1e',
+      nearHillFill: '#280614',
+      trunkFill: '#3f1d28',
+      trunkShade: '#260e16',
+      trunkHighlight: '#6b3042',
+      canopyPrimary: '#e11d48',
+      canopySecondary: '#fb7185',
+      groundBodyFill: '#331824',
+      groundBrickFill: '#472232',
+      groundCapFill: '#e11d48',
+      groundCapHighlight: '#fda4af',
+      platformBodyFill: '#4a1d2c',
+      platformCapFill: '#fb7185',
+    };
+  }
+
+  switch (seasonId) {
+    case 'spring':
+      return {
+        skyTop: '#172554',
+        skyMid: '#1e3a8a',
+        skyBottom: '#3b82f6',
+        cloudFill: '#fff1f2',
+        cloudShade: '#fecdd3',
+        farHillFill: '#1e293b',
+        nearHillFill: '#0f172a',
+        trunkFill: '#5c3a21',
+        trunkShade: '#3d2514',
+        trunkHighlight: '#855836',
+        canopyPrimary: '#fb7185',
+        canopySecondary: '#fda4af',
+        groundBodyFill: '#475569',
+        groundBrickFill: '#64748b',
+        groundCapFill: '#22c55e',
+        groundCapHighlight: '#86efac',
+        platformBodyFill: '#78350f',
+        platformCapFill: '#4ade80',
+      };
+    case 'summer':
+      return {
+        skyTop: '#082f49',
+        skyMid: '#0369a1',
+        skyBottom: '#22d3ee',
+        cloudFill: '#ecfeff',
+        cloudShade: '#a5f3fc',
+        farHillFill: '#0f3d4c',
+        nearHillFill: '#082631',
+        trunkFill: '#0f766e',
+        trunkShade: '#115e59',
+        trunkHighlight: '#2dd4bf',
+        canopyPrimary: '#10b981',
+        canopySecondary: '#6ee7b7',
+        groundBodyFill: '#334155',
+        groundBrickFill: '#475569',
+        groundCapFill: '#14b8a6',
+        groundCapHighlight: '#5eead4',
+        platformBodyFill: '#713f12',
+        platformCapFill: '#38bdf8',
+      };
+    case 'autumn':
+      return {
+        skyTop: '#431407',
+        skyMid: '#9a3412',
+        skyBottom: '#fb923c',
+        cloudFill: '#ffedd5',
+        cloudShade: '#fdba74',
+        farHillFill: '#451a03',
+        nearHillFill: '#290f02',
+        trunkFill: '#572814',
+        trunkShade: '#38180a',
+        trunkHighlight: '#854d0e',
+        canopyPrimary: '#f97316',
+        canopySecondary: '#fdba74',
+        groundBodyFill: '#57534e',
+        groundBrickFill: '#78716c',
+        groundCapFill: '#f97316',
+        groundCapHighlight: '#fdba74',
+        platformBodyFill: '#7c2d12',
+        platformCapFill: '#fbbf24',
+      };
+    case 'winter':
+      return {
+        skyTop: '#0f172a',
+        skyMid: '#1e3a5f',
+        skyBottom: '#7dd3fc',
+        cloudFill: '#f8fafc',
+        cloudShade: '#bae6fd',
+        farHillFill: '#1e293b',
+        nearHillFill: '#0f172a',
+        trunkFill: '#334155',
+        trunkShade: '#1e293b',
+        trunkHighlight: '#64748b',
+        canopyPrimary: '#e0f2fe',
+        canopySecondary: '#ffffff',
+        groundBodyFill: '#334155',
+        groundBrickFill: '#475569',
+        groundCapFill: '#f1f5f9',
+        groundCapHighlight: '#ffffff',
+        platformBodyFill: '#1e3a8a',
+        platformCapFill: '#e0f2fe',
+      };
+    case 'cavern':
+      return {
+        skyTop: '#1e0b36',
+        skyMid: '#3b0764',
+        skyBottom: '#7e22ce',
+        cloudFill: '#f3e8ff',
+        cloudShade: '#d8b4fe',
+        farHillFill: '#2e1065',
+        nearHillFill: '#1b073b',
+        trunkFill: '#4c1d95',
+        trunkShade: '#2e1065',
+        trunkHighlight: '#8b5cf6',
+        canopyPrimary: '#c084fc',
+        canopySecondary: '#f5d0fe',
+        groundBodyFill: '#312e81',
+        groundBrickFill: '#4338ca',
+        groundCapFill: '#a855f7',
+        groundCapHighlight: '#e879f9',
+        platformBodyFill: '#4c1d95',
+        platformCapFill: '#c084fc',
+      };
+    case 'thunder_peak':
+      return {
+        skyTop: '#0f172a',
+        skyMid: '#1e1b4b',
+        skyBottom: '#4338ca',
+        cloudFill: '#fef9c3',
+        cloudShade: '#fde047',
+        farHillFill: '#1e1b4b',
+        nearHillFill: '#111827',
+        trunkFill: '#374151',
+        trunkShade: '#1f2937',
+        trunkHighlight: '#6b7280',
+        canopyPrimary: '#eab308',
+        canopySecondary: '#fef08a',
+        groundBodyFill: '#374151',
+        groundBrickFill: '#4b5563',
+        groundCapFill: '#eab308',
+        groundCapHighlight: '#fef08a',
+        platformBodyFill: '#312e81',
+        platformCapFill: '#facc15',
+      };
+    case 'blood_abyss':
+      return {
+        skyTop: '#280505',
+        skyMid: '#650909',
+        skyBottom: '#dc2626',
+        cloudFill: '#fecaca',
+        cloudShade: '#f87171',
+        farHillFill: '#450a0a',
+        nearHillFill: '#290505',
+        trunkFill: '#3f3f46',
+        trunkShade: '#27272a',
+        trunkHighlight: '#71717a',
+        canopyPrimary: '#f97316',
+        canopySecondary: '#fef08a',
+        groundBodyFill: '#292524',
+        groundBrickFill: '#44403c',
+        groundCapFill: '#ea580c',
+        groundCapHighlight: '#fdba74',
+        platformBodyFill: '#450a0a',
+        platformCapFill: '#f97316',
+      };
+    case 'ocean_palace':
+      return {
+        skyTop: '#021024',
+        skyMid: '#063455',
+        skyBottom: '#086972',
+        cloudFill: '#cffafe',
+        cloudShade: '#22d3ee',
+        farHillFill: '#052c47',
+        nearHillFill: '#031d30',
+        trunkFill: '#0e7490',
+        trunkShade: '#155e75',
+        trunkHighlight: '#67e8f9',
+        canopyPrimary: '#fb7185',
+        canopySecondary: '#22d3ee',
+        groundBodyFill: '#0f3d56',
+        groundBrickFill: '#164e63',
+        groundCapFill: '#06b6d4',
+        groundCapHighlight: '#a5f3fc',
+        platformBodyFill: '#0e7490',
+        platformCapFill: '#fb7185',
+      };
+    case 'earth_core':
+      return {
+        skyTop: '#160d06',
+        skyMid: '#2e190b',
+        skyBottom: '#572f12',
+        cloudFill: '#fef3c7',
+        cloudShade: '#f59e0b',
+        farHillFill: '#291508',
+        nearHillFill: '#1c0e05',
+        trunkFill: '#78350f',
+        trunkShade: '#451a03',
+        trunkHighlight: '#b45309',
+        canopyPrimary: '#f59e0b',
+        canopySecondary: '#fde047',
+        groundBodyFill: '#451a03',
+        groundBrickFill: '#78350f',
+        groundCapFill: '#d97706',
+        groundCapHighlight: '#fde047',
+        platformBodyFill: '#572814',
+        platformCapFill: '#fbbf24',
+      };
+    case 'sky_sanctuary':
+      return {
+        skyTop: '#082f49',
+        skyMid: '#0284c7',
+        skyBottom: '#7dd3fc',
+        cloudFill: '#ffffff',
+        cloudShade: '#bae6fd',
+        farHillFill: '#0369a1',
+        nearHillFill: '#075985',
+        trunkFill: '#0e7490',
+        trunkShade: '#155e75',
+        trunkHighlight: '#a5f3fc',
+        canopyPrimary: '#38bdf8',
+        canopySecondary: '#fde047',
+        groundBodyFill: '#0369a1',
+        groundBrickFill: '#0284c7',
+        groundCapFill: '#fde047',
+        groundCapHighlight: '#ffffff',
+        platformBodyFill: '#0284c7',
+        platformCapFill: '#fde047',
+      };
+    case 'celestial_altar':
+    default:
+      return {
+        skyTop: '#0f0728',
+        skyMid: '#31105e',
+        skyBottom: '#6d28d9',
+        cloudFill: '#fef3c7',
+        cloudShade: '#fde68a',
+        farHillFill: '#2e1065',
+        nearHillFill: '#170736',
+        trunkFill: '#475569',
+        trunkShade: '#334155',
+        trunkHighlight: '#94a3b8',
+        canopyPrimary: '#f43f5e',
+        canopySecondary: '#fde047',
+        groundBodyFill: '#334155',
+        groundBrickFill: '#475569',
+        groundCapFill: '#fbbf24',
+        groundCapHighlight: '#fef08a',
+        platformBodyFill: '#312e81',
+        platformCapFill: '#fde047',
+      };
+  }
+}

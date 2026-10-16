@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.vite/
+test-results/
+playwright-report/
+.setup-tmp/
+threejs-port/logs/
+# bản clone repo skill gốc (có .git riêng), chỉ để tham khảo. Dấu / đầu dòng để KHÔNG bỏ qua .claude/skills/
+/skills/
+*.log

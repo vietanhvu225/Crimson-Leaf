@@ -1,0 +1,26 @@
+{
+  "generatedAt": "2026-10-16T20:21:26.404Z",
+  "note": "T00 phải dùng ĐÚNG các version này (không dấu ^). shot.mjs phải launch Chromium bằng chromiumLaunch.",
+  "packages": {
+    "three": "0.186.1",
+    "@types/three": "0.186.0",
+    "playwright": "1.64.1"
+  },
+  "referenceResolved": {
+    "vite": "8.3.4",
+    "react": "19.3.1",
+    "typescript": "7.0.2",
+    "tailwindcss": "4.3.3"
+  },
+  "node": "24.20.0",
+  "chromiumLaunch": {
+    "headless": true,
+    "channel": "chromium",
+    "args": [
+      "--use-angle=d3d11",
+      "--enable-gpu",
+      "--ignore-gpu-blocklist"
+    ]
+  },
+  "headlessFpsProbe": 142
+}
