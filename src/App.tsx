@@ -5,6 +5,7 @@ import {
   GameLoopRoute,
   GameStateMode,
   PlayerCombatState,
+  SEASONS,
   SeasonId,
   SkillBranchId,
 } from './game/rules';
@@ -15,6 +16,21 @@ import { PauseModal, OutcomeModal, RunSnapshot } from './ui/GameModals';
 import { GddModal } from './ui/GddModal';
 import { GameCanvas } from './ui/GameCanvas';
 import { TouchInputState } from './game/engine/entities';
+
+// Initial state from URL params (?stage=<SeasonId>&loop=1|2&muted=1). Unknown values are ignored.
+function readUrlParam(name: string): string | null {
+  if (typeof window === 'undefined') return null;
+  return new URLSearchParams(window.location.search).get(name);
+}
+
+function initialSeasonFromUrl(): SeasonId {
+  const stage = readUrlParam('stage');
+  return stage && Object.prototype.hasOwnProperty.call(SEASONS, stage) ? (stage as SeasonId) : 'spring';
+}
+
+function initialLoopFromUrl(): GameLoopRoute {
+  return readUrlParam('loop') === '2' ? 2 : 1;
+}
 
 export default function App() {
   const [gameState, setGameState] = useState<GameStateMode>(() => {
@@ -27,8 +43,8 @@ export default function App() {
     return 'title';
   });
 
-  const [seasonId, setSeasonId] = useState<SeasonId>('spring');
-  const [loopRoute, setLoopRoute] = useState<GameLoopRoute>(1);
+  const [seasonId, setSeasonId] = useState<SeasonId>(initialSeasonFromUrl);
+  const [loopRoute, setLoopRoute] = useState<GameLoopRoute>(initialLoopFromUrl);
   const [resetToken, setResetToken] = useState<number>(0);
   const [awakenTriggerToken, setAwakenTriggerToken] = useState<number>(0);
   const [immortalToggleToken, setImmortalToggleToken] = useState<number>(0);
@@ -40,7 +56,11 @@ export default function App() {
     token: 0,
     branch: 'kodachi',
   });
-  const [muted, setMuted] = useState<boolean>(false);
+  const [muted, setMuted] = useState<boolean>(() => {
+    const initial = readUrlParam('muted') === '1';
+    if (initial) soundEngine.setMuted(true);
+    return initial;
+  });
   const [showGddModal, setShowGddModal] = useState<boolean>(false);
 
   const [combatHud, setCombatHud] = useState<PlayerCombatState>(() =>
