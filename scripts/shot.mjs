@@ -31,7 +31,7 @@ const STAGES = [
   'earth_core',
   'sky_sanctuary',
 ];
-const SCRIPTS = ['idle', 'run', 'combat', 'boss'];
+const SCRIPTS = ['idle', 'run', 'combat', 'boss', 'clear', 'lanes'];
 const LOCK_PATH = path.join(os.tmpdir(), 'crimson-shot.lock');
 const LOCK_WAIT_MS = 20 * 60 * 1000;
 const LOCK_STALE_MS = 30 * 60 * 1000;
@@ -227,6 +227,163 @@ async function tap(page, key, holdMs = 60) {
   await page.keyboard.up(key);
 }
 
+/**
+ * `--script clear`: a simple bot plays the stage through window.__game (fixed 1/60 s steps, decided
+ * every 0.1 s): run right, jump over gaps / when stuck, melee the nearest enemy, switch lane (Q)
+ * toward a seal-gate guard on the other lane. Only after 15 s without progress does it fall back
+ * to teleportToBoss (reported). Ends at victory, defeat or the sim-time budget.
+ */
+const VERTICAL_STAGES = ['autumn', 'thunder_peak'];
+
+async function playToClear(page, maxSimSec, stage) {
+  const vertStage = VERTICAL_STAGES.includes(stage);
+  return page.evaluate(async ([maxSimSec, vertStage]) => {
+    const g = window.__game;
+    const w = g.world;
+    const p = w.player;
+    const log = [];
+    let simSec = 0;
+    let bestX = p.x;
+    let bestY = p.y;
+    let lastProgressAt = 0;
+    let teleports = 0;
+    let laneSwitches = 0;
+    let jumps = 0;
+    let outcome = null;
+    let minHp = w.combat.hp;
+    const yieldToReact = () => new Promise((r) => setTimeout(r, 0));
+    const vertical = vertStage;
+    for (let tick = 0; simSec < maxSimSec; tick++) {
+      if (w.pendingOutcome) outcome = w.pendingOutcome;
+      if (outcome || document.body.dataset.state === 'gameover') break;
+      const lane = w.combat.zLane;
+      // Nearest living enemy (prefer same lane); seal-gate guard if a gate blocks the way.
+      let target = null;
+      let bestD = Infinity;
+      for (const e of w.enemies) {
+        if (e.hp <= 0 || e.koTimer > 0 || e.ambushEntryTimer > 0) continue;
+        const d = Math.hypot(e.x - p.x, (e.y - p.y) * 1.5) + (e.zLane === lane ? 0 : 120);
+        if (d < bestD) {
+          bestD = d;
+          target = e;
+        }
+      }
+      const gate = w.sealGates.find((s) => !s.unlocked && Math.abs(s.coord - p.x) < 260);
+      let guard = null;
+      if (gate) {
+        for (const e of w.enemies) {
+          if (e.gateId === gate.id && e.hp > 0 && (!guard || Math.abs(e.x - p.x) < Math.abs(guard.x - p.x))) guard = e;
+        }
+      }
+      const focus = guard ?? (target && Math.abs(target.x - p.x) < 220 ? target : null);
+      const input = { moveRight: true, moveLeft: false, jumpHeld: false };
+      if (focus) {
+        if (focus.x < p.x - 40) {
+          input.moveRight = false;
+          input.moveLeft = true;
+        } else if (Math.abs(focus.x - p.x) < 50) {
+          input.moveRight = false;
+        }
+        if (focus.zLane !== lane && Math.abs(focus.x - p.x) < 200 && tick % 8 === 0) {
+          input.switchZPressed = true;
+          laneSwitches++;
+        }
+        if (Math.abs(focus.x - p.x) < 130 && focus.zLane === lane) input.meleePressed = true;
+        if (focus.y < p.y - 70 && p.onGround) {
+          input.jumpPressed = true;
+          input.jumpHeld = true;
+        }
+      } else if (tick % 3 === 0) {
+        input.meleePressed = true;
+      }
+      // Jump over gaps: no ground ahead in our lane.
+      const ahead = p.x + (input.moveLeft ? -70 : 70);
+      const groundAhead = w.platforms.some(
+        (pl) =>
+          (pl.zLane === 'both' || pl.zLane === lane) &&
+          ahead >= pl.x - 10 &&
+          ahead <= pl.x + pl.w + 10 &&
+          pl.y >= p.y - 10 &&
+          pl.y <= p.y + 140
+      );
+      if ((!groundAhead || simSec - lastProgressAt > 1.2) && p.onGround) {
+        input.jumpPressed = true;
+        input.jumpHeld = true;
+        jumps++;
+      }
+      if (!p.onGround && p.vy < 0) input.jumpHeld = true;
+      if (simSec - lastProgressAt > 2.5 && tick % 10 === 0) {
+        input.dashPressed = true;
+        input.grapplePressed = true;
+      }
+      if (simSec - lastProgressAt > 6 && tick % 20 === 0) input.switchZPressed = true;
+      g.setInput(input);
+      g.step(6);
+      simSec += 0.1;
+      if (p.x > bestX + 40 || (vertical && p.y < bestY - 40)) {
+        bestX = Math.max(bestX, p.x);
+        bestY = Math.min(bestY, p.y);
+        lastProgressAt = simSec;
+      }
+      if (focus) lastProgressAt = Math.max(lastProgressAt, simSec - 1); // fighting is progress
+      minHp = Math.min(minHp, w.combat.hp);
+      if (simSec - lastProgressAt > 15) {
+        teleports++;
+        log.push(`stuck at x=${Math.round(p.x)} y=${Math.round(p.y)} t=${simSec.toFixed(1)}s -> teleportToBoss`);
+        g.teleportToBoss();
+        bestX = p.x;
+        bestY = p.y;
+        lastProgressAt = simSec;
+      }
+      if (tick % 20 === 0) await yieldToReact();
+    }
+    g.setInput({ moveRight: false, moveLeft: false, jumpHeld: false });
+    for (let i = 0; i < 20 && document.body.dataset.state !== 'gameover'; i++) await yieldToReact();
+    const boss = w.enemies.find((e) => e.archetype === 'boss');
+    return {
+      outcome,
+      simSec: Math.round(simSec * 10) / 10,
+      finalX: Math.round(p.x),
+      finalY: Math.round(p.y),
+      bossHp: boss ? Math.max(0, boss.hp) : null,
+      hp: w.combat.hp,
+      minHp,
+      kills: w.combat.kills,
+      score: w.combat.score,
+      teleports,
+      laneSwitches,
+      jumps,
+      log,
+    };
+  }, [maxSimSec, vertStage]);
+}
+
+/**
+ * `--script lanes`: stands still on lane 0, captures, presses Q, captures again (proves the lane
+ * switch is a real depth change). Writes <name>-lane0.png / <name>-lane1.png.
+ */
+async function laneShots(page, opts) {
+  await page.evaluate(() => {
+    const g = window.__game;
+    g.toggleImmortal();
+    g.setInput({ moveRight: true });
+    g.step(150);
+    g.setInput({ moveRight: false });
+    g.step(60);
+  });
+  fs.mkdirSync(opts.out, { recursive: true });
+  const z0 = await page.evaluate(() => window.__game.world.combat.zLane);
+  await page.screenshot({ path: path.join(opts.out, `${opts.name}-lane${z0}.png`) });
+  await page.evaluate(() => {
+    window.__game.setInput({ switchZPressed: true });
+    window.__game.step(40);
+  });
+  await sleep(300);
+  const z1 = await page.evaluate(() => window.__game.world.combat.zLane);
+  await page.screenshot({ path: path.join(opts.out, `${opts.name}-lane${z1}.png`) });
+  return { lanes: [z0, z1] };
+}
+
 /** Real-time keyboard input script. Keys follow src/game/engine/input.ts + simulation/frameInput.ts. */
 async function runInputScript(page, script, durationMs) {
   const end = Date.now() + durationMs;
@@ -304,12 +461,19 @@ async function capture(browser, baseUrl, opts) {
     await page.locator('canvas').first().focus().catch(() => {});
     await sleep(500); // first frames, fonts
 
-    const fpsWindow = Math.max(1000, opts.durationMs - 1000);
-    const fpsPromise = sleep(500).then(() => measureFps(page, fpsWindow));
-    await runInputScript(page, opts.script, opts.durationMs);
-    const fps = await fpsPromise;
-    result.fps = Math.round(fps.fps * 10) / 10;
-    result.worstFrameMs = Math.round(fps.worstFrameMs);
+    if (opts.script === 'clear') {
+      result.bot = await playToClear(page, Number(opts.maxSimSec ?? 900), opts.stage);
+      await sleep(800); // outcome modal
+    } else if (opts.script === 'lanes') {
+      result.lanes = await laneShots(page, opts);
+    } else {
+      const fpsWindow = Math.max(1000, opts.durationMs - 1000);
+      const fpsPromise = sleep(500).then(() => measureFps(page, fpsWindow));
+      await runInputScript(page, opts.script, opts.durationMs);
+      const fps = await fpsPromise;
+      result.fps = Math.round(fps.fps * 10) / 10;
+      result.worstFrameMs = Math.round(fps.worstFrameMs);
+    }
 
     const pixel = await canvasPixelStd(page);
     result.pixelStd = Math.round(pixel.std * 100) / 100;
@@ -370,6 +534,7 @@ async function main() {
       seed: args.seed !== undefined ? Number(args.seed) : undefined,
       muted: args.muted !== 'false',
       params: args.params ? String(args.params) : undefined,
+      maxSimSec: args['max-sim-sec'] !== undefined ? Number(args['max-sim-sec']) : undefined,
       name: String(args.name ?? `${stage}-l${loop}-${renderer ?? 'default'}-${script}`),
     });
   }
@@ -409,7 +574,13 @@ async function main() {
 
   if (!smoke) {
     const r = results[0];
-    if (r?.png) console.log(`[shot] saved ${r.png}`);
+    if (r?.bot) console.log(`[shot] bot ${JSON.stringify(r.bot)}`);
+    if (r?.lanes) console.log(`[shot] lanes ${JSON.stringify(r.lanes)}`);
+    if (r?.stats) console.log(`[shot] stats ${JSON.stringify(r.stats)}`);
+    if (r?.png) {
+      console.log(`[shot] saved ${r.png}`);
+      fs.writeFileSync(path.join(out, `${jobs[0].name}.json`), JSON.stringify(r, null, 2));
+    }
     return r && r.errors.length === 0 ? 0 : 1;
   }
 

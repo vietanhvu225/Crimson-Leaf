@@ -12,8 +12,9 @@ import {
   triggerAwakening,
   upgradeSkill,
 } from '../game/engine/actions.ts';
-import type { GameRenderer, RendererKind } from '../game/view.ts';
+import type { GameRenderer, RendererKind, SimPoint } from '../game/view.ts';
 import { createCanvasRenderer } from '../game/render/canvasView.ts';
+import { createThreeRenderer } from '../game/render3d/scene.ts';
 
 interface GameViewProps extends HostState {
   resetToken?: number;
@@ -30,12 +31,20 @@ interface GameViewProps extends HostState {
   renderer: RendererKind;
   /** `?debug=1`: FPS / draw calls / triangles overlay. */
   debug: boolean;
+  /** `?cam=flat`: the three camera looks straight down -z (no tilt). */
+  camFlat?: boolean;
 }
 
-function createRenderer(kind: RendererKind, canvas: HTMLCanvasElement): GameRenderer | null {
+function createRenderer(
+  kind: RendererKind,
+  canvas: HTMLCanvasElement,
+  camFlat: boolean
+): GameRenderer | null {
   switch (kind) {
     case 'canvas':
       return createCanvasRenderer(canvas);
+    case 'three':
+      return createThreeRenderer(canvas, { flat: camFlat });
   }
 }
 
@@ -54,6 +63,7 @@ export const GameView: React.FC<GameViewProps> = ({
   rngMode,
   renderer,
   debug,
+  camFlat = false,
   ...host
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -107,11 +117,19 @@ export const GameView: React.FC<GameViewProps> = ({
     });
     worldRef.current = world;
 
-    // Screen-space aim (canvas): view px + camera of the step that reads input, 1 px = 1 sim unit.
-    // A 3D renderer will raycast and call setAimWorld itself instead.
+    // Aim, with the camera of the step that reads input. Canvas: view px + cam (1 px = 1 sim unit).
+    // Three: the renderer raycasts the cursor onto the z = 0 plane for that same camera.
     const pointer: PointerState = { viewX: world.viewW * 0.65, viewY: world.viewH * 0.45 };
-    world.aimSync = () =>
-      setAimWorld(world, pointer.viewX + world.camX, pointer.viewY + world.camY);
+    const aim: SimPoint = { x: 0, y: 0 };
+    world.aimSync = () => {
+      const view = rendererRef.current;
+      if (view?.viewToWorld) {
+        view.viewToWorld(world, pointer.viewX, pointer.viewY, aim);
+        setAimWorld(world, aim.x, aim.y);
+      } else {
+        setAimWorld(world, pointer.viewX + world.camX, pointer.viewY + world.camY);
+      }
+    };
     world.onAimReset = (x, y) => {
       pointer.viewX = x;
       pointer.viewY = y;
@@ -150,7 +168,8 @@ export const GameView: React.FC<GameViewProps> = ({
           const s = statsRef.current;
           overlay.textContent =
             `${rendererRef.current?.kind ?? '-'} · ${s.fps.toFixed(0)} fps` +
-            ` · draws ${s.drawCalls ?? '-'} · tris ${s.triangles ?? '-'}`;
+            ` · draws ${s.drawCalls ?? '-'} · tris ${s.triangles ?? '-'}` +
+            (r.geometries != null ? ` · geo ${r.geometries} · tex ${r.textures}` : '');
         }
       }
       rafId = window.requestAnimationFrame(loop);
@@ -169,7 +188,10 @@ export const GameView: React.FC<GameViewProps> = ({
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const view = createRenderer(renderer, canvas);
+    // No WebGL → fall back to the canvas renderer on the same (still context-free) element.
+    const view =
+      createRenderer(renderer, canvas, camFlat) ??
+      (renderer === 'three' ? createCanvasRenderer(canvas) : null);
     if (!view) return;
     rendererRef.current = view;
     const updateSize = () => {
@@ -190,7 +212,7 @@ export const GameView: React.FC<GameViewProps> = ({
       if (rendererRef.current === view) rendererRef.current = null;
       view.dispose();
     };
-  }, [renderer]);
+  }, [renderer, camFlat]);
 
   return (
     <>
