@@ -22,6 +22,10 @@ export interface EnvGeometries {
   arch: THREE.TorusGeometry;
   /** Unit quad facing +z (camera looks down -z, so it is a near-billboard). */
   quad: THREE.PlaneGeometry;
+  /** Thin full torus, axis z (rings, halos, bagua circles). Radius 0.5 so scale = diameter. */
+  ring: THREE.TorusGeometry;
+  /** Upper half sphere, flat side down (mushroom caps, jellyfish bells, bubble domes). */
+  dome: THREE.SphereGeometry;
 }
 
 export interface EnvMaterials {
@@ -41,6 +45,10 @@ export interface EnvMaterials {
   skyHalo: THREE.MeshBasicMaterial;
   /** Vertical fade (opaque at the bottom → clear at the top): wind updrafts, light shafts. */
   fade: THREE.MeshBasicMaterial;
+  /** Additive, bright top → clear bottom: god rays, lava falls, wind streaks. */
+  ray: THREE.MeshBasicMaterial;
+  /** Soft translucent cloud puffs that live in the play depth (sky sanctuary). */
+  cloud: THREE.MeshStandardMaterial;
 }
 
 function fadeTexture(track: Tracker) {
@@ -74,7 +82,83 @@ export function createGeometries(track: Tracker): EnvGeometries {
     octa: track.geometry(new THREE.OctahedronGeometry(0.5, 0)),
     arch: track.geometry(arch),
     quad: track.geometry(new THREE.PlaneGeometry(1, 1)),
+    ring: track.geometry(new THREE.TorusGeometry(0.5, 0.035, 6, 40)),
+    dome: track.geometry(new THREE.SphereGeometry(0.5, 16, 6, 0, Math.PI * 2, 0, Math.PI / 2)),
   };
+}
+
+/**
+ * Underwater caustics (T06, ocean palace): patched into the opaque env materials, driven by one
+ * shared uniform pair so a single write per frame toggles them for every material (0 = off).
+ */
+export const caustics = {
+  uCaustic: { value: 0 },
+  uCausticTime: { value: 0 },
+};
+
+function addCaustics(mat: THREE.MeshStandardMaterial, key: string) {
+  mat.onBeforeCompile = (shader) => {
+    shader.uniforms.uCaustic = caustics.uCaustic;
+    shader.uniforms.uCausticTime = caustics.uCausticTime;
+    shader.vertexShader = shader.vertexShader
+      .replace('#include <common>', '#include <common>\nvarying vec3 vCausticW;')
+      .replace(
+        '#include <project_vertex>',
+        `#include <project_vertex>
+        #ifdef USE_INSTANCING
+          vCausticW = (modelMatrix * instanceMatrix * vec4(transformed, 1.0)).xyz;
+        #else
+          vCausticW = (modelMatrix * vec4(transformed, 1.0)).xyz;
+        #endif`
+      );
+    shader.fragmentShader = shader.fragmentShader
+      .replace(
+        '#include <common>',
+        `#include <common>
+        varying vec3 vCausticW;
+        uniform float uCaustic;
+        uniform float uCausticTime;
+        float causticAt(vec3 p) {
+          vec2 q = vec2(p.x + p.z * 0.45, p.y * 0.7 + p.z * 0.35) * 2.2;
+          float t = uCausticTime * 0.9;
+          float a = sin(q.x * 2.1 + t) + sin(q.y * 2.7 - t * 1.3) + sin((q.x + q.y) * 1.7 + t * 0.7)
+                  + sin((q.x - q.y) * 2.3 - t * 0.9);
+          return pow(1.0 - abs(a) * 0.25, 8.0);
+        }`
+      )
+      .replace(
+        '#include <dithering_fragment>',
+        `#include <dithering_fragment>
+        if (uCaustic > 0.0) gl_FragColor.rgb += vec3(0.55, 0.95, 1.0) * causticAt(vCausticW) * uCaustic;`
+      );
+  };
+  mat.customProgramCacheKey = () => key;
+}
+
+/** Bright at the top, clear at the bottom: god rays / light shafts. */
+function rayTexture(track: Tracker) {
+  const c = document.createElement('canvas');
+  c.width = 16;
+  c.height = 64;
+  const g = c.getContext('2d')!;
+  const grad = g.createLinearGradient(0, 0, 0, 64);
+  grad.addColorStop(0, 'rgba(255,255,255,0.9)');
+  grad.addColorStop(0.6, 'rgba(255,255,255,0.25)');
+  grad.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 16, 64);
+  // Soft side edges.
+  const side = g.createLinearGradient(0, 0, 16, 0);
+  side.addColorStop(0, 'rgba(0,0,0,1)');
+  side.addColorStop(0.3, 'rgba(0,0,0,0)');
+  side.addColorStop(0.7, 'rgba(0,0,0,0)');
+  side.addColorStop(1, 'rgba(0,0,0,1)');
+  g.globalCompositeOperation = 'destination-out';
+  g.fillStyle = side;
+  g.fillRect(0, 0, 16, 64);
+  const tex = track.texture(new THREE.CanvasTexture(c));
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
 }
 
 /** Radial white → transparent gradient, tinted per instance (halos, glow cards, aurora). */
@@ -125,9 +209,26 @@ export function createMaterials(track: Tracker): EnvMaterials {
   const halo = haloTexture(track);
   const sway = new THREE.MeshStandardMaterial({ roughness: 0.75, metalness: 0, flatShading: true });
   addWindSway(sway);
+  const solid = new THREE.MeshStandardMaterial({ roughness: 0.82, metalness: 0 });
+  addCaustics(solid, 'env-caustic-solid');
+  const facet = new THREE.MeshStandardMaterial({ roughness: 0.7, metalness: 0, flatShading: true });
+  addCaustics(facet, 'env-caustic-facet');
   return {
-    solid: track.material(new THREE.MeshStandardMaterial({ roughness: 0.82, metalness: 0 })),
-    facet: track.material(new THREE.MeshStandardMaterial({ roughness: 0.7, metalness: 0, flatShading: true })),
+    solid: track.material(solid),
+    facet: track.material(facet),
+    ray: track.material(
+      new THREE.MeshBasicMaterial({
+        map: rayTexture(track),
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+        side: THREE.DoubleSide,
+        toneMapped: false,
+      })
+    ),
+    cloud: track.material(
+      new THREE.MeshStandardMaterial({ roughness: 1, metalness: 0, transparent: true, opacity: 0.82, depthWrite: false })
+    ),
     sway: track.material(sway),
     // Other-lane platforms (canvas: globalAlpha 0.45).
     ghost: track.material(
