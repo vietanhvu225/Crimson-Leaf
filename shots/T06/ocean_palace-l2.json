@@ -1,0 +1,31 @@
+{
+  "stage": "ocean_palace",
+  "renderer": "three",
+  "loop": 2,
+  "script": "run",
+  "url": "http://127.0.0.1:62497/?autostart=1&stage=ocean_palace&loop=2&renderer=three&seed=3&muted=1",
+  "fps": 144.3,
+  "worstFrameMs": 7,
+  "pixelStd": 37.27,
+  "pixelMean": 94.97,
+  "gameState": "playing",
+  "seasonId": "ocean_palace",
+  "player": {
+    "x": 780,
+    "y": 95,
+    "vx": 113,
+    "vy": -7,
+    "onGround": false,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 143.9,
+    "drawCalls": 60,
+    "triangles": 50982,
+    "geometries": 22,
+    "textures": 6,
+    "entities": 252
+  },
+  "png": "shots/T06/ocean_palace-l2.png",
+  "errors": []
+}

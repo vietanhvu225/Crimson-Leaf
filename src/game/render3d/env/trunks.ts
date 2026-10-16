@@ -149,7 +149,7 @@ export class Trunks {
       }
       return;
     }
-    // Giant tree trunk (spring sakura; generic for stages 5–11 until T06).
+    // Giant tree trunk (spring sakura; fallback for any other stage).
     this.cyl.at(x, cy, z, w, h, w * S, cssColor(pal.trunkFill));
     const spring = seasonId === 'spring';
     const prim = cssColor(pal.canopyPrimary);
