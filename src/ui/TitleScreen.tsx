@@ -15,9 +15,16 @@ interface TitleScreenProps {
   onSelectLoop: (loop: GameLoopRoute) => void;
   onStartGame: () => void;
   onOpenGdd: () => void;
+  /** `3d` (?ui=3d): compact panel; stage choice moves to the 3D gates in the scene behind it. */
+  variant?: 'dom' | '3d';
 }
 
-export const TitleScreen: React.FC<TitleScreenProps> = ({
+export const TitleScreen: React.FC<TitleScreenProps> = (props) => {
+  if (props.variant === '3d') return <TitleScreen3D {...props} />;
+  return <TitleScreenDom {...props} />;
+};
+
+const TitleScreenDom: React.FC<TitleScreenProps> = ({
   selectedSeason,
   selectedLoop,
   onSelectSeason,
@@ -225,6 +232,165 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
           <strong className="text-[#34d399]">E</strong> Dây Móc ·{' '}
           <strong className="text-[#fde047]">C</strong> Đổi Hệ Nguyên Tố
         </span>
+      </div>
+    </div>
+  );
+};
+
+/**
+ * ?ui=3d title: the live stage flies by behind a compact lacquer panel; the 11 stages are 3D gates
+ * in the scene (render3d/ui3d/gates.ts: click to pick, click the lit gate again to start). The
+ * panel keeps every DOM function: ◀ ▶ also cycle stages (keyboard/touch fallback), loop choice,
+ * start, GDD. Landscape: left column; portrait: bottom sheet under the gates.
+ */
+const TitleScreen3D: React.FC<TitleScreenProps> = ({
+  selectedSeason,
+  selectedLoop,
+  onSelectSeason,
+  onSelectLoop,
+  onStartGame,
+  onOpenGdd,
+}) => {
+  const cfg = SEASONS[selectedSeason];
+  const diff = getStageDifficultyMultipliers(selectedSeason, selectedLoop);
+  const idx = SEASON_ORDER.indexOf(selectedSeason);
+  const step = (d: number) =>
+    onSelectSeason(SEASON_ORDER[(idx + d + SEASON_ORDER.length) % SEASON_ORDER.length]);
+  const [num, ...rest] = cfg.vietnameseTitle.split(':');
+  const stageName = rest.join(':').trim() || cfg.vietnameseTitle;
+
+  return (
+    <div
+      data-testid="title-3d"
+      className="fixed inset-0 z-30 flex flex-col justify-end landscape:justify-center p-3 sm:p-6 lg:p-10 pointer-events-none select-none"
+      style={{
+        paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))',
+        paddingLeft: 'max(0.75rem, env(safe-area-inset-left))',
+      }}
+    >
+      <div
+        className="w-full landscape:max-w-[26rem] pointer-events-auto p-4 sm:p-5 rounded-xl border border-[#d4af37]/45"
+        style={{
+          background: 'linear-gradient(160deg, rgba(14, 11, 20, 0.9) 0%, rgba(8, 10, 18, 0.78) 100%)',
+          boxShadow: '0 18px 48px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(253, 224, 71, 0.22)',
+          backdropFilter: 'blur(3px)',
+        }}
+      >
+        <div className="flex items-center gap-3 mb-3">
+          <svg width="44" height="44" viewBox="0 0 72 72" className="shrink-0" aria-hidden="true">
+            <circle cx="36" cy="36" r="32" fill="#be123c" stroke="#fde047" strokeWidth="2" />
+            <circle cx="44" cy="24" r="5" fill="#fef08a" opacity="0.9" />
+            <path d="M22 62 L22 14 M22 34 L34 24" stroke="#090a0f" strokeWidth="4" strokeLinecap="round" />
+            <path d="M8 50 L66 22 L60 30 L12 55 Z" fill="#f8fafc" stroke="#fde047" strokeWidth="1" />
+          </svg>
+          <div className="min-w-0">
+            <h1
+              className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#fffbeb] uppercase leading-none"
+              style={{ textShadow: '0 3px 18px rgba(225, 29, 72, 0.65)' }}
+            >
+              HUYỀN THOẠI CỨU MẸ
+            </h1>
+            <p className="text-[10px] sm:text-xs tracking-[0.2em] uppercase text-[#fde047] font-semibold mt-1">
+              CRIMSON LEAF: MOTHER&apos;S OATH
+            </p>
+          </div>
+        </div>
+
+        {/* Selected stage, cycled by the 3D gates or by ◀ ▶ */}
+        <div className="flex items-stretch gap-2 mb-2.5">
+          <button
+            type="button"
+            onClick={() => step(-1)}
+            aria-label="Màn trước"
+            className="w-11 shrink-0 rounded-lg bg-[#111522]/90 border border-[#2c3446] text-[#fde68a] text-lg hover:border-[#fde047] active:scale-95 cursor-pointer"
+          >
+            ◀
+          </button>
+          <div
+            className="flex-1 min-w-0 px-3 py-1.5 rounded-lg border bg-[#0b0e17]/85"
+            style={{ borderColor: `${cfg.accentColor}99` }}
+          >
+            <div className="flex items-baseline justify-between gap-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: cfg.accentColor }}>
+                {num.trim()} / {SEASON_ORDER.length}
+              </span>
+              <span className="text-[10px] text-[#fb7185] font-semibold tabular-nums shrink-0">
+                Trùm {diff.bossEffectiveMaxHp} HP
+              </span>
+            </div>
+            <div className="text-sm font-bold text-[#fffbeb] truncate" data-testid="title-stage-name">
+              {stageName}
+            </div>
+            <div className="text-[10px] text-[#38bdf8] truncate">{cfg.mechanicName}</div>
+          </div>
+          <button
+            type="button"
+            onClick={() => step(1)}
+            aria-label="Màn sau"
+            className="w-11 shrink-0 rounded-lg bg-[#111522]/90 border border-[#2c3446] text-[#fde68a] text-lg hover:border-[#fde047] active:scale-95 cursor-pointer"
+          >
+            ▶
+          </button>
+        </div>
+        <p className="hidden landscape:sm:block text-[11px] text-[#94a3b8] mb-2.5 leading-snug">
+          Chạm vào một <span className="text-[#fde047]">cổng torii</span> trong cảnh để chọn màn · chạm lại
+          cổng đang sáng để vào trận. Trùm:{' '}
+          <span className="text-[#fda4af] font-semibold">
+            {selectedLoop === 2 ? cfg.loop2BossName : cfg.bossName}
+          </span>
+        </p>
+
+        <div className="grid grid-cols-2 gap-2 mb-3">
+          <button
+            type="button"
+            onClick={() => onSelectLoop(1)}
+            className={`px-2 py-2 rounded-md text-[11px] font-semibold border transition-colors cursor-pointer ${
+              selectedLoop === 1
+                ? 'bg-[#1e293b] border-[#38bdf8] text-[#38bdf8]'
+                : 'bg-[#0c0e16]/75 border-[#262c3a] text-[#94a3b8]'
+            }`}
+          >
+            Vòng 1 · Cốt Truyện
+          </button>
+          <button
+            type="button"
+            onClick={() => onSelectLoop(2)}
+            className={`px-2 py-2 rounded-md text-[11px] font-semibold border transition-colors cursor-pointer ${
+              selectedLoop === 2
+                ? 'bg-[#881337]/50 border-[#f43f5e] text-[#fda4af]'
+                : 'bg-[#0c0e16]/75 border-[#262c3a] text-[#94a3b8]'
+            }`}
+          >
+            Vòng 2 · Huyết Ảnh +35%
+          </button>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onStartGame}
+            data-testid="start-game-btn"
+            className="flex-1 px-5 py-3 rounded-lg font-bold text-sm tracking-wider uppercase text-[#fffbeb] bg-gradient-to-r from-[#be123c] via-[#e11d48] to-[#b91c1c] hover:from-[#e11d48] hover:to-[#f43f5e] border border-[#fde047]/60 shadow-[0_0_24px_rgba(225,29,72,0.5)] cursor-pointer active:scale-95"
+          >
+            Bắt Đầu Giải Cứu Mẹ
+          </button>
+          <button
+            type="button"
+            onClick={onOpenGdd}
+            data-testid="open-gdd-btn"
+            title="Hồ Sơ Thiết Kế & Cân Bằng (GDD)"
+            className="px-3.5 py-3 rounded-lg font-semibold text-sm text-[#fde68a] bg-[#141824]/90 hover:bg-[#1e2536] border border-[#d4af37]/40 cursor-pointer"
+          >
+            GDD
+          </button>
+        </div>
+      </div>
+      <div className="hidden lg:block absolute bottom-4 left-10 right-10 text-[11px] text-[#cbd5e1]/90">
+        <strong className="text-[#fde047]">WASD / Space</strong> Khinh Công ·{' '}
+        <strong className="text-[#fb7185]">J / Chuột Trái</strong> Kiếm & Parry ·{' '}
+        <strong className="text-[#38bdf8]">K / Chuột Phải</strong> Phi Tiêu ·{' '}
+        <strong className="text-[#c084fc]">Shift</strong> Lướt · <strong className="text-[#34d399]">E</strong> Dây Móc ·{' '}
+        <strong className="text-[#fde047]">C</strong> Nguyên Tố · <strong className="text-[#fde047]">Enter</strong> Vào Trận
       </div>
     </div>
   );

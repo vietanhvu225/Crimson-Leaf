@@ -105,26 +105,45 @@ interface OutcomeModalProps {
   snapshot: RunSnapshot;
   onPrimaryAction: () => void;
   onReturnTitle: () => void;
+  /**
+   * `side` (?ui=3d): docked right (bottom on portrait) over a light scrim, leaving room for the 3D
+   * victory/defeat sign and the orbiting scene. Same content and buttons.
+   */
+  layout?: 'center' | 'side';
 }
 
 export const OutcomeModal: React.FC<OutcomeModalProps> = ({
   snapshot,
   onPrimaryAction,
   onReturnTitle,
+  layout = 'center',
 }) => {
   const isVictory = snapshot.outcome === 'victory';
   const clearInfo = snapshot.stageClearInfo;
+  const side = layout === 'side';
 
   return (
     <div
-      className="fixed inset-0 z-30 flex items-center justify-center p-4"
-      style={{ backgroundColor: 'rgba(6, 9, 15, 0.86)' }}
+      className={
+        side
+          ? 'fixed inset-0 z-30 flex items-end justify-center landscape:items-center landscape:justify-end p-3 sm:p-8'
+          : 'fixed inset-0 z-30 flex items-center justify-center p-4'
+      }
+      style={{
+        background: side
+          ? 'linear-gradient(90deg, rgba(6, 9, 15, 0) 0%, rgba(6, 9, 15, 0.35) 45%, rgba(6, 9, 15, 0.8) 100%)'
+          : 'rgba(6, 9, 15, 0.86)',
+      }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="outcome-modal-title"
     >
       <div
-        className="w-full max-w-lg rounded border p-6 md:p-7 text-[#f8fafc]"
+        className={
+          side
+            ? 'w-full max-w-md max-h-[60vh] landscape:max-h-[92vh] overflow-y-auto rounded border p-5 md:p-6 text-[#f8fafc]'
+            : 'w-full max-w-lg rounded border p-6 md:p-7 text-[#f8fafc]'
+        }
         style={{
           backgroundColor: '#0e131f',
           borderColor:

@@ -24,6 +24,8 @@ interface GameHUDProps {
   stageProgressPct: number;
   bossHp: number | null;
   bossMaxHp: number | null;
+  /** `?ui=3d`: the boss bar is drawn in world space (render3d/ui3d/bossPlaque.ts) instead. */
+  worldSpaceBossBar?: boolean;
   isPaused: boolean;
   muted: boolean;
   touchInputRef: React.MutableRefObject<TouchInputState>;
@@ -46,6 +48,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
   stageProgressPct,
   bossHp,
   bossMaxHp,
+  worldSpaceBossBar = false,
   isPaused,
   muted,
   touchInputRef,
@@ -137,7 +140,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
       </div>
 
       {/* BOSS HEALTH BAR WHEN ENGAGED (Docked cleanly below top bar, never covering center gameplay) */}
-      {bossHp !== null && bossMaxHp !== null && bossHp > 0 && (
+      {!worldSpaceBossBar && bossHp !== null && bossMaxHp !== null && bossHp > 0 && (
         <BossHealthBar loopRoute={loopRoute} cfg={cfg} bossHp={bossHp} bossMaxHp={bossMaxHp} />
       )}
 
