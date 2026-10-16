@@ -80,3 +80,8 @@ Worker ~20 phút, $7.07. Merge main (T03+T04): xung đột `scene.ts` MODULES + 
 Worker ~10 phút, $3.73. Nguyên nhân mờ sữa: OutputPass áp ACES lên cả sky/fog/halo của env + viền Huyết Ảnh cộng đỏ gần cả màn + bloom readBuffer chứa sẵn VFX (cộng 2 lần) + bloom mã hoá sRGB trước khi cộng. Sửa: cảnh vẽ thẳng ra màn hình như fx=low, bloom/tint là overlay blend; spark/arc chuẩn hoá theo mật độ; bỏ debuff trùng với T04. Orchestrator kiểm lại: typecheck ✅, test 30/30 ✅, build ✅, smoke 22/22 ✅ (min fps 143.1); ảnh winter-combat seed 3 hết mờ, spring-parry đọc được player, awaken đúng. Draw calls cảnh combat ~110–130, tris ~122–135k.
 
 ## 2026-10-17 06:00 giao T07 (attempt 1)
+
+## 2026-10-17 06:28 T07 attempt 1 — PASS, merged
+Worker ~22 phút, $6.52. Orchestrator kiểm lại: typecheck ✅, test 30/30 ✅, build ✅, smoke 22/22 ✅ (min fps 143.4), parity canvas 11/11 ✅ (T07 sửa App/GameView). Ảnh: ui3d title 1080p (11 cổng torii + cảnh bay), HUD 1080p (bảng boss world-space, số sát thương, combo), mobile 390×844 (nút cảm ứng ở đáy), victory 720p (biển ĐẠI THẮNG + modal bên) → đạt. Worker sửa luôn lỗi UI gốc: title DOM mất nút Start ở 720p/mobile.
+
+## 2026-10-17 06:29 giao T08 (attempt 1)
