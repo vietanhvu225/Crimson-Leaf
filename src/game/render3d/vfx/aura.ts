@@ -172,17 +172,17 @@ export function createAuraFx(kit: FxKit, combat: CombatFx) {
           const fx = (k - 1.5) * 9 + Math.sin(f.t * 14 + k) * 3;
           const fy = h * (0.35 + 0.18 * hash01(k + en.id)) + Math.sin(f.t * 20 + k * 1.7) * 3;
           const len = (16 + Math.sin(f.t * 25 + k * 2.3) * 5) * S;
-          c.copy(cssColor(k % 2 === 0 ? '#f97316' : '#fde047')).multiplyScalar(1.8);
+          c.copy(cssColor(k % 2 === 0 ? '#f97316' : '#fde047')).multiplyScalar(1.0);
           flames.add(x + fx * S, yFeet + fy * S + len * 0.5, z, len, 0.07, 0.07, c, -Math.PI / 2);
         }
-        c.copy(cssColor('#f97316')).multiplyScalar(0.7);
+        c.copy(cssColor('#f97316')).multiplyScalar(0.35);
         glows.add(x, yFeet + h * 0.5 * S, z, h * 2.2 * S, h * 2.4 * S, 1, c);
       }
 
       if ((en.freezeTimer ?? 0) > 0) {
         ice.add(x, yFeet + h * 0.52 * S, LANE_Z[en.zLane], h * 0.55 * S, h * 0.62 * S, 0.4, cssColor('#bae6fd'), 0.2, 0.5);
-        c.copy(cssColor('#7dd3fc')).multiplyScalar(0.8);
-        glows.add(x, yFeet + h * 0.5 * S, z + 0.2, h * 2 * S, h * 2.2 * S, 1, c);
+        c.copy(cssColor('#7dd3fc')).multiplyScalar(0.3);
+        glows.add(x, yFeet + h * 0.5 * S, z + 0.2, h * 1.8 * S, h * 2 * S, 1, c);
       } else if (en.chillTimer > 0) {
         c.copy(cssColor('#7dd3fc')).multiplyScalar(1.1);
         rings.add(x, yFeet + 0.05, z, h * 1.4 * S, h * 0.45 * S, 1, c);
@@ -198,13 +198,13 @@ export function createAuraFx(kit: FxKit, combat: CombatFx) {
           const sx = x + Math.cos(a) * h * 0.38 * S;
           const sy = yFeet + (h + 8 + Math.sin(a) * 4) * S;
           const sz = z + Math.sin(a) * 0.25;
-          c.copy(cssColor(s % 2 === 0 ? '#fde047' : '#38bdf8')).multiplyScalar(2.4);
-          glows.add(sx, sy, sz, 0.16, 0.16, 1, c);
+          c.copy(cssColor(s % 2 === 0 ? '#fde047' : '#38bdf8')).multiplyScalar(1.1);
+          glows.add(sx, sy, sz, 0.14, 0.14, 1, c);
           shards.add(sx, sy, sz, 0.035, 0.035, 0.035, cssColor('#fef9c3'), f.t * 6);
         }
         addJagged(
           x - 12 * S, yFeet + h * 0.65 * S, x + 12 * S, yFeet + h * 0.2 * S, z + 0.1,
-          0.06, en.id, f.t, cssColor('#fde047'), 1, 0.35
+          0.06, en.id, f.t, cssColor('#fde047'), 0.45, 0.35
         );
       }
 

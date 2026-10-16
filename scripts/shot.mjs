@@ -465,7 +465,8 @@ async function vfxShots(page, opts) {
   const bolts = await page.evaluate(() => {
     const g = window.__game;
     const w = g.world;
-    w.combat = { ...w.combat, skills: { ...w.combat.skills, activeElement: 'thunder_lightning' } };
+    // rage 0: hits fill rage and auto-trigger Huyết Ảnh, which would tint the lightning/parry shots.
+    w.combat = { ...w.combat, rage: 0, skills: { ...w.combat.skills, activeElement: 'thunder_lightning' } };
     for (let i = 0; i < 40; i++) {
       if (i % 12 === 0) g.setInput({ meleePressed: true });
       g.step(1);
@@ -481,6 +482,7 @@ async function vfxShots(page, opts) {
     const g = window.__game;
     const w = g.world;
     g.step(40);
+    w.combat = { ...w.combat, rage: 0, awakenedTimer: 0 };
     const p = w.player;
     const slot = w.projectiles.find((q) => !q.active) ?? w.projectiles[0];
     Object.assign(slot, {
@@ -516,6 +518,7 @@ async function vfxShots(page, opts) {
     if (row[0]) row[0].burnTimer = 3;
     if (row[1]) row[1].freezeTimer = 3;
     if (row[2]) row[2].stunTimer = 3;
+    w.combat = { ...w.combat, rage: 0, awakenedTimer: 0 };
     window.__game.step(2);
   });
   await snap('debuffs');

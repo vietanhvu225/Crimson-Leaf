@@ -55,6 +55,8 @@ const CompositeShader = {
     uAwaken: { value: 0 },
     uFlash: { value: 0 },
     uVignette: { value: 0.35 },
+    /** `?fxdebug=bloom`: show only the bloom buffer (to check what blooms). */
+    uDebugBloom: { value: 0 },
   },
   vertexShader: /* glsl */ `
     varying vec2 vUv;
@@ -62,7 +64,7 @@ const CompositeShader = {
   fragmentShader: /* glsl */ `
     uniform sampler2D tDiffuse;
     uniform sampler2D tBloom;
-    uniform float uBloom, uAwaken, uFlash, uVignette;
+    uniform float uBloom, uAwaken, uFlash, uVignette, uDebugBloom;
     varying vec2 vUv;
     void main() {
       vec4 base = texture2D(tDiffuse, vUv);
@@ -74,7 +76,22 @@ const CompositeShader = {
       col = mix(col, col * vec3(1.25, 0.45, 0.5) + vec3(0.18, 0.0, 0.02), edge * uAwaken);
       // Hit-stop: brief warm flash.
       col += vec3(1.0, 0.95, 0.8) * uFlash * 0.14;
+      if (uDebugBloom > 0.5) col = texture2D(tBloom, vUv).rgb;
       gl_FragColor = vec4(col, base.a);
+    }`,
+};
+
+const ClampShader = {
+  uniforms: { tDiffuse: { value: null as THREE.Texture | null }, uMax: { value: 1.2 } },
+  vertexShader: CompositeShader.vertexShader,
+  fragmentShader: /* glsl */ `
+    uniform sampler2D tDiffuse;
+    uniform float uMax;
+    varying vec2 vUv;
+    void main() {
+      vec3 c = texture2D(tDiffuse, vUv).rgb;
+      float m = max(max(c.r, c.g), max(c.b, 1e-4));
+      gl_FragColor = vec4(c * min(1.0, uMax / m), 1.0); // keeps hue, caps brightness
     }`,
 };
 
@@ -90,8 +107,16 @@ export function createPost(
   bloomComposer.renderToScreen = false;
   const bloomRender = new RenderPass(scene, camera, undefined, new THREE.Color(0, 0, 0), 1);
   bloomComposer.addPass(bloomRender);
+  // Stacked additive sparks sum to HDR values far above 1; unclamped, the low bloom mips smear
+  // them over the whole screen as a milky haze. Clamp the bloom input first.
+  const clamp = new ShaderPass(ClampShader);
+  bloomComposer.addPass(clamp);
   // Input is already only the glowing VFX, so the threshold just drops faint fringes.
-  const bloomPass = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.8, 0.35, 0.15);
+  const bloomPass = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.9, 0, 0.2);
+  // Default mip weights (1, .8, .6, .4, .2) let the 1/32-res mips wash a milky veil over the whole
+  // frame whenever a big burst happens; keep the glow tight around its source instead.
+  const factors = bloomPass.compositeMaterial.uniforms.bloomFactors.value as number[];
+  factors.splice(0, factors.length, 1.1, 0.65, 0.3, 0.1, 0.03);
   bloomComposer.addPass(bloomPass);
 
   // MSAA target: the composer would otherwise drop the renderer's antialias.
@@ -101,9 +126,11 @@ export function createPost(
   );
   finalComposer.addPass(new RenderPass(scene, camera));
   const composite = new ShaderPass(CompositeShader);
-  // ShaderPass clones uniforms and refuses to clone render-target textures: assign after.
-  composite.uniforms.tBloom.value = bloomComposer.renderTarget2.texture;
+  // (ShaderPass clones uniforms and refuses render-target textures: tBloom is assigned per frame.)
   finalComposer.addPass(composite);
+  if (typeof location !== 'undefined' && new URLSearchParams(location.search).get('fxdebug') === 'bloom') {
+    composite.uniforms.uDebugBloom.value = 1;
+  }
   const output = new OutputPass();
   finalComposer.addPass(output);
 
@@ -117,6 +144,8 @@ export function createPost(
       bloomComposer.render();
       camera.layers.mask = mask;
       scene.background = bg;
+      // The clamp pass swaps the composer's buffers, so the result alternates between its targets.
+      composite.uniforms.tBloom.value = bloomComposer.readBuffer.texture;
       composite.uniforms.uAwaken.value = p.awaken;
       composite.uniforms.uFlash.value = p.flash;
       finalComposer.render();
@@ -131,6 +160,7 @@ export function createPost(
     },
     dispose() {
       bloomPass.dispose();
+      clamp.dispose();
       composite.dispose();
       output.dispose();
       bloomComposer.dispose();

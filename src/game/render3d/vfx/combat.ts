@@ -81,7 +81,11 @@ export function createCombatFx(kit: FxKit) {
   const stars = kit.batch(starGeo, kit.litMat, 48, false, { castShadow: true });
   const cores = kit.batch(sphereGeo, kit.flatMat, 64, true);
   const shards = kit.batch(octaGeo, kit.flatMat, 160, false);
-  const flames = kit.batch(flameGeo, kit.addMat, 128, true, { renderOrder: 7 });
+  // Flames use normal blending: additive orange over a bright backdrop washes out to white.
+  const flameMat = track.material(
+    new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.92, depthWrite: false, toneMapped: false })
+  );
+  const flames = kit.batch(flameGeo, flameMat, 128, true, { renderOrder: 7 });
   const glows = kit.batch(quad, kit.glowMat, 256, true, { renderOrder: 8 });
   const beams = kit.batch(quad, kit.beamMat, 1024, true, { renderOrder: 8 });
   const rings = kit.batch(quad, kit.ringMat, 8, true, { renderOrder: 9 });
@@ -299,13 +303,13 @@ export function createCombatFx(kit: FxKit) {
       const r = 0.35 + grow * 2.2;
       c.setRGB(1, 0.92, 0.55).multiplyScalar(1.4 * (1 - grow));
       rings.add(x, y, z, r, r, 1, c);
-      c.setRGB(1, 0.95, 0.7).multiplyScalar((hit ? 1.1 : 0.6) * (1 - grow));
-      glows.add(x, y, z, 0.9 - grow * 0.5, 0.9 - grow * 0.5, 1, c);
+      c.setRGB(1, 0.95, 0.7).multiplyScalar((hit ? 0.6 : 0.35) * (1 - grow));
+      glows.add(x, y, z, 0.6 - grow * 0.3, 0.6 - grow * 0.3, 1, c);
       if (hit) {
         // Parry-strength hits: a cross flare during the freeze.
-        c.setRGB(1, 0.95, 0.75).multiplyScalar(1.3);
-        beams.add(x, y, z + 0.01, 2.2, 0.07, 1, c, f.t * 0.5);
-        beams.add(x, y, z + 0.01, 1.3, 0.05, 1, c, Math.PI / 2 + f.t * 0.5);
+        c.setRGB(1, 0.95, 0.75).multiplyScalar(0.9);
+        beams.add(x, y, z + 0.01, 1.6, 0.06, 1, c, 0.3);
+        beams.add(x, y, z + 0.01, 0.9, 0.045, 1, c, Math.PI / 2 + 0.3);
       }
     }
   }
@@ -321,10 +325,10 @@ export function createCombatFx(kit: FxKit) {
         case 'spark':
         case 'lightning': {
           const sp = Math.hypot(p.vx, p.vy);
-          const len = Math.max(0.05, Math.min(0.45, sp * 0.0009)) * (0.4 + 0.6 * a);
+          const len = Math.max(0.05, Math.min(0.4, sp * 0.0008)) * (0.4 + 0.6 * a);
           const ang = Math.atan2(-p.vy, p.vx);
-          c.copy(cssColor(p.color)).multiplyScalar(1.5 * a);
-          beams.add(x, y, z, len, (p.size + 1) * S * 0.9, 1, c, ang);
+          c.copy(cssColor(p.color)).multiplyScalar((p.kind === 'spark' ? 0.75 : 0.6) * a);
+          beams.add(x, y, z, len, (p.size + 1) * S * 0.6, 1, c, ang);
           if (p.kind === 'lightning') {
             c.copy(cssColor('#38bdf8')).multiplyScalar(0.4 * a);
             glows.add(x, y, z, 0.2, 0.2, 1, c);
