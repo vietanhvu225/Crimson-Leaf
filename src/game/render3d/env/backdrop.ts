@@ -159,8 +159,8 @@ export class Backdrop {
     this.celestial(camera, target, 0.52, 0.5, 0.12, moon, '#fb7185');
     this.clouds(camera, target, t, -62, 0.62);
 
-    // Mount Fuji silhouettes with snow caps (z = -72).
-    const z0 = -72;
+    // Mount Fuji silhouettes with snow caps (z = -58).
+    const z0 = -58;
     const v = viewAtDepth(camera, target, z0, this.v);
     const base = v.cy - v.halfH;
     const fuji = cssColor(this.isLoop2 ? pal.farHillFill : '#1e293b');

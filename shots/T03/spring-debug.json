@@ -1,0 +1,57 @@
+{
+  "stage": "spring",
+  "renderer": "three",
+  "loop": 1,
+  "script": "lanes",
+  "url": "http://127.0.0.1:60177/?autostart=1&stage=spring&loop=1&renderer=three&seed=1&muted=1&debug=1",
+  "lanes": {
+    "lanes": [
+      0,
+      1
+    ],
+    "player": {
+      "x": 592,
+      "y": 545,
+      "onGround": true,
+      "standing": 545,
+      "under": [
+        {
+          "x": 400,
+          "w": 220,
+          "y": 545,
+          "lane": "both",
+          "type": "ground"
+        },
+        {
+          "x": 375,
+          "w": 210,
+          "y": 305,
+          "lane": 1,
+          "type": "branch"
+        }
+      ]
+    }
+  },
+  "pixelStd": 54.67,
+  "pixelMean": 87.46,
+  "gameState": "playing",
+  "seasonId": "spring",
+  "player": {
+    "x": 592,
+    "y": 545,
+    "vx": 0,
+    "vy": 0,
+    "onGround": true,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 138,
+    "drawCalls": 64,
+    "triangles": 57952,
+    "geometries": 21,
+    "textures": 9,
+    "entities": 194
+  },
+  "png": "shots/T03/spring-debug.png",
+  "errors": []
+}

@@ -1,0 +1,29 @@
+{
+  "stage": "winter",
+  "renderer": "canvas",
+  "loop": 1,
+  "script": "run",
+  "url": "http://127.0.0.1:55376/?autostart=1&stage=winter&loop=1&renderer=canvas&seed=1&muted=1",
+  "fps": 144.1,
+  "worstFrameMs": 7,
+  "pixelStd": 61.42,
+  "pixelMean": 86.67,
+  "gameState": "playing",
+  "seasonId": "winter",
+  "player": {
+    "x": 1080,
+    "y": 316,
+    "vx": 124,
+    "vy": 173,
+    "onGround": false,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 143.9,
+    "drawCalls": null,
+    "triangles": null,
+    "entities": 217
+  },
+  "png": "shots/T03/winter-l1-canvas.png",
+  "errors": []
+}

@@ -1,0 +1,31 @@
+{
+  "stage": "summer",
+  "renderer": "three",
+  "loop": 2,
+  "script": "run",
+  "url": "http://127.0.0.1:50298/?autostart=1&stage=summer&loop=2&renderer=three&seed=1&muted=1",
+  "fps": 144.2,
+  "worstFrameMs": 7,
+  "pixelStd": 53.26,
+  "pixelMean": 87.75,
+  "gameState": "playing",
+  "seasonId": "summer",
+  "player": {
+    "x": 695,
+    "y": 462,
+    "vx": 103,
+    "vy": 73,
+    "onGround": false,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 143.9,
+    "drawCalls": 58,
+    "triangles": 39044,
+    "geometries": 22,
+    "textures": 9,
+    "entities": 229
+  },
+  "png": "shots/T03/summer-l2.png",
+  "errors": []
+}
