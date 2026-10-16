@@ -103,7 +103,7 @@ const MulShader = {
 };
 
 const ClampShader = {
-  uniforms: { tDiffuse: { value: null as THREE.Texture | null }, uMax: { value: 1.2 } },
+  uniforms: { tDiffuse: { value: null as THREE.Texture | null }, uMax: { value: 1.0 } },
   vertexShader: /* glsl */ `
     varying vec2 vUv;
     void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
@@ -142,7 +142,7 @@ export function createPost(
   const clamp = new ShaderPass(ClampShader);
   bloomComposer.addPass(clamp);
   // Input is already only the glowing VFX, so the threshold just drops faint fringes.
-  const bloomPass = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.8, 0, 0.2);
+  const bloomPass = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.3, 0, 0.2);
   // Default mip weights (1, .8, .6, .4, .2) let the 1/32-res mips wash a veil over the whole
   // frame whenever a big burst happens; keep the glow tight around its source instead.
   const factors = bloomPass.compositeMaterial.uniforms.bloomFactors.value as number[];
@@ -196,8 +196,9 @@ export function createPost(
       renderer.setRenderTarget(null);
       if (!debugBloom) renderer.render(scene, camera);
 
-      // The clamp pass swaps the composer's buffers, so the result alternates between its targets.
-      addMat.uniforms.tBloom.value = bloomComposer.readBuffer.texture;
+      // Pure bloom (composited mips). The composer's readBuffer would be input + bloom: the VFX are
+      // already in the scene render, so adding that drew every glowing effect twice (white blobs).
+      addMat.uniforms.tBloom.value = bloomPass.renderTargetsHorizontal[0].texture;
       addMat.uniforms.uAwaken.value = debugBloom ? 0 : p.awaken;
       addMat.uniforms.uFlash.value = debugBloom ? 0 : p.flash;
       mulMat.uniforms.uAwaken.value = p.awaken;

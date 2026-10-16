@@ -303,8 +303,8 @@ export function createCombatFx(kit: FxKit) {
       const r = 0.35 + grow * 2.2;
       c.setRGB(1, 0.92, 0.55).multiplyScalar(1.0 * (1 - grow));
       rings.add(x, y, z, r, r, 1, c);
-      c.setRGB(1, 0.95, 0.7).multiplyScalar((hit ? 0.35 : 0.25) * (1 - grow));
-      glows.add(x, y, z, 0.6 - grow * 0.3, 0.6 - grow * 0.3, 1, c);
+      c.setRGB(1, 0.95, 0.7).multiplyScalar((hit ? 0.25 : 0.2) * (1 - grow));
+      glows.add(x, y, z, 0.45 - grow * 0.2, 0.45 - grow * 0.2, 1, c);
       if (hit) {
         // Parry-strength hits: a cross flare during the freeze.
         c.setRGB(1, 0.95, 0.75).multiplyScalar(0.55);
@@ -315,6 +315,11 @@ export function createCombatFx(kit: FxKit) {
   }
 
   function particles(world: World, f: RenderFrame3D) {
+    // A parry dumps ~70 sparks on one spot; summed additively they burn into a white blob that hides
+    // the actors. Dim each spark as the burst gets denser so the total stays roughly constant.
+    let sparks = 0;
+    for (const p of world.particles) if (p.active && p.kind === 'spark') sparks++;
+    const sparkGain = Math.min(1, Math.sqrt(10 / Math.max(1, sparks)));
     for (const p of world.particles) {
       if (!p.active || p.kind === 'env') continue;
       const x = toX(p.x);
@@ -327,7 +332,7 @@ export function createCombatFx(kit: FxKit) {
           const sp = Math.hypot(p.vx, p.vy);
           const len = Math.max(0.05, Math.min(0.4, sp * 0.0008)) * (0.4 + 0.6 * a);
           const ang = Math.atan2(-p.vy, p.vx);
-          c.copy(cssColor(p.color)).multiplyScalar((p.kind === 'spark' ? 0.6 : 0.55) * a);
+          c.copy(cssColor(p.color)).multiplyScalar((p.kind === 'spark' ? 0.75 * sparkGain : 0.55) * a);
           beams.add(x, y, z, len, (p.size + 1) * S * 0.6, 1, c, ang);
           if (p.kind === 'lightning') {
             c.copy(cssColor('#38bdf8')).multiplyScalar(0.4 * a);
@@ -363,10 +368,14 @@ export function createCombatFx(kit: FxKit) {
   }
 
   function lightning(world: World, f: RenderFrame3D) {
+    // Chain + sky strikes can stack a dozen arcs on one target: dim them as they pile up (see sparks).
+    let bolts = 0;
+    for (const lb of world.lightningBolts) if (lb.active) bolts++;
+    const boltGain = Math.min(1, Math.sqrt(4 / Math.max(1, bolts)));
     for (let i = 0; i < world.lightningBolts.length; i++) {
       const lb = world.lightningBolts[i];
       if (!lb.active) continue;
-      const k = Math.min(1, (lb.life / lb.maxLife) * 1.3);
+      const k = Math.min(1, (lb.life / lb.maxLife) * 1.3) * boltGain;
       const z = LANE_Z[world.combat.zLane] + 0.25;
       const col = cssColor(lb.color);
       const len = Math.hypot(lb.x2 - lb.x1, lb.y2 - lb.y1) * S;

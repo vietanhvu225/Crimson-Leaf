@@ -12,9 +12,9 @@ import { hash01, type FxKit } from './shared.ts';
 // - Huyết Ảnh (combat.awakenedTimer > 0): fresnel flame shell around the player, rising blood
 //   wisps, pulsing ground sigil, and a red point light that tints the surroundings (a real-light
 //   effect canvas cannot do). Immortal mode (B) uses the same aura in gold.
-// - Elemental debuffs on enemies (canvas: render/characters/enemy.ts § 8): burn = flame tongues,
-//   freeze = faceted ice block, chill = frost glow at the feet, stun = orbiting stars + zig-zag.
-// - Enemy wind-up telegraph: charging glow (bigger and with converging rays for bosses).
+// - Elemental debuffs on enemies: the T04 rig draws the shapes (flame cones, ice block, stun stars);
+//   here only their light: burn/freeze glow, chill frost ring + motes (T04 has none), stun zig-zag.
+// - Enemy wind-up telegraph: charging glow over T04's torus (converging rays for bosses).
 // The point light always exists (intensity 0 when idle) so toggling never recompiles shaders.
 
 const AURA_VERT = /* glsl */ `
@@ -51,7 +51,7 @@ function enemyHeight(en: EnemyActor) {
 
 export function createAuraFx(kit: FxKit, combat: CombatFx) {
   const { track, root } = kit;
-  const { glows, flames, beams, shards, rings, addJagged } = combat.shared;
+  const { glows, beams, shards, rings, addJagged } = combat.shared;
 
   const auraMat = track.material(
     new THREE.ShaderMaterial({
@@ -85,22 +85,6 @@ export function createAuraFx(kit: FxKit, combat: CombatFx) {
 
   const light = new THREE.PointLight('#ff2d55', 0, 6, 1.6);
   root.add(light);
-
-  // Freeze shell: faceted translucent ice.
-  const iceMat = track.material(
-    new THREE.MeshStandardMaterial({
-      color: '#7dd3fc',
-      roughness: 0.15,
-      metalness: 0.1,
-      transparent: true,
-      opacity: 0.55,
-      flatShading: true,
-      emissive: '#0c4a6e',
-      emissiveIntensity: 0.4,
-      depthWrite: false,
-    })
-  );
-  const ice = kit.batch(track.geometry(new THREE.IcosahedronGeometry(1, 0)), iceMat, 16, false, { renderOrder: 4 });
 
   const c = new THREE.Color();
 
@@ -167,20 +151,14 @@ export function createAuraFx(kit: FxKit, combat: CombatFx) {
       const yFeet = toY(en.y);
       const z = LANE_Z[en.zLane] + 0.25;
 
+      // The body-attached shapes (burn flame cones, freeze ice block, stun stars, wind-up torus) are
+      // drawn by the T04 enemy rig at its real size; here only the light they cast (glows, sparks).
       if (en.burnTimer > 0) {
-        for (let k = 0; k < 4; k++) {
-          const fx = (k - 1.5) * 9 + Math.sin(f.t * 14 + k) * 3;
-          const fy = h * (0.35 + 0.18 * hash01(k + en.id)) + Math.sin(f.t * 20 + k * 1.7) * 3;
-          const len = (16 + Math.sin(f.t * 25 + k * 2.3) * 5) * S;
-          c.copy(cssColor(k % 2 === 0 ? '#f97316' : '#fde047')).multiplyScalar(1.0);
-          flames.add(x + fx * S, yFeet + fy * S + len * 0.5, z, len, 0.07, 0.07, c, -Math.PI / 2);
-        }
         c.copy(cssColor('#f97316')).multiplyScalar(0.35);
         glows.add(x, yFeet + h * 0.5 * S, z, h * 2.2 * S, h * 2.4 * S, 1, c);
       }
 
       if ((en.freezeTimer ?? 0) > 0) {
-        ice.add(x, yFeet + h * 0.52 * S, LANE_Z[en.zLane], h * 0.55 * S, h * 0.62 * S, 0.4, cssColor('#bae6fd'), 0.2, 0.5);
         c.copy(cssColor('#7dd3fc')).multiplyScalar(0.3);
         glows.add(x, yFeet + h * 0.5 * S, z + 0.2, h * 1.8 * S, h * 2 * S, 1, c);
       } else if (en.chillTimer > 0) {
@@ -193,15 +171,6 @@ export function createAuraFx(kit: FxKit, combat: CombatFx) {
       }
 
       if ((en.stunTimer ?? 0) > 0) {
-        for (let s = 0; s < 3; s++) {
-          const a = f.t * 9 + (s * Math.PI * 2) / 3;
-          const sx = x + Math.cos(a) * h * 0.38 * S;
-          const sy = yFeet + (h + 8 + Math.sin(a) * 4) * S;
-          const sz = z + Math.sin(a) * 0.25;
-          c.copy(cssColor(s % 2 === 0 ? '#fde047' : '#38bdf8')).multiplyScalar(1.1);
-          glows.add(sx, sy, sz, 0.14, 0.14, 1, c);
-          shards.add(sx, sy, sz, 0.035, 0.035, 0.035, cssColor('#fef9c3'), f.t * 6);
-        }
         addJagged(
           x - 12 * S, yFeet + h * 0.65 * S, x + 12 * S, yFeet + h * 0.2 * S, z + 0.1,
           0.06, en.id, f.t, cssColor('#fde047'), 0.45, 0.35
@@ -215,8 +184,6 @@ export function createAuraFx(kit: FxKit, combat: CombatFx) {
         const r = (boss ? 1.6 : 0.8) * (0.85 + pulse * 0.25);
         c.copy(col).multiplyScalar(boss ? 1.4 : 0.9);
         glows.add(x, yFeet + h * 0.55 * S, z + 0.3, r, r, 1, c);
-        c.copy(col).multiplyScalar(1.6);
-        rings.add(x, yFeet + h * 0.55 * S, z + 0.3, r * 0.9 * (1.2 - pulse * 0.4), r * 0.9 * (1.2 - pulse * 0.4), 1, c);
         if (boss) {
           // Energy converging towards the boss.
           for (let k = 0; k < 8; k++) {
@@ -234,14 +201,11 @@ export function createAuraFx(kit: FxKit, combat: CombatFx) {
   return {
     /** Returns the awakening intensity (0..1) for the post pass. */
     update(world: World, f: RenderFrame3D) {
-      ice.begin();
       const awaken = awakening(world, f);
       debuffs(world, f);
-      ice.end();
       return awaken;
     },
     dispose() {
-      ice.dispose();
       light.dispose();
     },
   };
