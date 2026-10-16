@@ -1,0 +1,116 @@
+{
+  "stage": "spring",
+  "renderer": "three",
+  "loop": 1,
+  "script": "swap",
+  "url": "http://127.0.0.1:65285/?autostart=1&stage=spring&loop=1&renderer=three&seed=1&muted=1",
+  "swap": {
+    "cycles": 20,
+    "fpsBefore": 144,
+    "fpsAfter": 144,
+    "playerX": 200,
+    "heapStartMB": 45.1,
+    "heapEndMB": 51.5,
+    "first": {
+      "cycle": 1,
+      "toCanvas": "canvas",
+      "three": {
+        "renderer": "three",
+        "canvases": 1,
+        "stats": {
+          "fps": 124,
+          "drawCalls": 64,
+          "triangles": 91442,
+          "geometries": 42,
+          "textures": 6,
+          "entities": 191
+        },
+        "x": 200
+      }
+    },
+    "last": {
+      "cycle": 20,
+      "toCanvas": "canvas",
+      "three": {
+        "renderer": "three",
+        "canvases": 1,
+        "stats": {
+          "fps": 144,
+          "drawCalls": 60,
+          "triangles": 91282,
+          "geometries": 39,
+          "textures": 6,
+          "entities": 192
+        },
+        "x": 200
+      }
+    },
+    "geometriesPerCycle": [
+      42,
+      43,
+      44,
+      43,
+      39,
+      39,
+      39,
+      39,
+      39,
+      39,
+      39,
+      39,
+      39,
+      39,
+      39,
+      39,
+      39,
+      39,
+      39,
+      39
+    ],
+    "texturesPerCycle": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+    ],
+    "webglWarnings": []
+  },
+  "pixelStd": 45.18,
+  "pixelMean": 67.11,
+  "gameState": "gameover",
+  "seasonId": "spring",
+  "player": {
+    "x": 200,
+    "y": 560,
+    "vx": 0,
+    "vy": 0,
+    "onGround": true,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 143.9,
+    "drawCalls": 60,
+    "triangles": 91282,
+    "geometries": 39,
+    "textures": 6,
+    "entities": 192
+  },
+  "png": "shots/T04/swap.png",
+  "errors": []
+}

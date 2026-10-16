@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { SEASONS } from '../rules/index.ts';
 import type { World } from '../engine/world.ts';
 import type { GameRenderer } from '../view.ts';
+import { actorsModule } from './actors/index.ts';
 import { poseCamera, viewToWorld, type CameraOptions } from './camera.ts';
 import { S } from './coords.ts';
 import type { RenderFrame3D, RenderModule, RenderModuleDef } from './module.ts';
@@ -18,7 +19,10 @@ import { Tracker } from './resources.ts';
  * Registered render modules (T03 env, T04 actors, T05 vfx: add exactly one line each).
  * A module registered for a slot replaces the T02 placeholder of that slot.
  */
-const MODULES: RenderModuleDef[] = [envKit];
+const MODULES: RenderModuleDef[] = [
+  envKit,
+  actorsModule,
+];
 
 const PLACEHOLDERS: RenderModuleDef[] = [placeholderEnv, placeholderActors, placeholderVfx];
 

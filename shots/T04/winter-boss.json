@@ -1,0 +1,31 @@
+{
+  "stage": "winter",
+  "renderer": "three",
+  "loop": 1,
+  "script": "boss",
+  "url": "http://127.0.0.1:57140/?autostart=1&stage=winter&loop=1&renderer=three&seed=2&muted=1",
+  "fps": 144,
+  "worstFrameMs": 7,
+  "pixelStd": 50.73,
+  "pixelMean": 45.08,
+  "gameState": "playing",
+  "seasonId": "winter",
+  "player": {
+    "x": 39920,
+    "y": 560,
+    "vx": 125,
+    "vy": 0,
+    "onGround": true,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 144,
+    "drawCalls": 72,
+    "triangles": 101448,
+    "geometries": 50,
+    "textures": 17,
+    "entities": 230
+  },
+  "png": "shots/T04/winter-boss.png",
+  "errors": []
+}

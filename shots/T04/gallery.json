@@ -1,0 +1,31 @@
+{
+  "stage": "spring",
+  "renderer": "three",
+  "loop": 1,
+  "script": "idle",
+  "url": "http://127.0.0.1:63640/?autostart=1&stage=spring&loop=1&renderer=three&seed=1&muted=1&debug=1&gallery=actors",
+  "fps": 144.4,
+  "worstFrameMs": 7,
+  "pixelStd": 33.69,
+  "pixelMean": 32.04,
+  "gameState": "playing",
+  "seasonId": "spring",
+  "player": {
+    "x": 200,
+    "y": 560,
+    "vx": 0,
+    "vy": 0,
+    "onGround": true,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 143.9,
+    "drawCalls": 89,
+    "triangles": 333570,
+    "geometries": 59,
+    "textures": 7,
+    "entities": 189
+  },
+  "png": "shots/T04/gallery.png",
+  "errors": []
+}
