@@ -4,8 +4,8 @@ import {
   cycleElement,
   toggleImmortal,
   teleportToBoss,
-} from './actions';
-import { World } from './world';
+} from './actions.ts';
+import type { World } from './world.ts';
 
 // Keyboard / mouse handlers writing into world input state.
 

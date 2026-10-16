@@ -1,5 +1,5 @@
 import React from 'react';
-import { ElementalCombatProfile, PlayerCombatState, RELIC_CATALOG } from '../../game/rules';
+import { type ElementalCombatProfile, type PlayerCombatState, RELIC_CATALOG } from '../../game/rules';
 import { Award, Shield } from 'lucide-react';
 
 interface VitalsPanelProps {

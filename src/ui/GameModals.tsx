@@ -1,5 +1,5 @@
 import React from 'react';
-import { SEASONS, SeasonId, GameLoopRoute, StageClearOutcome } from '../game/rules';
+import { SEASONS, type SeasonId, type GameLoopRoute, type StageClearOutcome } from '../game/rules';
 
 export interface RunSnapshot {
   outcome: 'victory' | 'defeat';

@@ -1,5 +1,5 @@
-import { World } from '../world';
-import { Frame } from './frame';
+import type { World } from '../world.ts';
+import type { Frame } from './frame.ts';
 
 // Camera follow.
 

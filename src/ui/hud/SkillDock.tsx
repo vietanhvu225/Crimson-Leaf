@@ -1,12 +1,12 @@
 import {
-  PlayerCombatState,
+  type PlayerCombatState,
   SKILL_BRANCH_ORDER,
   SKILL_DESCRIPTIONS,
-  SkillBranchId,
+  type SkillBranchId,
   getBranchLevelKey,
   getSkillUpgradeCost,
-  SeasonConfig,
-  SeasonId,
+  type SeasonConfig,
+  type SeasonId,
 } from '../../game/rules';
 import { Sparkles } from 'lucide-react';
 

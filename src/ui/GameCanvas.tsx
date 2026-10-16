@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { SkillBranchId } from '../game/rules';
-import { createWorld, HostState, World } from '../game/engine/world';
-import { TouchInputState } from '../game/engine/entities';
+import type { SkillBranchId } from '../game/rules';
+import { createWorld, type HostState, type World } from '../game/engine/world';
+import type { TouchInputState } from '../game/engine/entities';
 import { attachInput } from '../game/engine/input';
 import { rebuildLevel } from '../game/engine/level';
 import { stepSimulation } from '../game/engine/simulation';

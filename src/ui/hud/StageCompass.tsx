@@ -1,5 +1,5 @@
 import React from 'react';
-import { GameLoopRoute, SEASONS, SEASON_ORDER, SeasonConfig, SeasonId } from '../../game/rules';
+import { type GameLoopRoute, SEASONS, SEASON_ORDER, type SeasonConfig, type SeasonId } from '../../game/rules';
 import { ChevronDown, Compass } from 'lucide-react';
 
 interface StageCompassProps {

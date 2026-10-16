@@ -1,4 +1,4 @@
-import { SeasonId } from '../../rules';
+import type { SeasonId } from '../../rules';
 import { INK } from '../palette';
 
 // Water, crystal streams and magma surfaces.

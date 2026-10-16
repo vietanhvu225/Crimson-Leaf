@@ -1,4 +1,4 @@
-import { World } from '../engine/world';
+import type { World } from '../engine/world';
 import { INK } from './palette';
 
 // World item pedestals and dropped blood orbs.

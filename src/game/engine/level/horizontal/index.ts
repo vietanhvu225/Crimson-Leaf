@@ -1,17 +1,17 @@
-import { computeSubterraneanSlopeY } from '../../../rules';
-import { PlatformSubType } from '../../entities';
-import { World } from '../../world';
-import { LevelContext } from '../context';
-import { placeCheckpointsAndStarterPickups } from './checkpoints';
-import { spawnGateGarrisons, spawnOpeningSquad, spawnRoadPatrols, spawnStageBoss } from './enemies';
-import { HorizontalLayout } from './layout';
-import { buildUpperStructures } from './structures';
+import { computeSubterraneanSlopeY } from '../../../rules/index.ts';
+import type { PlatformSubType } from '../../entities.ts';
+import type { World } from '../../world.ts';
+import type { LevelContext } from '../context.ts';
+import { placeCheckpointsAndStarterPickups } from './checkpoints.ts';
+import { spawnGateGarrisons, spawnOpeningSquad, spawnRoadPatrols, spawnStageBoss } from './enemies.ts';
+import type { HorizontalLayout } from './layout.ts';
+import { buildUpperStructures } from './structures.ts';
 import {
   buildBossArenaFloor,
   buildBossArenaPlatforms,
   buildGroundSpans,
   buildOpeningPlatform,
-} from './terrain';
+} from './terrain.ts';
 
 /** Horizontal-scrolling stage layout. */
 export function buildHorizontalStage(world: World, L: LevelContext) {

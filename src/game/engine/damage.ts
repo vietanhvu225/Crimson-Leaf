@@ -1,7 +1,7 @@
-import { EnemyActor } from './entities';
-import { spawnLightningBolt, spawnBanner, spawnParticle } from './spawn';
-import { World } from './world';
-import { rollElementalProc } from '../rules';
+import type { EnemyActor } from './entities.ts';
+import { spawnLightningBolt, spawnBanner, spawnParticle } from './spawn.ts';
+import type { World } from './world.ts';
+import { rollElementalProc } from '../rules/index.ts';
 
 // Damage application + elemental / relic on-hit effects.
 

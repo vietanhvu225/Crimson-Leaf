@@ -1,7 +1,7 @@
-import { computeSubterraneanSlopeY } from '../../../rules';
-import { spawnWorldItem } from '../../spawn';
-import { World } from '../../world';
-import { LevelContext } from '../context';
+import { computeSubterraneanSlopeY } from '../../../rules/index.ts';
+import { spawnWorldItem } from '../../spawn.ts';
+import type { World } from '../../world.ts';
+import type { LevelContext } from '../context.ts';
 
 // Checkpoint shrines and starter pickups.
 

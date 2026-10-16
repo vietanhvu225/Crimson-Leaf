@@ -1,6 +1,6 @@
 import { INK } from '../../palette';
 import { drawChibiCloud, drawChibiMiniPagoda } from '../shapes';
-import { ChibiStagePalette } from '../stagePalette';
+import type { ChibiStagePalette } from '../stagePalette';
 
 /** Sky and celestial phenomena for spring. */
 export function paintSpringSky(

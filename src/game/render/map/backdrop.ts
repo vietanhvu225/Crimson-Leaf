@@ -1,4 +1,4 @@
-import { SeasonConfig, SeasonId } from '../../rules';
+import type { SeasonConfig, SeasonId } from '../../rules';
 import { INK } from '../palette';
 import { drawCleanChibiPuff } from './shapes';
 import { paintAutumnSky } from './sky/autumn';
@@ -13,7 +13,7 @@ import { paintSummerSky } from './sky/summer';
 import { paintThunderPeakSky } from './sky/thunderPeak';
 import { paintWinterSky } from './sky/winter';
 import { getChibiStagePalette } from './stagePalette';
-import { MapTrunk } from './types';
+import type { MapTrunk } from './types';
 
 // Sky, moon, clouds, hills and background trees.
 

@@ -1,7 +1,7 @@
-import { World } from '../../world';
-import { pushPlat } from '../builders';
-import { LevelContext } from '../context';
-import { HorizontalLayout } from './layout';
+import type { World } from '../../world.ts';
+import { pushPlat } from '../builders.ts';
+import type { LevelContext } from '../context.ts';
+import type { HorizontalLayout } from './layout.ts';
 
 // Ground spans, opening platform and boss arena geometry.
 

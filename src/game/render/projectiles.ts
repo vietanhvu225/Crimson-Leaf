@@ -1,4 +1,4 @@
-import { World } from '../engine/world';
+import type { World } from '../engine/world';
 import { ELEMENTAL_STANCES } from '../rules';
 import { INK } from './palette';
 

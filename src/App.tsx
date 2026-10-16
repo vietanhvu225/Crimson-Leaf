@@ -2,20 +2,20 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   createInitialPlayerCombatState,
   evaluateStageClear,
-  GameLoopRoute,
-  GameStateMode,
-  PlayerCombatState,
+  type GameLoopRoute,
+  type GameStateMode,
+  type PlayerCombatState,
   SEASONS,
-  SeasonId,
-  SkillBranchId,
+  type SeasonId,
+  type SkillBranchId,
 } from './game/rules';
 import { soundEngine } from './game/audio';
 import { TitleScreen } from './ui/TitleScreen';
 import { GameHUD } from './ui/GameHUD';
-import { PauseModal, OutcomeModal, RunSnapshot } from './ui/GameModals';
+import { PauseModal, OutcomeModal, type RunSnapshot } from './ui/GameModals';
 import { GddModal } from './ui/GddModal';
 import { GameCanvas } from './ui/GameCanvas';
-import { TouchInputState } from './game/engine/entities';
+import type { TouchInputState } from './game/engine/entities';
 
 // Initial state from URL params (?stage=<SeasonId>&loop=1|2&muted=1). Unknown values are ignored.
 function readUrlParam(name: string): string | null {

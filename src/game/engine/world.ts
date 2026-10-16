@@ -1,4 +1,4 @@
-import {
+import type {
   TouchInputState,
   PlatformBranch,
   StageHazardZone,
@@ -12,14 +12,14 @@ import {
   PooledParticle,
   LightningBoltArc,
   FloatingBanner,
-} from './entities';
+} from './entities.ts';
 import {
-  PlayerCombatState,
-  SeasonId,
-  GameLoopRoute,
-  GameStateMode,
+  type PlayerCombatState,
+  type SeasonId,
+  type GameLoopRoute,
+  type GameStateMode,
   createInitialPlayerCombatState,
-} from '../rules';
+} from '../rules/index.ts';
 
 /** Callbacks + settings the React host exposes to the engine (read every frame). */
 export interface HostState {

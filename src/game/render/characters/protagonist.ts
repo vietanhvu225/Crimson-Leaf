@@ -1,7 +1,7 @@
-import { ELEMENTAL_STANCES, PlayerCombatState, SeasonId, getGuardianBladeCount } from '../../rules';
+import { ELEMENTAL_STANCES, type PlayerCombatState, type SeasonId, getGuardianBladeCount } from '../../rules';
 import { INK } from '../palette';
 import { drawChibiArm, drawChibiCloak, drawChibiEye, drawChibiLeg } from './parts';
-import { ProtagonistArmPose, drawAttackingSwordArm, drawIdleSwordArm } from './protagonistArm';
+import { type ProtagonistArmPose, drawAttackingSwordArm, drawIdleSwordArm } from './protagonistArm';
 import {
   drawCrystalLevitation,
   drawEarthDrillAura,
@@ -9,7 +9,7 @@ import {
   drawIceSkiTrail,
   drawSkyWings,
 } from './protagonistMounts';
-import { RenderablePlayer } from './types';
+import type { RenderablePlayer } from './types';
 
 // The player character.
 

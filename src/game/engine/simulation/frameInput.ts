@@ -1,6 +1,6 @@
-import { toggleZLane } from '../../rules';
-import { spawnBanner } from '../spawn';
-import { World } from '../world';
+import { toggleZLane } from '../../rules/index.ts';
+import { spawnBanner } from '../spawn.ts';
+import type { World } from '../world.ts';
 
 // Keyboard / mouse / touch state -> per-frame input flags.
 

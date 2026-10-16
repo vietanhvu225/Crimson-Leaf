@@ -1,8 +1,8 @@
-import { soundEngine } from '../../audio';
-import { applyItemPickup } from '../../rules';
-import { spawnBanner, spawnParticle } from '../spawn';
-import { World } from '../world';
-import { Frame } from './frame';
+import { soundEngine } from '../../audio.ts';
+import { applyItemPickup } from '../../rules/index.ts';
+import { spawnBanner, spawnParticle } from '../spawn.ts';
+import type { World } from '../world.ts';
+import type { Frame } from './frame.ts';
 
 // Checkpoint shrines and world item pickups.
 

@@ -1,6 +1,6 @@
-import { SeasonId } from '../../rules';
+import type { SeasonId } from '../../rules';
 import { INK } from '../palette';
-import { MapGrapplePoint } from './types';
+import type { MapGrapplePoint } from './types';
 
 // Stage-specific grapple anchor items.
 

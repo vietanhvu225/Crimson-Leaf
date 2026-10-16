@@ -1,8 +1,8 @@
-import { SeasonId } from '../../rules';
+import type { SeasonId } from '../../rules';
 import { INK } from '../palette';
-import { EnemyPose } from './enemyPose';
+import type { EnemyPose } from './enemyPose';
 import { drawChibiArm } from './parts';
-import { RenderableEnemy } from './types';
+import type { RenderableEnemy } from './types';
 
 // Elite guard and stage boss headgear and signature weapons.
 

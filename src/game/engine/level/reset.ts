@@ -1,6 +1,6 @@
-import { computeSubterraneanSlopeY } from '../../rules';
-import { World } from '../world';
-import { LevelContext } from './context';
+import { computeSubterraneanSlopeY } from '../../rules/index.ts';
+import type { World } from '../world.ts';
+import type { LevelContext } from './context.ts';
 
 // Clears actors, pools and player state before a stage is (re)built.
 

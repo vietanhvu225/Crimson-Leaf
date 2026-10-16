@@ -1,6 +1,6 @@
-import { spawnParticle } from '../spawn';
-import { World } from '../world';
-import { Frame } from './frame';
+import { spawnParticle } from '../spawn.ts';
+import type { World } from '../world.ts';
+import type { Frame } from './frame.ts';
 
 // Ambient seasonal particles and short-lived FX pools (particles, banners, lightning).
 

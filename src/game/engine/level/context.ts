@@ -1,11 +1,11 @@
 import {
-  GameLoopRoute,
-  SealGateDefinition,
-  SeasonConfig,
-  SeasonId,
-  StageDifficultyScaling,
+  type GameLoopRoute,
+  type SealGateDefinition,
+  type SeasonConfig,
+  type SeasonId,
+  type StageDifficultyScaling,
   getCheckpointCoordinates,
-} from '../../rules';
+} from '../../rules/index.ts';
 
 /** Stage-wide values shared by every level-building step. */
 export interface LevelContext {

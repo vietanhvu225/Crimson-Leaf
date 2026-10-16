@@ -1,6 +1,6 @@
-import { EnemyArchetype, PlayerCombatState, SeasonId } from '../../rules';
+import type { EnemyArchetype, PlayerCombatState, SeasonId } from '../../rules';
 import { INK } from '../palette';
-import { EnemyCapePose, drawBossHaloAndCape, drawBossOrEliteGear } from './bossGear';
+import { type EnemyCapePose, drawBossHaloAndCape, drawBossOrEliteGear } from './bossGear';
 import {
   drawBlueKiterGear,
   drawBombAlchemistGear,
@@ -11,9 +11,9 @@ import {
   drawTessenGaleGear,
   drawThunderPuppeteerGear,
 } from './enemyGear';
-import { EnemyPose } from './enemyPose';
+import type { EnemyPose } from './enemyPose';
 import { drawChibiArm, drawChibiEye, drawChibiLeg } from './parts';
-import { RenderableEnemy } from './types';
+import type { RenderableEnemy } from './types';
 
 // Enemies, elite sub-bosses and stage bosses.
 

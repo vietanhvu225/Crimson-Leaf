@@ -1,4 +1,4 @@
-import { World } from '../engine/world';
+import type { World } from '../engine/world';
 import { SEASONS } from '../rules';
 import { renderEnemyBot } from './characters/enemy';
 import { renderCaptiveMotherShrine } from './characters/motherShrine';
@@ -10,7 +10,7 @@ import {
   drawLightningArcs,
   drawParticles,
 } from './effects';
-import { RenderFrame } from './frame';
+import type { RenderFrame } from './frame';
 import { drawBloodOrbs, drawWorldItems } from './items';
 import { renderChibiBackdrop } from './map/backdrop';
 import { renderChibiCheckpoints, renderChibiSealGates } from './map/gates';

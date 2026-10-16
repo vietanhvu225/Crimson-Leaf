@@ -1,12 +1,12 @@
-import { soundEngine } from '../../audio';
-import { PHYSICS_CONSTANTS, applyMeleeHitReward, getEffectiveDashCooldown } from '../../rules';
-import { applyElementalAndRelicOnHit, dealDamageToEnemy } from '../damage';
-import { GrapplePoint } from '../entities';
-import { spawnBanner, spawnParticle, spawnProjectile } from '../spawn';
-import { World } from '../world';
-import { Frame } from './frame';
-import { FrameInput } from './frameInput';
-import { MoveState } from './movement';
+import { soundEngine } from '../../audio.ts';
+import { PHYSICS_CONSTANTS, applyMeleeHitReward, getEffectiveDashCooldown } from '../../rules/index.ts';
+import { applyElementalAndRelicOnHit, dealDamageToEnemy } from '../damage.ts';
+import type { GrapplePoint } from '../entities.ts';
+import { spawnBanner, spawnParticle, spawnProjectile } from '../spawn.ts';
+import type { World } from '../world.ts';
+import type { Frame } from './frame.ts';
+import type { FrameInput } from './frameInput.ts';
+import type { MoveState } from './movement.ts';
 
 // Stage traversal abilities: ice ram, earth drill, water skimming, dash, grapple.
 

@@ -1,5 +1,5 @@
-import { World } from '../engine/world';
-import { RenderFrame } from './frame';
+import type { World } from '../engine/world';
+import type { RenderFrame } from './frame';
 import { INK } from './palette';
 
 // Grapple rope, lightning arcs, pooled particles, combat banners and aim reticle.

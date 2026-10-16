@@ -1,4 +1,4 @@
-import { ZLane } from '../../rules';
+import type { ZLane } from '../../rules';
 
 // Minimal shapes the map renderers need from engine entities.
 

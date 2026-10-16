@@ -1,9 +1,9 @@
 import React from 'react';
 import {
-  GameLoopRoute,
+  type GameLoopRoute,
   SEASONS,
   SEASON_ORDER,
-  SeasonId,
+  type SeasonId,
   getStageDifficultyMultipliers,
 } from '../game/rules';
 import { Sparkles, Compass, Swords, ShieldAlert } from 'lucide-react';

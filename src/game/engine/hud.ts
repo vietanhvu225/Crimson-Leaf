@@ -1,6 +1,6 @@
-import { PlayerCombatState, SeasonConfig, SEASONS } from '../rules';
-import { EnemyActor } from './entities';
-import { World } from './world';
+import { type PlayerCombatState, type SeasonConfig, SEASONS } from '../rules/index.ts';
+import type { EnemyActor } from './entities.ts';
+import type { World } from './world.ts';
 
 /** Stage completion 0–100 based on scroll direction. */
 export function getStageProgressPct(world: World, cfg: SeasonConfig): number {

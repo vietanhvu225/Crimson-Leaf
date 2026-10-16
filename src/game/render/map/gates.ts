@@ -1,5 +1,5 @@
 import { INK } from '../palette';
-import { MapCheckpoint, MapSealGate } from './types';
+import type { MapCheckpoint, MapSealGate } from './types';
 
 // Checkpoint torii gates and seal gates.
 

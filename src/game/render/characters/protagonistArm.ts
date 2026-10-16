@@ -1,7 +1,7 @@
-import { ElementalStanceId, PlayerCombatState } from '../../rules';
+import type { ElementalStanceId, PlayerCombatState } from '../../rules';
 import { INK } from '../palette';
 import { drawChibiArm } from './parts';
-import { RenderablePlayer } from './types';
+import type { RenderablePlayer } from './types';
 
 /** Values computed by the parent renderer and shared with its branch helpers. */
 export interface ProtagonistArmPose {

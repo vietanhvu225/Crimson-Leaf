@@ -1,4 +1,4 @@
-import { PlayerCombatState, SeasonConfig } from '../../game/rules';
+import type { PlayerCombatState, SeasonConfig } from '../../game/rules';
 import { BookOpen, Pause, Play, RotateCcw, Volume2, VolumeX } from 'lucide-react';
 
 interface ComboPanelProps {

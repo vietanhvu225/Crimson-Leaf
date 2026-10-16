@@ -1,10 +1,10 @@
-import { soundEngine } from '../../audio';
-import { PHYSICS_CONSTANTS, getMaxAirJumps } from '../../rules';
-import { spawnBanner } from '../spawn';
-import { World } from '../world';
-import { Frame } from './frame';
-import { FrameInput } from './frameInput';
-import { MoveState } from './movement';
+import { soundEngine } from '../../audio.ts';
+import { PHYSICS_CONSTANTS, getMaxAirJumps } from '../../rules/index.ts';
+import { spawnBanner } from '../spawn.ts';
+import type { World } from '../world.ts';
+import type { Frame } from './frame.ts';
+import type { FrameInput } from './frameInput.ts';
+import type { MoveState } from './movement.ts';
 
 // Jump, wall-jump, cloud-step and lava bounce.
 

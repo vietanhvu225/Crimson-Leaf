@@ -4,11 +4,11 @@ import {
   computeAerialLevitationStep,
   computeUnderwaterSwimStep,
   getStageMovementProfile,
-} from '../../rules';
-import { spawnParticle } from '../spawn';
-import { World } from '../world';
-import { Frame } from './frame';
-import { FrameInput } from './frameInput';
+} from '../../rules/index.ts';
+import { spawnParticle } from '../spawn.ts';
+import type { World } from '../world.ts';
+import type { Frame } from './frame.ts';
+import type { FrameInput } from './frameInput.ts';
 
 // Movement profile per stage, free swim/flight, wall cling and cloak.
 

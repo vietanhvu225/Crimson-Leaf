@@ -1,4 +1,4 @@
-import { soundEngine } from '../../audio';
+import { soundEngine } from '../../audio.ts';
 import {
   ELEMENTAL_STANCES,
   PHYSICS_CONSTANTS,
@@ -8,20 +8,20 @@ import {
   consumeKunaiChakra,
   getEffectiveKodachiStats,
   getEffectiveKunaiDamage,
-} from '../../rules';
-import { triggerAwakening } from '../actions';
-import { applyElementalAndRelicOnHit, dealDamageToEnemy } from '../damage';
+} from '../../rules/index.ts';
+import { triggerAwakening } from '../actions.ts';
+import { applyElementalAndRelicOnHit, dealDamageToEnemy } from '../damage.ts';
 import {
   spawnBanner,
   spawnBloodOrb,
   spawnLightningBolt,
   spawnParticle,
   spawnProjectile,
-} from '../spawn';
-import { World } from '../world';
-import { Frame } from './frame';
-import { FrameInput } from './frameInput';
-import { MoveState } from './movement';
+} from '../spawn.ts';
+import type { World } from '../world.ts';
+import type { Frame } from './frame.ts';
+import type { FrameInput } from './frameInput.ts';
+import type { MoveState } from './movement.ts';
 
 // Player Kodachi melee and 360-degree kunai fire.
 

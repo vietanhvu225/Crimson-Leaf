@@ -1,4 +1,4 @@
-import { soundEngine } from '../../audio';
+import { soundEngine } from '../../audio.ts';
 import {
   ELEMENTAL_STANCES,
   PHYSICS_CONSTANTS,
@@ -6,12 +6,12 @@ import {
   applyParryDeflectReward,
   applyPlayerDamage,
   checkProjectileParry,
-} from '../../rules';
-import { applyElementalAndRelicOnHit, dealDamageToEnemy } from '../damage';
-import { EnemyActor } from '../entities';
-import { spawnBanner, spawnBloodOrb, spawnParticle, spawnProjectile } from '../spawn';
-import { World } from '../world';
-import { Frame } from './frame';
+} from '../../rules/index.ts';
+import { applyElementalAndRelicOnHit, dealDamageToEnemy } from '../damage.ts';
+import type { EnemyActor } from '../entities.ts';
+import { spawnBanner, spawnBloodOrb, spawnParticle, spawnProjectile } from '../spawn.ts';
+import type { World } from '../world.ts';
+import type { Frame } from './frame.ts';
 
 // Projectile flight, parry and hits.
 

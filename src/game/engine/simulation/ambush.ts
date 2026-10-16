@@ -1,7 +1,7 @@
-import { computeKageAmbushSpawn } from '../../rules';
-import { spawnBanner, spawnParticle } from '../spawn';
-import { World } from '../world';
-import { Frame } from './frame';
+import { computeKageAmbushSpawn } from '../../rules/index.ts';
+import { spawnBanner, spawnParticle } from '../spawn.ts';
+import type { World } from '../world.ts';
+import type { Frame } from './frame.ts';
 
 // Legend of Kage ambush wave spawner.
 

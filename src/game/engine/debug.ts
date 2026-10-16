@@ -1,6 +1,6 @@
-import { stepSimulation } from './simulation';
-import { World } from './world';
-import { SEASONS } from '../rules';
+import { stepSimulation } from './simulation/index.ts';
+import type { World } from './world.ts';
+import { SEASONS } from '../rules/index.ts';
 
 // window.render_game_to_text / window.advanceTime hooks for automated playtests.
 

@@ -1,5 +1,5 @@
 import { INK } from '../palette';
-import { RenderablePlayer } from './types';
+import type { RenderablePlayer } from './types';
 
 // Stage-specific mounts and movement auras under the player.
 

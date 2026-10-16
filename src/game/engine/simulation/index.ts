@@ -1,31 +1,31 @@
-import { soundEngine } from '../../audio';
-import { SEASONS, clampDt, getStageDifficultyMultipliers } from '../../rules';
-import { syncHud } from '../hud';
-import { World } from '../world';
-import { updateGrapple, updateStageAbilities } from './abilities';
-import { updateAmbientEffects } from './ambient';
-import { updateAmbushWaves } from './ambush';
-import { updateCamera } from './camera';
+import { soundEngine } from '../../audio.ts';
+import { SEASONS, clampDt, getStageDifficultyMultipliers } from '../../rules/index.ts';
+import { syncHud } from '../hud.ts';
+import type { World } from '../world.ts';
+import { updateGrapple, updateStageAbilities } from './abilities.ts';
+import { updateAmbientEffects } from './ambient.ts';
+import { updateAmbushWaves } from './ambush.ts';
+import { updateCamera } from './camera.ts';
 import {
   enforceSealGates,
   integrateMotion,
   recoverFromPits,
   resolvePlatformLanding,
   resolveTerrainCollision,
-} from './collision';
-import { updateEnemies } from './enemies';
-import { Frame } from './frame';
-import { readFrameInput } from './frameInput';
-import { updateGuardianBlades } from './guardian';
-import { updateHazards } from './hazards';
-import { updateJumping } from './jumping';
-import { resolveMoveState, updateFreeSwimOrFlight, updateWallClingAndCloak } from './movement';
-import { advanceEndBeat, checkStageOutcome, handleInactiveStates } from './outcome';
-import { updateCheckpointsAndPickups } from './pickups';
-import { updateMovingPlatforms } from './platforms';
-import { updateKunaiFire, updateMeleeAttack } from './playerAttacks';
-import { updateProjectiles } from './projectiles';
-import { tickPlayerTimers } from './timers';
+} from './collision.ts';
+import { updateEnemies } from './enemies.ts';
+import type { Frame } from './frame.ts';
+import { readFrameInput } from './frameInput.ts';
+import { updateGuardianBlades } from './guardian.ts';
+import { updateHazards } from './hazards.ts';
+import { updateJumping } from './jumping.ts';
+import { resolveMoveState, updateFreeSwimOrFlight, updateWallClingAndCloak } from './movement.ts';
+import { advanceEndBeat, checkStageOutcome, handleInactiveStates } from './outcome.ts';
+import { updateCheckpointsAndPickups } from './pickups.ts';
+import { updateMovingPlatforms } from './platforms.ts';
+import { updateKunaiFire, updateMeleeAttack } from './playerAttacks.ts';
+import { updateProjectiles } from './projectiles.ts';
+import { tickPlayerTimers } from './timers.ts';
 
 // Per-frame simulation step: physics, AI, collisions, bosses, stage mechanics.
 
