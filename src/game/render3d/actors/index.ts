@@ -431,12 +431,15 @@ function create(ctx: RenderModuleContext): RenderModule {
     backdrop!.position.set(toX(cx), toY(cy), 0.85);
     backdrop!.scale.set(vw * S * 1.4, vh * S * 1.4, 1);
     const fit = Math.min(1.25, vw / 1500);
+    // z = +1 sits closer to the camera than the z = 0 plane the view frames: keep a margin.
+    const col = (i: number, n: number) => cx + vw * 0.84 * ((i + 0.5) / n - 0.5);
+    const row = (k: number) => cy + vh * 0.84 * (k - 0.5);
 
     // Row 1: road ninjas + elite guard + the captive mother.
-    const row1 = world.camY + vh * 0.28;
+    const row1 = row(0.27);
     const n1 = GALLERY_ENEMIES.length + 1;
     GALLERY_ENEMIES.forEach((en, i) => {
-      const sx = world.camX + (vw * (i + 0.7)) / (n1 + 0.4);
+      const sx = col(i, n1);
       en.x = sx;
       en.y = row1;
       en.vx = i % 3 === 1 ? 60 : 0; // a few walk in place
@@ -446,7 +449,7 @@ function create(ctx: RenderModuleContext): RenderModule {
       emitEnemyOverhead(en, enemyBody(en.archetype), z, SEASONS.spring.accentColor, false, sx, row1);
     });
     {
-      const mx = world.camX + (vw * (n1 - 1 + 0.7)) / (n1 + 0.4);
+      const mx = col(n1 - 1, n1);
       actorRoot(rootM, toX(mx), toY(row1 - 10), z, 0, 1, 1, 0, fit * 0.85);
       rig.begin(rootM, 1);
       drawMother(rig, true, t);
@@ -454,10 +457,10 @@ function create(ctx: RenderModuleContext): RenderModule {
     }
 
     // Row 2: the 11 bosses, each in its own stage look.
-    const row2 = world.camY + vh * 0.58;
+    const row2 = row(0.6);
     GALLERY_BOSSES.forEach((en, i) => {
       const s = GALLERY_SEASONS[i];
-      const sx = world.camX + (vw * (i + 0.6)) / (GALLERY_BOSSES.length + 0.2);
+      const sx = col(i, GALLERY_BOSSES.length);
       en.x = sx;
       en.y = row2;
       const accent = SEASONS[s].accentColor;
@@ -466,9 +469,9 @@ function create(ctx: RenderModuleContext): RenderModule {
     });
 
     // Row 3: protagonist animation states.
-    const row3 = world.camY + vh * 0.86;
+    const row3 = row(0.93);
     GALLERY_POSES.forEach((anim: PlayerAnim, i) => {
-      const sx = world.camX + (vw * (i + 0.6)) / (GALLERY_POSES.length + 0.2);
+      const sx = col(i, GALLERY_POSES.length);
       const k = (t * 1.3 + i * 0.1) % 1;
       pose.anim = anim;
       pose.t = t;
