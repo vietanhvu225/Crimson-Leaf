@@ -47,8 +47,10 @@ git -C "$ROOT" worktree add "$WT/<ID>" -b task/<ID> main
 Rồi chạy **nền** (Bash `run_in_background: true`), lần thử N:
 
 ```bash
-cd "$WT/<ID>" && timeout $WORKER_TIMEOUT claude -p "Bạn là worker. Đọc threejs-port/WORKER.md rồi làm task <ID> trong threejs-port/TASKS.md. Lần thử: <N>. Nếu có threejs-port/reports/<ID>-review-*.md thì đọc và sửa theo đó trước." --permission-mode dontAsk --output-format json > "$ROOT/threejs-port/logs/<ID>-<N>.json" 2>&1
+cd "$WT/<ID>" && CLAUDE_CODE_USE_POWERSHELL_TOOL=0 CLAUDE_CODE_GIT_BASH_PATH='D:\5_setup\Git\bin\bash.exe' timeout $WORKER_TIMEOUT claude -p "Bạn là worker. Đọc threejs-port/WORKER.md rồi làm task <ID> trong threejs-port/TASKS.md. Lần thử: <N>. Nếu có threejs-port/reports/<ID>-review-*.md thì đọc và sửa theo đó trước." --permission-mode dontAsk --output-format json > "$ROOT/threejs-port/logs/<ID>-<N>.json" 2>&1
 ```
+
+(2026-10-17: hai biến môi trường trên là bắt buộc. Không có chúng, `claude -p` trên máy này chỉ có tool PowerShell, mà allowlist chỉ có `Bash(...)`, nên worker không chạy được lệnh nào.)
 
 Đánh dấu `IN_PROGRESS (attempt N)` trong `TASKS.md`, commit trên main, ghi log. Khi worker đang chạy thì kết thúc lượt; bạn sẽ được gọi lại khi lệnh nền kết thúc. Không poll.
 
