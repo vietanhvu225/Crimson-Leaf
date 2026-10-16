@@ -6,6 +6,7 @@
 //   --script clear  bot plays the stage via window.__game until victory/defeat (--max-sim-sec, default 900)
 //   --script lanes  <name>-lane0.png / -lane1.png before/after Q
 //   --script swap   F9 three↔canvas ×20, reports GPU resources / heap / fps before-after
+//   --script crowd  adds --count (default 30) enemies around the player, fps/stats before-after
 // Extra flags: --width 1280 --height 720 --duration <ms of input script> --name <png basename>
 //              --params "debug=1&foo=bar" (appended to the URL as-is)
 // Starts its own Vite server on a free port, launches Chromium with PINNED_VERSIONS.chromiumLaunch,
@@ -34,7 +35,7 @@ const STAGES = [
   'earth_core',
   'sky_sanctuary',
 ];
-const SCRIPTS = ['idle', 'run', 'combat', 'boss', 'clear', 'lanes', 'swap'];
+const SCRIPTS = ['idle', 'run', 'combat', 'boss', 'clear', 'lanes', 'swap', 'crowd'];
 const LOCK_PATH = path.join(os.tmpdir(), 'crimson-shot.lock');
 const LOCK_WAIT_MS = 20 * 60 * 1000;
 const LOCK_STALE_MS = 30 * 60 * 1000;
@@ -440,6 +441,67 @@ async function swapRenderers(page, cycles, warnings) {
   };
 }
 
+/**
+ * `--script crowd`: measures fps + renderer stats on the live stage, then pushes `count` extra
+ * enemies (all archetypes, both lanes) around the player into world.enemies and measures again
+ * while the game runs in real time (player immortal so it keeps standing).
+ */
+async function crowdTest(page, count) {
+  const sample = async () => {
+    const fps = await measureFps(page, 3000);
+    const stats = await page.evaluate(() => window.__game.stats());
+    const alive = await page.evaluate(() => window.__game.world.enemies.filter((e) => e.hp > 0).length);
+    return { fps: Math.round(fps.fps * 10) / 10, worstFrameMs: Math.round(fps.worstFrameMs), alive, stats };
+  };
+  await page.evaluate(() => window.__game.toggleImmortal());
+  await sleep(800);
+  const before = await sample();
+  await page.evaluate((n) => {
+    const w = window.__game.world;
+    const p = w.player;
+    const kinds = [
+      'blue_kiter',
+      'red_ambusher',
+      'fire_monk',
+      'bomb_alchemist',
+      'chain_kusarigama',
+      'claw_assassin',
+      'tessen_gale',
+      'thunder_puppeteer',
+      'elite_guard',
+    ];
+    for (let i = 0; i < n; i++) {
+      const x = p.x - 520 + (i % 15) * 75;
+      w.enemies.push({
+        id: 50000 + i,
+        archetype: kinds[i % kinds.length],
+        x,
+        baseX: x,
+        y: p.y - 4,
+        vx: 0,
+        vy: 0,
+        hp: 400,
+        maxHp: 400,
+        facing: i % 2 ? 1 : -1,
+        zLane: i < 15 ? 0 : 1,
+        ambushEntryTimer: 0,
+        attackCooldown: 2 + (i % 5) * 0.4,
+        windupTimer: 0,
+        hitFlashTimer: 0,
+        koTimer: 0,
+        aiTimer: 0,
+        burnTimer: 0,
+        chillTimer: 0,
+        guardianHitCooldown: 0,
+        onGround: true,
+      });
+    }
+  }, count);
+  await sleep(1000);
+  const after = await sample();
+  return { count, before, after };
+}
+
 /** Real-time keyboard input script. Keys follow src/game/engine/input.ts + simulation/frameInput.ts. */
 async function runInputScript(page, script, durationMs) {
   const end = Date.now() + durationMs;
@@ -526,6 +588,8 @@ async function capture(browser, baseUrl, opts) {
       result.swap = await swapRenderers(page, 20, warnings);
     } else if (opts.script === 'lanes') {
       result.lanes = await laneShots(page, opts);
+    } else if (opts.script === 'crowd') {
+      result.crowd = await crowdTest(page, Number(opts.count ?? 30));
     } else {
       const fpsWindow = Math.max(1000, opts.durationMs - 1000);
       const fpsPromise = sleep(500).then(() => measureFps(page, fpsWindow));
@@ -595,6 +659,7 @@ async function main() {
       muted: args.muted !== 'false',
       params: args.params ? String(args.params) : undefined,
       maxSimSec: args['max-sim-sec'] !== undefined ? Number(args['max-sim-sec']) : undefined,
+      count: args.count !== undefined ? Number(args.count) : undefined,
       name: String(args.name ?? `${stage}-l${loop}-${renderer ?? 'default'}-${script}`),
     });
   }
@@ -637,6 +702,7 @@ async function main() {
     if (r?.bot) console.log(`[shot] bot ${JSON.stringify(r.bot)}`);
     if (r?.lanes) console.log(`[shot] lanes ${JSON.stringify(r.lanes)}`);
     if (r?.swap) console.log(`[shot] swap ${JSON.stringify(r.swap)}`);
+    if (r?.crowd) console.log(`[shot] crowd ${JSON.stringify(r.crowd)}`);
     if (r?.stats) console.log(`[shot] stats ${JSON.stringify(r.stats)}`);
     if (r?.png) {
       console.log(`[shot] saved ${r.png}`);
