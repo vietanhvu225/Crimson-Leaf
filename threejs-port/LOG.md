@@ -85,3 +85,8 @@ Worker ~10 phút, $3.73. Nguyên nhân mờ sữa: OutputPass áp ACES lên cả
 Worker ~22 phút, $6.52. Orchestrator kiểm lại: typecheck ✅, test 30/30 ✅, build ✅, smoke 22/22 ✅ (min fps 143.4), parity canvas 11/11 ✅ (T07 sửa App/GameView). Ảnh: ui3d title 1080p (11 cổng torii + cảnh bay), HUD 1080p (bảng boss world-space, số sát thương, combo), mobile 390×844 (nút cảm ứng ở đáy), victory 720p (biển ĐẠI THẮNG + modal bên) → đạt. Worker sửa luôn lỗi UI gốc: title DOM mất nút Start ở 720p/mobile.
 
 ## 2026-10-17 06:29 giao T08 (attempt 1)
+
+## 2026-10-17 07:24 T08 attempt 1 — PASS, merged
+Worker ~49 phút, $4.01. Orchestrator kiểm lại: typecheck ✅, test 30/30 ✅, build ✅, smoke 22/22 ✅ (min fps 143.1), parity 11/11 ✅ (T08 sửa GameView/shot.mjs → harness.mjs). `perf.md`: 11 màn × 2 renderer ở 1080p (bước cố định, không vsync): three 469–535 fps, canvas 109–173 fps; draw calls ≤ 142, tris ≤ 406k. Bot v2 thắng cả 11 màn (3 màn sửa lại chỉ chạy với three). Dấu vân tay sim khớp 11/11 giữa hai renderer. Tối ưu: actors cull theo y (autumn 1.30M → 198k tris). 3 điểm lạ của sim gốc ghi trong perf.md (teleport thunder_peak, cavern y=−3691, spring bot kẹt). Ảnh sky_sanctuary (cứu mẹ), blood_abyss, ocean_palace canvas: đúng.
+
+## 2026-10-17 07:25 giao T09 (attempt 1)
