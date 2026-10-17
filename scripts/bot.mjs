@@ -130,7 +130,10 @@ function installBot(cfg) {
       }
     }
     const near = target && Math.abs(target.x - p.x) < 220 && Math.abs(target.y - p.y) < 160 ? target : null;
-    const focus = guard ?? near;
+    // Boss arena: the boss hovers/flies, so chase it whatever the height difference.
+    const boss = findBoss();
+    const bossNear = boss && boss.hp > 0 && Math.abs(boss.x - p.x) < 700 && Math.abs(boss.y - p.y) < 700 ? boss : null;
+    const focus = guard ?? near ?? bossNear;
     const input = { moveRight: !vertical, moveLeft: false, jumpHeld: false };
 
     // Vertical: aim for the closest platform one step above, under its middle.
@@ -158,6 +161,10 @@ function installBot(cfg) {
           input.jumpPressed = true;
           input.jumpHeld = true;
           s.jumps++;
+        }
+        // Zip to a grapple anchor above (thunder_peak islands move; the chain is the way up).
+        if (s.tick % 4 === 0 && w.grapples.some((gp) => gp.y < p.y - 40 && Math.hypot(gp.x - p.x, gp.y - p.y) < 260)) {
+          input.grapplePressed = true;
         }
       } else if (s.tick % 2 === 0) {
         input.moveRight = p.x < 560;
@@ -321,10 +328,17 @@ function installBot(cfg) {
       if (s.lastBossHp != null && boss.hp < s.lastBossHp) s.lastBossDamageAt = s.simSec;
       s.lastBossHp = boss.hp;
     }
-    if (s.teleports === 0 && s.simSec - s.lastProgressAt > cfg.stuckSec) {
+    // First teleport when progress stalls; later ones (max 3) when the boss takes no damage for 30 s.
+    const stalled =
+      s.teleports === 0
+        ? s.simSec - s.lastProgressAt > cfg.stuckSec
+        : s.teleports < 3 && s.simSec - s.lastBossDamageAt > 30;
+    if (stalled) {
       s.teleports++;
-      s.teleportAt = Math.round(s.simSec * 10) / 10;
-      s.progressBeforeTeleport = Math.round(progressPct() * 10) / 10;
+      if (s.teleports === 1) {
+        s.teleportAt = Math.round(s.simSec * 10) / 10;
+        s.progressBeforeTeleport = Math.round(progressPct() * 10) / 10;
+      }
       s.log.push(
         `stuck at x=${Math.round(p.x)} y=${Math.round(p.y)} lane=${w.combat.zLane} t=${s.simSec.toFixed(1)}s` +
           ` focus=${s.lastFocus ?? '-'} -> teleportToBoss`
@@ -335,7 +349,7 @@ function installBot(cfg) {
       s.lastProgressAt = s.simSec;
       s.lastBossDamageAt = s.simSec;
     }
-    if (s.teleports > 0 && s.simSec - s.lastBossDamageAt > 90) {
+    if (s.teleports >= 3 && s.simSec - s.lastBossDamageAt > 90) {
       s.stuckForever = true;
       s.log.push(`no boss damage for 90 s after teleport (x=${Math.round(p.x)} y=${Math.round(p.y)})`);
       return false;
