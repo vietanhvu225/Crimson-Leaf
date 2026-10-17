@@ -1,3 +1,16 @@
+# Tóm tắt sáng 2026-10-17
+- DONE: T00, T01, T02, T03, T04, T05 (2 lần thử), T06, T07, T08, T09 | BLOCKED: không có
+- Chơi thử: npm install && npm run dev → http://localhost:3002/?renderer=three (so với ?renderer=canvas; thêm &ui=3d để xem UI 3D, &fx=low để tắt bloom/shadow, &debug=1 cho overlay)
+- Đọc trước: threejs-port/FINAL_REPORT.md
+- 3 vấn đề đáng xem nhất:
+  1. Nhân vật bản three khó đọc hơn canvas ở 1080p khi đông người/nhiều VFX (player bị quầng hồng Huyết Ảnh/bất tử che, nắp platform chiếm nhiều diện tích do camera nghiêng): xem `shots/T08/bot/sweep-winter-three.png` vs `-canvas.png`, `shots/T09/spring-three.png`.
+  2. Chưa có người chơi thật thử cảm giác điều khiển và chưa đo máy tầm trung: mọi số hiệu năng (three 469–535 fps vs canvas 109–173 fps không vsync, 1080p) là RTX 5070 headless. Parity 11/11 + dấu vân tay sim 11/11 chỉ chứng minh cơ chế không đổi, không chứng minh "cảm giác".
+  3. Ba điểm lạ của sim gốc (không sửa, theo luật): cavern người chơi lên y = −3691; teleport debug ở thunder_peak thả giữa không trung; spring bot kẹt ở x≈8265. Chi tiết `threejs-port/perf.md` § Bug cơ chế.
+- Ghi chú vận hành:
+  - Worker `claude -p` trên máy này mặc định chỉ có tool PowerShell → phải chạy với `CLAUDE_CODE_USE_POWERSHELL_TOOL=0 CLAUDE_CODE_GIT_BASH_PATH=…` (đã ghi vào ORCHESTRATOR.md § A).
+  - Luật allowlist `Bash(node scripts/:*)` không khớp `node scripts/x.mjs` ở dontAsk; worker đi đường `npm run shot|smoke|parity|bot`. Cân nhắc sửa luật trong `.claude/settings.json`.
+  - Dọn dẹp: thư mục `D:/2_dev/wt/` giờ trống (mọi worktree đã gỡ). Không có worker nào bị timeout giết nên không có vite/Chromium mồ côi đã biết. Log worker ở `threejs-port/logs/` (gitignored). Tổng chi phí worker ≈ $57 (T00–T09), thời gian chạy 03:40 → 07:28.
+
 # LOG
 
 ## 2026-10-17 03:3x warm-up — FAIL, dừng, chưa giao task nào
@@ -90,3 +103,6 @@ Worker ~22 phút, $6.52. Orchestrator kiểm lại: typecheck ✅, test 30/30 �
 Worker ~49 phút, $4.01. Orchestrator kiểm lại: typecheck ✅, test 30/30 ✅, build ✅, smoke 22/22 ✅ (min fps 143.1), parity 11/11 ✅ (T08 sửa GameView/shot.mjs → harness.mjs). `perf.md`: 11 màn × 2 renderer ở 1080p (bước cố định, không vsync): three 469–535 fps, canvas 109–173 fps; draw calls ≤ 142, tris ≤ 406k. Bot v2 thắng cả 11 màn (3 màn sửa lại chỉ chạy với three). Dấu vân tay sim khớp 11/11 giữa hai renderer. Tối ưu: actors cull theo y (autumn 1.30M → 198k tris). 3 điểm lạ của sim gốc ghi trong perf.md (teleport thunder_peak, cavern y=−3691, spring bot kẹt). Ảnh sky_sanctuary (cứu mẹ), blood_abyss, ocean_palace canvas: đúng.
 
 ## 2026-10-17 07:25 giao T09 (attempt 1)
+
+## 2026-10-17 07:28 T09 attempt 1 — PASS, merged
+Worker ~3 phút, $2.48. `FINAL_REPORT.md` 236 dòng, đủ 7 mục; 67 link ảnh đều tồn tại; số liệu khớp perf.md/reports. Chỉ đổi tài liệu + ảnh (không đụng src). Tất cả task DONE → night run complete.

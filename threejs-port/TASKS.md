@@ -15,7 +15,7 @@ Dòng **Tham khảo** ở mỗi task chỉ ra file nào trong skill dự án `cr
 | T06 | Môi trường: màn 5–11 | T03 | B | DONE |
 | T07 | UI theo hướng Three.js | T04, T05 | B | DONE |
 | T08 | Hiệu năng + bot playtest 11 màn | T06, T07 | - | DONE |
-| T09 | FINAL_REPORT | T08 | - | IN_PROGRESS (attempt 1) |
+| T09 | FINAL_REPORT | T08 | - | DONE |
 
 Để tránh xung đột giữa các task nhóm A: mỗi task chỉ sửa thư mục của mình (`src/game/render3d/env/`, `src/game/render3d/actors/`, `src/game/render3d/vfx/`). File `src/game/render3d/scene.ts` chỉ được thêm đúng một dòng đăng ký module.
 
