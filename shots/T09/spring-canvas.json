@@ -1,0 +1,29 @@
+{
+  "stage": "spring",
+  "renderer": "canvas",
+  "loop": 1,
+  "script": "combat",
+  "url": "http://127.0.0.1:55801/?autostart=1&stage=spring&loop=1&renderer=canvas&seed=1&muted=1",
+  "fps": 143.8,
+  "worstFrameMs": 14,
+  "pixelStd": 38.8,
+  "pixelMean": 64.12,
+  "gameState": "playing",
+  "seasonId": "spring",
+  "player": {
+    "x": 871,
+    "y": 514,
+    "vx": 107,
+    "vy": -39,
+    "onGround": false,
+    "facing": 1
+  },
+  "stats": {
+    "fps": 144,
+    "drawCalls": null,
+    "triangles": null,
+    "entities": 204
+  },
+  "png": "shots/T09/spring-canvas.png",
+  "errors": []
+}
