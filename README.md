@@ -1,12 +1,14 @@
 # Crimson Leaf — Three.js port
 
-Bản port Three.js của game Canvas 2D "Huyền Thoại Cứu Mẹ". Cùng một sim (`src/game/rules`, `src/game/engine`) chạy được bằng hai renderer: `three` (mới) và `canvas` (bản gốc, để đối chiếu).
+**English** · [Tiếng Việt](README_vi.md)
 
-Kết quả đánh giá: [`threejs-port/FINAL_REPORT.md`](threejs-port/FINAL_REPORT.md). Nhật ký đêm chạy: [`threejs-port/LOG.md`](threejs-port/LOG.md).
+A Three.js port of the Canvas 2D game "Huyền Thoại Cứu Mẹ" (Crimson Leaf: Mother's Oath). The same simulation (`src/game/rules`, `src/game/engine`) runs with two renderers: `three` (new) and `canvas` (the original, kept for comparison).
 
-## Chạy thử trên máy khác
+Evaluation results: [`threejs-port/FINAL_REPORT.md`](threejs-port/FINAL_REPORT.md). Overnight run log: [`threejs-port/LOG.md`](threejs-port/LOG.md). Both are written in Vietnamese.
 
-Cần **Node.js ≥ 22.18** (khuyến nghị 24 LTS) và Git.
+## Running on another machine
+
+Requires **Node.js ≥ 22.18** (24 LTS recommended) and Git.
 
 ```bash
 git clone <repo> crimson-three
@@ -15,41 +17,41 @@ npm install
 npm run dev
 ```
 
-Mở http://localhost:3002/ (Vite dùng cổng khác nếu 3002 đang bận; xem dòng in ra terminal).
+Open http://localhost:3002/ (Vite picks another port if 3002 is busy; check the terminal output).
 
-| URL | Xem gì |
+| URL | What you get |
 |---|---|
-| `/?renderer=three` | Bản Three.js (mặc định) |
-| `/?renderer=canvas` | Bản Canvas 2D gốc, cùng sim |
-| `/?ui=3d` | Title 3D (cổng torii chọn màn), số sát thương / bảng boss trong không gian 3D |
-| `/?fx=low` | Tắt bloom + shadow (so hiệu năng trên máy yếu) |
-| `/?debug=1` | Overlay fps · draw calls · triangles |
-| `/?cam=flat` | Camera nhìn thẳng, không nghiêng |
-| `/?stage=ocean_palace&loop=2&autostart=1` | Vào thẳng một màn (`spring` … `sky_sanctuary`), vòng 2 |
+| `/?renderer=three` | Three.js version (default) |
+| `/?renderer=canvas` | Original Canvas 2D version, same simulation |
+| `/?ui=3d` | 3D title (torii gates for stage select), damage numbers and boss plaque in 3D space |
+| `/?fx=low` | Bloom and shadows off (for comparing performance on weaker machines) |
+| `/?debug=1` | fps · draw calls · triangles overlay |
+| `/?cam=flat` | Straight-on camera, no tilt |
+| `/?stage=ocean_palace&loop=2&autostart=1` | Jump straight into a stage (`spring` … `sky_sanctuary`), loop 2 |
 
-Các param ghép được với nhau, ví dụ `/?renderer=three&ui=3d&debug=1`. Trong trận: **F9** đổi three ↔ canvas, **M** tắt tiếng.
+Params can be combined, e.g. `/?renderer=three&ui=3d&debug=1`. In game: **F9** switches three ↔ canvas, **M** toggles sound.
 
-## Gates / công cụ (tuỳ chọn)
+## Gates and tools (optional)
 
 ```bash
 npm run typecheck
-npm run test                        # rules + engine, chạy bằng Node (type stripping)
+npm run test                        # rules + engine, run directly by Node (type stripping)
 npm run build
-npx playwright install chromium     # chỉ cần cho smoke/shot/bot/parity
-npm run smoke                       # 11 màn × 2 renderer, ghi shots/smoke/result.json
-npm run bot -- --stages spring      # bot chơi + đo ms/frame không vsync
-npm install --prefix reference && npm run parity   # so sim với bản gốc trong reference/
+npx playwright install chromium     # only needed for smoke/shot/bot/parity
+npm run smoke                       # 11 stages × 2 renderers, writes shots/smoke/result.json
+npm run bot -- --stages spring      # bot plays + measures uncapped ms/frame
+npm install --prefix reference && npm run parity   # compare the sim against the original in reference/
 ```
 
-Chromium headless được mở theo `chromiumLaunch` trong `threejs-port/PINNED_VERSIONS.json`, chốt cho máy chạy đêm (Windows, ANGLE D3D11, GPU thật). Nếu máy khác báo không có WebGL hoặc fps headless rất thấp, sửa `args` ở đó (ví dụ bỏ `--use-angle=d3d11`). Ngưỡng smoke (`scripts/smoke.config.json`: `minFps` 20, `minPixelStd` 8) cũng được calibrate trên máy đó.
+Headless Chromium is launched with `chromiumLaunch` from `threejs-port/PINNED_VERSIONS.json`, pinned for the overnight machine (Windows, ANGLE D3D11, real GPU). If another machine reports no WebGL or very low headless fps, edit the `args` there (for example, drop `--use-angle=d3d11`). The smoke thresholds (`scripts/smoke.config.json`: `minFps` 20, `minPixelStd` 8) were also calibrated on that machine.
 
-## Cấu trúc
+## Layout
 
-- `src/game/rules/`, `src/game/engine/`: sim (copy từ bản gốc, chỉ gỡ phần dính Canvas/DOM ở T01).
-- `src/game/render/`: renderer Canvas 2D gốc.
-- `src/game/render3d/`: renderer Three.js (`env/`, `actors/`, `vfx/`, `ui3d/`, `post.ts`).
-- `src/ui/`: React UI (HUD DOM, title, modal); `GameView.tsx` chọn renderer.
+- `src/game/rules/`, `src/game/engine/`: simulation (copied from the original; only the Canvas/DOM coupling was removed in T01).
+- `src/game/render/`: original Canvas 2D renderer.
+- `src/game/render3d/`: Three.js renderer (`env/`, `actors/`, `vfx/`, `ui3d/`, `post.ts`).
+- `src/ui/`: React UI (DOM HUD, title, modals); `GameView.tsx` picks the renderer.
 - `scripts/`: `shot.mjs`, `bot.mjs`, `parity.mjs`, `harness.mjs`.
-- `reference/`: game gốc, chỉ đọc.
-- `shots/`: ảnh bằng chứng của từng task.
-- `threejs-port/`: kế hoạch, spec, task, report.
+- `reference/`: the original game, read-only.
+- `shots/`: evidence screenshots for each task.
+- `threejs-port/`: plan, spec, tasks, reports (Vietnamese).
