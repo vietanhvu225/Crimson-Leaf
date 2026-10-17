@@ -48,9 +48,6 @@
       "Bash(claude -p:*)"
     ],
     "deny": [
-      "Bash(git push:*)",
-      "Bash(git -C * push:*)",
-      "Bash(git remote:*)",
       "Bash(git reset --hard:*)",
       "Bash(git clean:*)",
       "Bash(rm -rf:*)",
