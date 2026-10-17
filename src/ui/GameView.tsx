@@ -143,7 +143,12 @@ export const GameView: React.FC<GameViewProps> = ({
     );
     rebuildLevel(world, stateRef.current.seasonId, stateRef.current.loopRoute);
     const render = () => rendererRef.current?.render(world);
-    const uninstallHooks = installDebugHooks(world, render, () => statsRef.current);
+    // Renderer counters are read live (not from the 500 ms rAF window) so __game.step() callers
+    // see the frame they just rendered, also with the rAF loop stopped (bot.mjs).
+    const uninstallHooks = installDebugHooks(world, render, () => ({
+      ...statsRef.current,
+      ...(rendererRef.current?.stats() ?? {}),
+    }));
 
     let rafId = 0;
     let fpsFrames = 0;

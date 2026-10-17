@@ -12,6 +12,7 @@
     "copy-reference": "node scripts/copy-reference.mjs",
     "shot": "node scripts/shot.mjs",
     "smoke": "node scripts/shot.mjs --smoke",
+    "bot": "node scripts/bot.mjs",
     "parity": "node scripts/parity.mjs",
     "fix-imports": "node scripts/fix-imports.mjs"
   },

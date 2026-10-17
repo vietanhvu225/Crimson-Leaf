@@ -68,6 +68,9 @@ export function createThreeRenderer(
   const modules: RenderModule[] = defs.map((d) => d.create({ scene, renderer, camera, track }));
   /** A module with render() (post-processing) presents the frame. */
   const presenter = modules.find((m) => m.render);
+  // Profiling hook for scripts/bot.mjs (per-object triangle / draw breakdown). Read-only use.
+  const debugHandle = { scene, renderer, camera };
+  (window as unknown as { __three?: unknown }).__three = debugHandle;
 
   // Level-change detection: the level builder assigns fresh arrays on rebuild.
   let levelVersion = 0;
@@ -146,6 +149,8 @@ export function createThreeRenderer(
       viewToWorld(world, opts, viewX, viewY, out);
     },
     dispose() {
+      const w = window as unknown as { __three?: unknown };
+      if (w.__three === debugHandle) delete w.__three;
       for (const m of modules) m.dispose();
       modules.length = 0;
       track.disposeAll();

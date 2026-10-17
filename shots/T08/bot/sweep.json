@@ -1,0 +1,1777 @@
+{
+  "at": "2026-10-17T00:10:43.524Z",
+  "gpu": {
+    "webgl": true,
+    "webgl2": true,
+    "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5070 (0x00002F04) Direct3D11 vs_5_0 ps_5_0, D3D11)"
+  },
+  "width": 1920,
+  "height": 1080,
+  "seed": 1,
+  "loop": 1,
+  "params": "",
+  "results": [
+    {
+      "stage": "spring",
+      "renderer": "three",
+      "loop": 1,
+      "seed": 1,
+      "url": "http://127.0.0.1:51291/?autostart=1&stage=spring&loop=1&renderer=three&seed=1&muted=1",
+      "outcome": "victory",
+      "died": true,
+      "deaths": 1,
+      "firstDeathAt": 52.9,
+      "firstDeathProgress": 20.5,
+      "stuckForever": false,
+      "simSec": 95.5,
+      "progressPct": 23.2,
+      "teleports": 1,
+      "teleportAt": 91.4,
+      "hp": 84,
+      "minHp": 14,
+      "bossHp": 0,
+      "kills": 46,
+      "score": 41135,
+      "jumps": 18,
+      "parries": 22,
+      "laneSwitches": 10,
+      "frames": 5730,
+      "firstFrameMs": 584.5,
+      "msAvg": 2.13,
+      "msP95": 2.9,
+      "msWorst": 32,
+      "fpsAvg": 469,
+      "fpsMin": 356.9,
+      "drawCallsMax": 140,
+      "trianglesMax": 291772,
+      "fingerprint": "35513|560|84|46|41135|122|5730",
+      "log": [
+        "stuck at x=8265 y=11 lane=0 t=91.4s focus=- -> teleportToBoss"
+      ],
+      "profile": {
+        "atSimSec": 51,
+        "triangles": 275626,
+        "drawCalls": 126,
+        "top": [
+          {
+            "key": "actors SphereGeometry(117v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 157,
+            "tris": 52752
+          },
+          {
+            "key": "env-kit IcosahedronGeometry(240v) MeshStandardMaterial inst",
+            "objects": 2,
+            "instances": 599,
+            "tris": 47920
+          },
+          {
+            "key": "actors SphereGeometry(117v) MeshBasicMaterial inst",
+            "objects": 2,
+            "instances": 164,
+            "tris": 27552
+          },
+          {
+            "key": "env-kit IcosahedronGeometry(540v) MeshStandardMaterial inst",
+            "objects": 7,
+            "instances": 152,
+            "tris": 27360
+          },
+          {
+            "key": "actors SphereGeometry(117v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 157,
+            "tris": 26376
+          },
+          {
+            "key": "actors CapsuleGeometry(72v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 102,
+            "tris": 22848
+          },
+          {
+            "key": "actors CapsuleGeometry(72v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 102,
+            "tris": 11424
+          },
+          {
+            "key": "env-kit CylinderGeometry(76v) MeshStandardMaterial inst",
+            "objects": 2,
+            "instances": 202,
+            "tris": 9696
+          },
+          {
+            "key": "env-kit IcosahedronGeometry(540v) MeshBasicMaterial inst",
+            "objects": 4,
+            "instances": 51,
+            "tris": 9180
+          },
+          {
+            "key": "actors RoundedBoxGeometry(324v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 29,
+            "tris": 6264
+          },
+          {
+            "key": "env-kit BoxGeometry(24v) MeshStandardMaterial inst",
+            "objects": 6,
+            "instances": 346,
+            "tris": 4152
+          },
+          {
+            "key": "env-kit BoxGeometry(24v) MeshStandardMaterial +shadow inst",
+            "objects": 3,
+            "instances": 141,
+            "tris": 3384
+          }
+        ]
+      },
+      "png": "shots/T08/bot/sweep-spring-three.png",
+      "errors": [],
+      "wallSec": 14
+    },
+    {
+      "stage": "spring",
+      "renderer": "canvas",
+      "loop": 1,
+      "seed": 1,
+      "url": "http://127.0.0.1:51291/?autostart=1&stage=spring&loop=1&renderer=canvas&seed=1&muted=1",
+      "outcome": "victory",
+      "died": true,
+      "deaths": 1,
+      "firstDeathAt": 52.9,
+      "firstDeathProgress": 20.5,
+      "stuckForever": false,
+      "simSec": 95.5,
+      "progressPct": 23.2,
+      "teleports": 1,
+      "teleportAt": 91.4,
+      "hp": 84,
+      "minHp": 14,
+      "bossHp": 0,
+      "kills": 46,
+      "score": 41135,
+      "jumps": 18,
+      "parries": 22,
+      "laneSwitches": 10,
+      "frames": 5730,
+      "firstFrameMs": 93.1,
+      "msAvg": 8.43,
+      "msP95": 9.5,
+      "msWorst": 16.1,
+      "fpsAvg": 118.6,
+      "fpsMin": 98.9,
+      "drawCallsMax": null,
+      "trianglesMax": null,
+      "fingerprint": "35513|560|84|46|41135|122|5730",
+      "log": [
+        "stuck at x=8265 y=11 lane=0 t=91.4s focus=- -> teleportToBoss"
+      ],
+      "profile": null,
+      "png": "shots/T08/bot/sweep-spring-canvas.png",
+      "errors": [],
+      "wallSec": 49
+    },
+    {
+      "stage": "summer",
+      "renderer": "three",
+      "loop": 1,
+      "seed": 1,
+      "url": "http://127.0.0.1:51291/?autostart=1&stage=summer&loop=1&renderer=three&seed=1&muted=1",
+      "outcome": "victory",
+      "died": true,
+      "deaths": 1,
+      "firstDeathAt": 105,
+      "firstDeathProgress": 41.3,
+      "stuckForever": false,
+      "simSec": 285.5,
+      "progressPct": 99.1,
+      "teleports": 0,
+      "teleportAt": null,
+      "hp": 100,
+      "minHp": 8,
+      "bossHp": 0,
+      "kills": 165,
+      "score": 194185,
+      "jumps": 51,
+      "parries": 10,
+      "laneSwitches": 36,
+      "frames": 17130,
+      "firstFrameMs": 160,
+      "msAvg": 2.02,
+      "msP95": 3,
+      "msWorst": 21.3,
+      "fpsAvg": 495.8,
+      "fpsMin": 387.8,
+      "drawCallsMax": 142,
+      "trianglesMax": 248708,
+      "fingerprint": "37340|552|100|165|194185|8|17130",
+      "log": [],
+      "profile": {
+        "atSimSec": 115,
+        "triangles": 235770,
+        "drawCalls": 132,
+        "top": [
+          {
+            "key": "actors SphereGeometry(117v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 165,
+            "tris": 55440
+          },
+          {
+            "key": "env-kit IcosahedronGeometry(540v) MeshStandardMaterial inst",
+            "objects": 7,
+            "instances": 179,
+            "tris": 32220
+          },
+          {
+            "key": "actors SphereGeometry(117v) MeshBasicMaterial inst",
+            "objects": 2,
+            "instances": 172,
+            "tris": 28896
+          },
+          {
+            "key": "actors SphereGeometry(117v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 165,
+            "tris": 27720
+          },
+          {
+            "key": "actors CapsuleGeometry(72v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 108,
+            "tris": 24192
+          },
+          {
+            "key": "actors CapsuleGeometry(72v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 108,
+            "tris": 12096
+          },
+          {
+            "key": "env-kit IcosahedronGeometry(540v) MeshBasicMaterial inst",
+            "objects": 4,
+            "instances": 51,
+            "tris": 9180
+          },
+          {
+            "key": "actors RoundedBoxGeometry(324v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 33,
+            "tris": 7128
+          },
+          {
+            "key": "env-kit PlaneGeometry(2425v) ShaderMaterial",
+            "objects": 1,
+            "instances": 1,
+            "tris": 4608
+          },
+          {
+            "key": "actors RoundedBoxGeometry(324v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 33,
+            "tris": 3564
+          },
+          {
+            "key": "actors ExtrudeGeometry(144v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 34,
+            "tris": 3264
+          },
+          {
+            "key": "actors ExtrudeGeometry(144v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 34,
+            "tris": 1632
+          }
+        ]
+      },
+      "png": "shots/T08/bot/sweep-summer-three.png",
+      "errors": [],
+      "wallSec": 36
+    },
+    {
+      "stage": "summer",
+      "renderer": "canvas",
+      "loop": 1,
+      "seed": 1,
+      "url": "http://127.0.0.1:51291/?autostart=1&stage=summer&loop=1&renderer=canvas&seed=1&muted=1",
+      "outcome": "victory",
+      "died": true,
+      "deaths": 1,
+      "firstDeathAt": 105,
+      "firstDeathProgress": 41.3,
+      "stuckForever": false,
+      "simSec": 285.5,
+      "progressPct": 99.1,
+      "teleports": 0,
+      "teleportAt": null,
+      "hp": 100,
+      "minHp": 8,
+      "bossHp": 0,
+      "kills": 165,
+      "score": 194185,
+      "jumps": 51,
+      "parries": 10,
+      "laneSwitches": 36,
+      "frames": 17130,
+      "firstFrameMs": 19.5,
+      "msAvg": 8.21,
+      "msP95": 9.4,
+      "msWorst": 16.9,
+      "fpsAvg": 121.7,
+      "fpsMin": 99.2,
+      "drawCallsMax": null,
+      "trianglesMax": null,
+      "fingerprint": "37340|552|100|165|194185|8|17130",
+      "log": [],
+      "profile": null,
+      "png": "shots/T08/bot/sweep-summer-canvas.png",
+      "errors": [],
+      "wallSec": 142
+    },
+    {
+      "stage": "autumn",
+      "renderer": "three",
+      "loop": 1,
+      "seed": 1,
+      "url": "http://127.0.0.1:51291/?autostart=1&stage=autumn&loop=1&renderer=three&seed=1&muted=1",
+      "outcome": null,
+      "died": true,
+      "deaths": 1,
+      "firstDeathAt": 67.1,
+      "firstDeathProgress": 7.6,
+      "stuckForever": true,
+      "simSec": 600,
+      "progressPct": 77.9,
+      "teleports": 0,
+      "teleportAt": null,
+      "hp": 115,
+      "minHp": 13,
+      "bossHp": 1000,
+      "kills": 131,
+      "score": 215070,
+      "jumps": 566,
+      "parries": 143,
+      "laneSwitches": 1,
+      "frames": 36000,
+      "firstFrameMs": 146.9,
+      "msAvg": 1.88,
+      "msP95": 2.6,
+      "msWorst": 22.8,
+      "fpsAvg": 532.6,
+      "fpsMin": 415.2,
+      "drawCallsMax": 123,
+      "trianglesMax": 197682,
+      "fingerprint": "366|6536|115|131|215070|59|36000",
+      "log": [],
+      "profile": {
+        "atSimSec": 402,
+        "triangles": 193432,
+        "drawCalls": 116,
+        "top": [
+          {
+            "key": "actors SphereGeometry(117v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 146,
+            "tris": 49056
+          },
+          {
+            "key": "actors SphereGeometry(117v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 146,
+            "tris": 24528
+          },
+          {
+            "key": "actors SphereGeometry(117v) MeshBasicMaterial inst",
+            "objects": 2,
+            "instances": 144,
+            "tris": 24192
+          },
+          {
+            "key": "env-kit IcosahedronGeometry(540v) MeshStandardMaterial inst",
+            "objects": 7,
+            "instances": 134,
+            "tris": 24120
+          },
+          {
+            "key": "actors CapsuleGeometry(72v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 90,
+            "tris": 20160
+          },
+          {
+            "key": "actors CapsuleGeometry(72v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 90,
+            "tris": 10080
+          },
+          {
+            "key": "actors RoundedBoxGeometry(324v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 32,
+            "tris": 6912
+          },
+          {
+            "key": "env-kit IcosahedronGeometry(540v) MeshBasicMaterial inst",
+            "objects": 4,
+            "instances": 21,
+            "tris": 3780
+          },
+          {
+            "key": "actors RoundedBoxGeometry(324v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 32,
+            "tris": 3456
+          },
+          {
+            "key": "env-kit BoxGeometry(24v) MeshStandardMaterial inst",
+            "objects": 6,
+            "instances": 263,
+            "tris": 3156
+          },
+          {
+            "key": "actors ExtrudeGeometry(144v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 31,
+            "tris": 2976
+          },
+          {
+            "key": "env-kit BoxGeometry(24v) MeshStandardMaterial +shadow inst",
+            "objects": 3,
+            "instances": 110,
+            "tris": 2640
+          }
+        ]
+      },
+      "png": "shots/T08/bot/sweep-autumn-three.png",
+      "errors": [],
+      "wallSec": 69
+    },
+    {
+      "stage": "autumn",
+      "renderer": "canvas",
+      "loop": 1,
+      "seed": 1,
+      "url": "http://127.0.0.1:51291/?autostart=1&stage=autumn&loop=1&renderer=canvas&seed=1&muted=1",
+      "outcome": null,
+      "died": true,
+      "deaths": 1,
+      "firstDeathAt": 67.1,
+      "firstDeathProgress": 7.6,
+      "stuckForever": true,
+      "simSec": 600,
+      "progressPct": 77.9,
+      "teleports": 0,
+      "teleportAt": null,
+      "hp": 115,
+      "minHp": 13,
+      "bossHp": 1000,
+      "kills": 131,
+      "score": 215070,
+      "jumps": 566,
+      "parries": 143,
+      "laneSwitches": 1,
+      "frames": 36000,
+      "firstFrameMs": 36.5,
+      "msAvg": 7.97,
+      "msP95": 9.3,
+      "msWorst": 19,
+      "fpsAvg": 125.5,
+      "fpsMin": 93.4,
+      "drawCallsMax": null,
+      "trianglesMax": null,
+      "fingerprint": "366|6536|115|131|215070|59|36000",
+      "log": [],
+      "profile": null,
+      "png": "shots/T08/bot/sweep-autumn-canvas.png",
+      "errors": [],
+      "wallSec": 288
+    },
+    {
+      "stage": "winter",
+      "renderer": "three",
+      "loop": 1,
+      "seed": 1,
+      "url": "http://127.0.0.1:51291/?autostart=1&stage=winter&loop=1&renderer=three&seed=1&muted=1",
+      "outcome": "victory",
+      "died": true,
+      "deaths": 13,
+      "firstDeathAt": 37.3,
+      "firstDeathProgress": 12.3,
+      "stuckForever": false,
+      "simSec": 362.6,
+      "progressPct": 98,
+      "teleports": 0,
+      "teleportAt": null,
+      "hp": 67,
+      "minHp": 2,
+      "bossHp": 0,
+      "kills": 183,
+      "score": 325540,
+      "jumps": 108,
+      "parries": 20,
+      "laneSwitches": 44,
+      "frames": 21756,
+      "firstFrameMs": 139.3,
+      "msAvg": 1.95,
+      "msP95": 2.8,
+      "msWorst": 20.6,
+      "fpsAvg": 512.9,
+      "fpsMin": 363.6,
+      "drawCallsMax": 138,
+      "trianglesMax": 206366,
+      "fingerprint": "38857|524|67|183|325540|10|21756",
+      "log": [],
+      "profile": {
+        "atSimSec": 133,
+        "triangles": 205142,
+        "drawCalls": 129,
+        "top": [
+          {
+            "key": "actors SphereGeometry(117v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 178,
+            "tris": 59808
+          },
+          {
+            "key": "actors SphereGeometry(117v) MeshBasicMaterial inst",
+            "objects": 2,
+            "instances": 179,
+            "tris": 30072
+          },
+          {
+            "key": "actors SphereGeometry(117v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 178,
+            "tris": 29904
+          },
+          {
+            "key": "actors CapsuleGeometry(72v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 114,
+            "tris": 25536
+          },
+          {
+            "key": "actors CapsuleGeometry(72v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 114,
+            "tris": 12768
+          },
+          {
+            "key": "actors RoundedBoxGeometry(324v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 35,
+            "tris": 7560
+          },
+          {
+            "key": "actors RoundedBoxGeometry(324v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 35,
+            "tris": 3780
+          },
+          {
+            "key": "actors ExtrudeGeometry(144v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 39,
+            "tris": 3744
+          },
+          {
+            "key": "env-kit IcosahedronGeometry(540v) MeshBasicMaterial inst",
+            "objects": 4,
+            "instances": 17,
+            "tris": 3060
+          },
+          {
+            "key": "env-kit IcosahedronGeometry(540v) MeshStandardMaterial inst",
+            "objects": 7,
+            "instances": 12,
+            "tris": 2160
+          },
+          {
+            "key": "env-kit ConeGeometry(43v) MeshStandardMaterial inst",
+            "objects": 3,
+            "instances": 95,
+            "tris": 1900
+          },
+          {
+            "key": "actors ExtrudeGeometry(144v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 39,
+            "tris": 1872
+          }
+        ]
+      },
+      "png": "shots/T08/bot/sweep-winter-three.png",
+      "errors": [],
+      "wallSec": 44
+    },
+    {
+      "stage": "winter",
+      "renderer": "canvas",
+      "loop": 1,
+      "seed": 1,
+      "url": "http://127.0.0.1:51291/?autostart=1&stage=winter&loop=1&renderer=canvas&seed=1&muted=1",
+      "outcome": "victory",
+      "died": true,
+      "deaths": 13,
+      "firstDeathAt": 37.3,
+      "firstDeathProgress": 12.3,
+      "stuckForever": false,
+      "simSec": 362.6,
+      "progressPct": 98,
+      "teleports": 0,
+      "teleportAt": null,
+      "hp": 67,
+      "minHp": 2,
+      "bossHp": 0,
+      "kills": 183,
+      "score": 325540,
+      "jumps": 108,
+      "parries": 20,
+      "laneSwitches": 44,
+      "frames": 21756,
+      "firstFrameMs": 13.2,
+      "msAvg": 5.77,
+      "msP95": 6.9,
+      "msWorst": 13.5,
+      "fpsAvg": 173.4,
+      "fpsMin": 132.3,
+      "drawCallsMax": null,
+      "trianglesMax": null,
+      "fingerprint": "38857|524|67|183|325540|10|21756",
+      "log": [],
+      "profile": null,
+      "png": "shots/T08/bot/sweep-winter-canvas.png",
+      "errors": [],
+      "wallSec": 127
+    },
+    {
+      "stage": "cavern",
+      "renderer": "three",
+      "loop": 1,
+      "seed": 1,
+      "url": "http://127.0.0.1:51291/?autostart=1&stage=cavern&loop=1&renderer=three&seed=1&muted=1",
+      "outcome": "victory",
+      "died": false,
+      "deaths": 0,
+      "firstDeathAt": null,
+      "firstDeathProgress": null,
+      "stuckForever": false,
+      "simSec": 138.8,
+      "progressPct": 23.8,
+      "teleports": 1,
+      "teleportAt": 74.2,
+      "hp": 22,
+      "minHp": 22,
+      "bossHp": 0,
+      "kills": 7,
+      "score": 24590,
+      "jumps": 7,
+      "parries": 39,
+      "laneSwitches": 7,
+      "frames": 8328,
+      "firstFrameMs": 146,
+      "msAvg": 2.11,
+      "msP95": 3,
+      "msWorst": 20.8,
+      "fpsAvg": 474.9,
+      "fpsMin": 321.5,
+      "drawCallsMax": 135,
+      "trianglesMax": 406208,
+      "fingerprint": "41769|431|22|7|24590|205|8328",
+      "log": [
+        "stuck at x=9933 y=-3691 lane=1 t=74.2s focus=blue_kiter#178 x=9855 y=435 lane=0 hp=135 -> teleportToBoss"
+      ],
+      "profile": {
+        "atSimSec": 57,
+        "triangles": 370298,
+        "drawCalls": 127,
+        "top": [
+          {
+            "key": "actors SphereGeometry(117v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 260,
+            "tris": 87360
+          },
+          {
+            "key": "env-kit IcosahedronGeometry(540v) MeshBasicMaterial inst",
+            "objects": 4,
+            "instances": 267,
+            "tris": 48060
+          },
+          {
+            "key": "actors SphereGeometry(117v) MeshBasicMaterial inst",
+            "objects": 2,
+            "instances": 284,
+            "tris": 47712
+          },
+          {
+            "key": "actors SphereGeometry(117v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 260,
+            "tris": 43680
+          },
+          {
+            "key": "actors CapsuleGeometry(72v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 180,
+            "tris": 40320
+          },
+          {
+            "key": "env-kit IcosahedronGeometry(540v) MeshStandardMaterial inst",
+            "objects": 7,
+            "instances": 119,
+            "tris": 21420
+          },
+          {
+            "key": "actors CapsuleGeometry(72v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 180,
+            "tris": 20160
+          },
+          {
+            "key": "actors RoundedBoxGeometry(324v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 50,
+            "tris": 10800
+          },
+          {
+            "key": "actors RoundedBoxGeometry(324v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 50,
+            "tris": 5400
+          },
+          {
+            "key": "actors ExtrudeGeometry(144v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 52,
+            "tris": 4992
+          },
+          {
+            "key": "env-kit PlaneGeometry(2425v) ShaderMaterial",
+            "objects": 1,
+            "instances": 1,
+            "tris": 4608
+          },
+          {
+            "key": "env-kit ConeGeometry(19v) MeshStandardMaterial inst",
+            "objects": 3,
+            "instances": 403,
+            "tris": 3224
+          }
+        ]
+      },
+      "png": "shots/T08/bot/sweep-cavern-three.png",
+      "errors": [],
+      "wallSec": 19
+    },
+    {
+      "stage": "cavern",
+      "renderer": "canvas",
+      "loop": 1,
+      "seed": 1,
+      "url": "http://127.0.0.1:51291/?autostart=1&stage=cavern&loop=1&renderer=canvas&seed=1&muted=1",
+      "outcome": "victory",
+      "died": false,
+      "deaths": 0,
+      "firstDeathAt": null,
+      "firstDeathProgress": null,
+      "stuckForever": false,
+      "simSec": 138.8,
+      "progressPct": 23.8,
+      "teleports": 1,
+      "teleportAt": 74.2,
+      "hp": 22,
+      "minHp": 22,
+      "bossHp": 0,
+      "kills": 7,
+      "score": 24590,
+      "jumps": 7,
+      "parries": 39,
+      "laneSwitches": 7,
+      "frames": 8328,
+      "firstFrameMs": 17.2,
+      "msAvg": 9,
+      "msP95": 11,
+      "msWorst": 18.9,
+      "fpsAvg": 111.1,
+      "fpsMin": 87.6,
+      "drawCallsMax": null,
+      "trianglesMax": null,
+      "fingerprint": "41769|431|22|7|24590|205|8328",
+      "log": [
+        "stuck at x=9933 y=-3691 lane=1 t=74.2s focus=blue_kiter#178 x=9855 y=435 lane=0 hp=135 -> teleportToBoss"
+      ],
+      "profile": null,
+      "png": "shots/T08/bot/sweep-cavern-canvas.png",
+      "errors": [],
+      "wallSec": 76
+    },
+    {
+      "stage": "thunder_peak",
+      "renderer": "three",
+      "loop": 1,
+      "seed": 1,
+      "url": "http://127.0.0.1:51291/?autostart=1&stage=thunder_peak&loop=1&renderer=three&seed=1&muted=1",
+      "outcome": null,
+      "died": true,
+      "deaths": 2,
+      "firstDeathAt": 20.4,
+      "firstDeathProgress": 0.5,
+      "stuckForever": true,
+      "simSec": 292.1,
+      "progressPct": 2.5,
+      "teleports": 1,
+      "teleportAt": 198,
+      "hp": 99,
+      "minHp": 6,
+      "bossHp": 2418,
+      "kills": 63,
+      "score": 91500,
+      "jumps": 262,
+      "parries": 32,
+      "laneSwitches": 4,
+      "frames": 17526,
+      "firstFrameMs": 142.5,
+      "msAvg": 1.87,
+      "msP95": 2.8,
+      "msWorst": 25.6,
+      "fpsAvg": 535,
+      "fpsMin": 342.9,
+      "drawCallsMax": 123,
+      "trianglesMax": 260352,
+      "fingerprint": "698|5433|99|63|91500|115|17526",
+      "log": [
+        "stuck at x=281 y=29265 lane=1 t=198.0s focus=- -> teleportToBoss",
+        "no boss damage for 90 s after teleport (x=698 y=5433)"
+      ],
+      "profile": {
+        "atSimSec": 208,
+        "triangles": 254476,
+        "drawCalls": 112,
+        "top": [
+          {
+            "key": "actors SphereGeometry(117v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 182,
+            "tris": 61152
+          },
+          {
+            "key": "env-kit IcosahedronGeometry(540v) MeshStandardMaterial inst",
+            "objects": 7,
+            "instances": 172,
+            "tris": 30960
+          },
+          {
+            "key": "actors SphereGeometry(117v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 182,
+            "tris": 30576
+          },
+          {
+            "key": "actors SphereGeometry(117v) MeshBasicMaterial inst",
+            "objects": 2,
+            "instances": 174,
+            "tris": 29232
+          },
+          {
+            "key": "actors CapsuleGeometry(72v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 108,
+            "tris": 24192
+          },
+          {
+            "key": "env-kit IcosahedronGeometry(540v) MeshBasicMaterial inst",
+            "objects": 4,
+            "instances": 120,
+            "tris": 21600
+          },
+          {
+            "key": "actors CapsuleGeometry(72v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 108,
+            "tris": 12096
+          },
+          {
+            "key": "actors RoundedBoxGeometry(324v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 32,
+            "tris": 6912
+          },
+          {
+            "key": "actors RoundedBoxGeometry(324v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 32,
+            "tris": 3456
+          },
+          {
+            "key": "actors ExtrudeGeometry(144v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 36,
+            "tris": 3456
+          },
+          {
+            "key": "env-kit BoxGeometry(24v) MeshStandardMaterial +shadow inst",
+            "objects": 3,
+            "instances": 136,
+            "tris": 3264
+          },
+          {
+            "key": "env-kit CylinderGeometry(124v) MeshStandardMaterial inst",
+            "objects": 2,
+            "instances": 40,
+            "tris": 3200
+          }
+        ]
+      },
+      "png": "shots/T08/bot/sweep-thunder_peak-three.png",
+      "errors": [],
+      "wallSec": 34
+    },
+    {
+      "stage": "thunder_peak",
+      "renderer": "canvas",
+      "loop": 1,
+      "seed": 1,
+      "url": "http://127.0.0.1:51291/?autostart=1&stage=thunder_peak&loop=1&renderer=canvas&seed=1&muted=1",
+      "outcome": null,
+      "died": true,
+      "deaths": 2,
+      "firstDeathAt": 20.4,
+      "firstDeathProgress": 0.5,
+      "stuckForever": true,
+      "simSec": 292.1,
+      "progressPct": 2.5,
+      "teleports": 1,
+      "teleportAt": 198,
+      "hp": 99,
+      "minHp": 6,
+      "bossHp": 2418,
+      "kills": 63,
+      "score": 91500,
+      "jumps": 262,
+      "parries": 32,
+      "laneSwitches": 4,
+      "frames": 17526,
+      "firstFrameMs": 24.9,
+      "msAvg": 8.94,
+      "msP95": 10.6,
+      "msWorst": 27.2,
+      "fpsAvg": 111.9,
+      "fpsMin": 92.5,
+      "drawCallsMax": null,
+      "trianglesMax": null,
+      "fingerprint": "698|5433|99|63|91500|115|17526",
+      "log": [
+        "stuck at x=281 y=29265 lane=1 t=198.0s focus=- -> teleportToBoss",
+        "no boss damage for 90 s after teleport (x=698 y=5433)"
+      ],
+      "profile": null,
+      "png": "shots/T08/bot/sweep-thunder_peak-canvas.png",
+      "errors": [],
+      "wallSec": 158
+    },
+    {
+      "stage": "blood_abyss",
+      "renderer": "three",
+      "loop": 1,
+      "seed": 1,
+      "url": "http://127.0.0.1:51291/?autostart=1&stage=blood_abyss&loop=1&renderer=three&seed=1&muted=1",
+      "outcome": "victory",
+      "died": true,
+      "deaths": 1,
+      "firstDeathAt": 27,
+      "firstDeathProgress": 8.7,
+      "stuckForever": false,
+      "simSec": 191.2,
+      "progressPct": 37.9,
+      "teleports": 1,
+      "teleportAt": 143.4,
+      "hp": 105,
+      "minHp": 7,
+      "bossHp": 0,
+      "kills": 76,
+      "score": 145755,
+      "jumps": 47,
+      "parries": 86,
+      "laneSwitches": 18,
+      "frames": 11472,
+      "firstFrameMs": 147.2,
+      "msAvg": 2.09,
+      "msP95": 2.9,
+      "msWorst": 21.3,
+      "fpsAvg": 477.9,
+      "fpsMin": 306.6,
+      "drawCallsMax": 139,
+      "trianglesMax": 371230,
+      "fingerprint": "44920|508|105|76|145755|127|11472",
+      "log": [
+        "stuck at x=16918 y=90 lane=0 t=143.4s focus=- -> teleportToBoss"
+      ],
+      "profile": {
+        "atSimSec": 45,
+        "triangles": 351058,
+        "drawCalls": 128,
+        "top": [
+          {
+            "key": "env-kit IcosahedronGeometry(540v) MeshStandardMaterial inst",
+            "objects": 7,
+            "instances": 726,
+            "tris": 130680
+          },
+          {
+            "key": "actors SphereGeometry(117v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 181,
+            "tris": 60816
+          },
+          {
+            "key": "actors SphereGeometry(117v) MeshBasicMaterial inst",
+            "objects": 2,
+            "instances": 194,
+            "tris": 32592
+          },
+          {
+            "key": "actors SphereGeometry(117v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 181,
+            "tris": 30408
+          },
+          {
+            "key": "actors CapsuleGeometry(72v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 120,
+            "tris": 26880
+          },
+          {
+            "key": "actors CapsuleGeometry(72v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 120,
+            "tris": 13440
+          },
+          {
+            "key": "env-kit IcosahedronGeometry(540v) MeshBasicMaterial inst",
+            "objects": 4,
+            "instances": 46,
+            "tris": 8280
+          },
+          {
+            "key": "actors RoundedBoxGeometry(324v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 33,
+            "tris": 7128
+          },
+          {
+            "key": "env-kit BoxGeometry(24v) MeshStandardMaterial inst",
+            "objects": 6,
+            "instances": 503,
+            "tris": 6036
+          },
+          {
+            "key": "env-kit PlaneGeometry(2425v) ShaderMaterial",
+            "objects": 1,
+            "instances": 1,
+            "tris": 4608
+          },
+          {
+            "key": "actors RoundedBoxGeometry(324v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 33,
+            "tris": 3564
+          },
+          {
+            "key": "actors ExtrudeGeometry(144v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 30,
+            "tris": 2880
+          }
+        ]
+      },
+      "png": "shots/T08/bot/sweep-blood_abyss-three.png",
+      "errors": [],
+      "wallSec": 25
+    },
+    {
+      "stage": "blood_abyss",
+      "renderer": "canvas",
+      "loop": 1,
+      "seed": 1,
+      "url": "http://127.0.0.1:51291/?autostart=1&stage=blood_abyss&loop=1&renderer=canvas&seed=1&muted=1",
+      "outcome": "victory",
+      "died": true,
+      "deaths": 1,
+      "firstDeathAt": 27,
+      "firstDeathProgress": 8.7,
+      "stuckForever": false,
+      "simSec": 191.2,
+      "progressPct": 37.9,
+      "teleports": 1,
+      "teleportAt": 143.4,
+      "hp": 105,
+      "minHp": 7,
+      "bossHp": 0,
+      "kills": 76,
+      "score": 145755,
+      "jumps": 47,
+      "parries": 86,
+      "laneSwitches": 18,
+      "frames": 11472,
+      "firstFrameMs": 22.8,
+      "msAvg": 9.16,
+      "msP95": 10.7,
+      "msWorst": 18.5,
+      "fpsAvg": 109.2,
+      "fpsMin": 85.4,
+      "drawCallsMax": null,
+      "trianglesMax": null,
+      "fingerprint": "44920|508|105|76|145755|127|11472",
+      "log": [
+        "stuck at x=16918 y=90 lane=0 t=143.4s focus=- -> teleportToBoss"
+      ],
+      "profile": null,
+      "png": "shots/T08/bot/sweep-blood_abyss-canvas.png",
+      "errors": [],
+      "wallSec": 106
+    },
+    {
+      "stage": "celestial_altar",
+      "renderer": "three",
+      "loop": 1,
+      "seed": 1,
+      "url": "http://127.0.0.1:51291/?autostart=1&stage=celestial_altar&loop=1&renderer=three&seed=1&muted=1",
+      "outcome": null,
+      "died": true,
+      "deaths": 4,
+      "firstDeathAt": 10.4,
+      "firstDeathProgress": 3.4,
+      "stuckForever": true,
+      "simSec": 213.4,
+      "progressPct": 24.1,
+      "teleports": 1,
+      "teleportAt": 123.3,
+      "hp": 36,
+      "minHp": 1,
+      "bossHp": 4000,
+      "kills": 53,
+      "score": 123675,
+      "jumps": 47,
+      "parries": 215,
+      "laneSwitches": 24,
+      "frames": 12804,
+      "firstFrameMs": 151.9,
+      "msAvg": 2.06,
+      "msP95": 3,
+      "msWorst": 23.7,
+      "fpsAvg": 485.1,
+      "fpsMin": 285.3,
+      "drawCallsMax": 142,
+      "trianglesMax": 310650,
+      "fingerprint": "42326|-35|36|53|123675|92|12804",
+      "log": [
+        "stuck at x=11476 y=113 lane=0 t=123.3s focus=fire_monk#205 x=11134 y=520 lane=0 hp=270 -> teleportToBoss",
+        "no boss damage for 90 s after teleport (x=42326 y=-35)"
+      ],
+      "profile": {
+        "atSimSec": 142,
+        "triangles": 290708,
+        "drawCalls": 125,
+        "top": [
+          {
+            "key": "actors SphereGeometry(117v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 199,
+            "tris": 66864
+          },
+          {
+            "key": "env-kit IcosahedronGeometry(540v) MeshBasicMaterial inst",
+            "objects": 4,
+            "instances": 221,
+            "tris": 39780
+          },
+          {
+            "key": "actors SphereGeometry(117v) MeshBasicMaterial inst",
+            "objects": 2,
+            "instances": 206,
+            "tris": 34608
+          },
+          {
+            "key": "actors SphereGeometry(117v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 199,
+            "tris": 33432
+          },
+          {
+            "key": "actors CapsuleGeometry(72v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 132,
+            "tris": 29568
+          },
+          {
+            "key": "env-kit IcosahedronGeometry(540v) MeshStandardMaterial inst",
+            "objects": 7,
+            "instances": 146,
+            "tris": 26280
+          },
+          {
+            "key": "actors CapsuleGeometry(72v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 132,
+            "tris": 14784
+          },
+          {
+            "key": "actors RoundedBoxGeometry(324v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 39,
+            "tris": 8424
+          },
+          {
+            "key": "actors ExtrudeGeometry(144v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 44,
+            "tris": 4224
+          },
+          {
+            "key": "actors RoundedBoxGeometry(324v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 39,
+            "tris": 4212
+          },
+          {
+            "key": "env-kit CylinderGeometry(124v) MeshStandardMaterial inst",
+            "objects": 2,
+            "instances": 48,
+            "tris": 3840
+          },
+          {
+            "key": "env-kit BoxGeometry(24v) MeshStandardMaterial +shadow inst",
+            "objects": 3,
+            "instances": 104,
+            "tris": 2496
+          }
+        ]
+      },
+      "png": "shots/T08/bot/sweep-celestial_altar-three.png",
+      "errors": [],
+      "wallSec": 28
+    },
+    {
+      "stage": "celestial_altar",
+      "renderer": "canvas",
+      "loop": 1,
+      "seed": 1,
+      "url": "http://127.0.0.1:51291/?autostart=1&stage=celestial_altar&loop=1&renderer=canvas&seed=1&muted=1",
+      "outcome": null,
+      "died": true,
+      "deaths": 4,
+      "firstDeathAt": 10.4,
+      "firstDeathProgress": 3.4,
+      "stuckForever": true,
+      "simSec": 213.4,
+      "progressPct": 24.1,
+      "teleports": 1,
+      "teleportAt": 123.3,
+      "hp": 36,
+      "minHp": 1,
+      "bossHp": 4000,
+      "kills": 53,
+      "score": 123675,
+      "jumps": 47,
+      "parries": 215,
+      "laneSwitches": 24,
+      "frames": 12804,
+      "firstFrameMs": 15.7,
+      "msAvg": 6.6,
+      "msP95": 7.8,
+      "msWorst": 16,
+      "fpsAvg": 151.4,
+      "fpsMin": 118.5,
+      "drawCallsMax": null,
+      "trianglesMax": null,
+      "fingerprint": "42326|-35|36|53|123675|92|12804",
+      "log": [
+        "stuck at x=11476 y=113 lane=0 t=123.3s focus=fire_monk#205 x=11134 y=520 lane=0 hp=270 -> teleportToBoss",
+        "no boss damage for 90 s after teleport (x=42326 y=-35)"
+      ],
+      "profile": null,
+      "png": "shots/T08/bot/sweep-celestial_altar-canvas.png",
+      "errors": [],
+      "wallSec": 86
+    },
+    {
+      "stage": "ocean_palace",
+      "renderer": "three",
+      "loop": 1,
+      "seed": 1,
+      "url": "http://127.0.0.1:51291/?autostart=1&stage=ocean_palace&loop=1&renderer=three&seed=1&muted=1",
+      "outcome": "victory",
+      "died": true,
+      "deaths": 2,
+      "firstDeathAt": 14.2,
+      "firstDeathProgress": 6.1,
+      "stuckForever": false,
+      "simSec": 335.6,
+      "progressPct": 100,
+      "teleports": 0,
+      "teleportAt": null,
+      "hp": 100,
+      "minHp": 10,
+      "bossHp": 0,
+      "kills": 192,
+      "score": 343555,
+      "jumps": 0,
+      "parries": 17,
+      "laneSwitches": 70,
+      "frames": 20136,
+      "firstFrameMs": 153.4,
+      "msAvg": 1.99,
+      "msP95": 2.8,
+      "msWorst": 20.2,
+      "fpsAvg": 501.7,
+      "fpsMin": 377.6,
+      "drawCallsMax": 137,
+      "trianglesMax": 285042,
+      "fingerprint": "43529|92|100|192|343555|9|20136",
+      "log": [],
+      "profile": {
+        "atSimSec": 124,
+        "triangles": 267812,
+        "drawCalls": 131,
+        "top": [
+          {
+            "key": "actors SphereGeometry(117v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 167,
+            "tris": 56112
+          },
+          {
+            "key": "env-kit IcosahedronGeometry(540v) MeshStandardMaterial inst",
+            "objects": 7,
+            "instances": 294,
+            "tris": 52920
+          },
+          {
+            "key": "actors SphereGeometry(117v) MeshBasicMaterial inst",
+            "objects": 2,
+            "instances": 172,
+            "tris": 28896
+          },
+          {
+            "key": "actors SphereGeometry(117v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 167,
+            "tris": 28056
+          },
+          {
+            "key": "actors CapsuleGeometry(72v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 108,
+            "tris": 24192
+          },
+          {
+            "key": "env-kit IcosahedronGeometry(540v) MeshBasicMaterial inst",
+            "objects": 4,
+            "instances": 85,
+            "tris": 15300
+          },
+          {
+            "key": "actors CapsuleGeometry(72v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 108,
+            "tris": 12096
+          },
+          {
+            "key": "actors RoundedBoxGeometry(324v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 34,
+            "tris": 7344
+          },
+          {
+            "key": "env-kit BoxGeometry(24v) MeshStandardMaterial inst",
+            "objects": 6,
+            "instances": 446,
+            "tris": 5352
+          },
+          {
+            "key": "env-kit PlaneGeometry(2425v) ShaderMaterial",
+            "objects": 1,
+            "instances": 1,
+            "tris": 4608
+          },
+          {
+            "key": "actors RoundedBoxGeometry(324v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 34,
+            "tris": 3672
+          },
+          {
+            "key": "actors ExtrudeGeometry(144v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 36,
+            "tris": 3456
+          }
+        ]
+      },
+      "png": "shots/T08/bot/sweep-ocean_palace-three.png",
+      "errors": [],
+      "wallSec": 42
+    },
+    {
+      "stage": "ocean_palace",
+      "renderer": "canvas",
+      "loop": 1,
+      "seed": 1,
+      "url": "http://127.0.0.1:51291/?autostart=1&stage=ocean_palace&loop=1&renderer=canvas&seed=1&muted=1",
+      "outcome": "victory",
+      "died": true,
+      "deaths": 2,
+      "firstDeathAt": 14.2,
+      "firstDeathProgress": 6.1,
+      "stuckForever": false,
+      "simSec": 335.6,
+      "progressPct": 100,
+      "teleports": 0,
+      "teleportAt": null,
+      "hp": 100,
+      "minHp": 10,
+      "bossHp": 0,
+      "kills": 192,
+      "score": 343555,
+      "jumps": 0,
+      "parries": 17,
+      "laneSwitches": 70,
+      "frames": 20136,
+      "firstFrameMs": 36.5,
+      "msAvg": 8.86,
+      "msP95": 10.6,
+      "msWorst": 17.4,
+      "fpsAvg": 112.8,
+      "fpsMin": 85.8,
+      "drawCallsMax": null,
+      "trianglesMax": null,
+      "fingerprint": "43529|92|100|192|343555|9|20136",
+      "log": [],
+      "profile": null,
+      "png": "shots/T08/bot/sweep-ocean_palace-canvas.png",
+      "errors": [],
+      "wallSec": 180
+    },
+    {
+      "stage": "earth_core",
+      "renderer": "three",
+      "loop": 1,
+      "seed": 1,
+      "url": "http://127.0.0.1:51291/?autostart=1&stage=earth_core&loop=1&renderer=three&seed=1&muted=1",
+      "outcome": "victory",
+      "died": true,
+      "deaths": 2,
+      "firstDeathAt": 17.1,
+      "firstDeathProgress": 4.9,
+      "stuckForever": false,
+      "simSec": 472.8,
+      "progressPct": 99.5,
+      "teleports": 0,
+      "teleportAt": null,
+      "hp": 110,
+      "minHp": 4,
+      "bossHp": 0,
+      "kills": 245,
+      "score": 493000,
+      "jumps": 464,
+      "parries": 48,
+      "laneSwitches": 68,
+      "frames": 28368,
+      "firstFrameMs": 214.3,
+      "msAvg": 2.03,
+      "msP95": 3,
+      "msWorst": 22,
+      "fpsAvg": 492,
+      "fpsMin": 352.3,
+      "drawCallsMax": 139,
+      "trianglesMax": 208874,
+      "fingerprint": "41453|32768|110|245|493000|27|28368",
+      "log": [],
+      "profile": {
+        "atSimSec": 329,
+        "triangles": 205944,
+        "drawCalls": 132,
+        "top": [
+          {
+            "key": "actors SphereGeometry(117v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 133,
+            "tris": 44688
+          },
+          {
+            "key": "actors SphereGeometry(117v) MeshBasicMaterial inst",
+            "objects": 2,
+            "instances": 140,
+            "tris": 23520
+          },
+          {
+            "key": "actors SphereGeometry(117v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 133,
+            "tris": 22344
+          },
+          {
+            "key": "env-kit ExtrudeGeometry(66504v) MeshStandardMaterial",
+            "objects": 1,
+            "instances": 1,
+            "tris": 22168
+          },
+          {
+            "key": "actors CapsuleGeometry(72v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 90,
+            "tris": 20160
+          },
+          {
+            "key": "env-kit IcosahedronGeometry(540v) MeshBasicMaterial inst",
+            "objects": 4,
+            "instances": 61,
+            "tris": 10980
+          },
+          {
+            "key": "actors CapsuleGeometry(72v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 90,
+            "tris": 10080
+          },
+          {
+            "key": "actors RoundedBoxGeometry(324v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 29,
+            "tris": 6264
+          },
+          {
+            "key": "env-kit BoxGeometry(24v) MeshStandardMaterial +shadow inst",
+            "objects": 3,
+            "instances": 246,
+            "tris": 5904
+          },
+          {
+            "key": "env-kit IcosahedronGeometry(540v) MeshStandardMaterial inst",
+            "objects": 7,
+            "instances": 20,
+            "tris": 3600
+          },
+          {
+            "key": "env-kit BoxGeometry(24v) MeshStandardMaterial inst",
+            "objects": 6,
+            "instances": 277,
+            "tris": 3324
+          },
+          {
+            "key": "actors RoundedBoxGeometry(324v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 29,
+            "tris": 3132
+          }
+        ]
+      },
+      "png": "shots/T08/bot/sweep-earth_core-three.png",
+      "errors": [],
+      "wallSec": 59
+    },
+    {
+      "stage": "earth_core",
+      "renderer": "canvas",
+      "loop": 1,
+      "seed": 1,
+      "url": "http://127.0.0.1:51291/?autostart=1&stage=earth_core&loop=1&renderer=canvas&seed=1&muted=1",
+      "outcome": "victory",
+      "died": true,
+      "deaths": 2,
+      "firstDeathAt": 17.1,
+      "firstDeathProgress": 4.9,
+      "stuckForever": false,
+      "simSec": 472.8,
+      "progressPct": 99.5,
+      "teleports": 0,
+      "teleportAt": null,
+      "hp": 110,
+      "minHp": 4,
+      "bossHp": 0,
+      "kills": 245,
+      "score": 493000,
+      "jumps": 464,
+      "parries": 48,
+      "laneSwitches": 68,
+      "frames": 28368,
+      "firstFrameMs": 27.9,
+      "msAvg": 6.62,
+      "msP95": 7.8,
+      "msWorst": 15.8,
+      "fpsAvg": 151,
+      "fpsMin": 113.4,
+      "drawCallsMax": null,
+      "trianglesMax": null,
+      "fingerprint": "41453|32768|110|245|493000|27|28368",
+      "log": [],
+      "profile": null,
+      "png": "shots/T08/bot/sweep-earth_core-canvas.png",
+      "errors": [],
+      "wallSec": 189
+    },
+    {
+      "stage": "sky_sanctuary",
+      "renderer": "three",
+      "loop": 1,
+      "seed": 1,
+      "url": "http://127.0.0.1:51291/?autostart=1&stage=sky_sanctuary&loop=1&renderer=three&seed=1&muted=1",
+      "outcome": "victory",
+      "died": true,
+      "deaths": 3,
+      "firstDeathAt": 6.6,
+      "firstDeathProgress": 3,
+      "stuckForever": false,
+      "simSec": 522.7,
+      "progressPct": 100,
+      "teleports": 0,
+      "teleportAt": null,
+      "hp": 100,
+      "minHp": 10,
+      "bossHp": 0,
+      "kills": 167,
+      "score": 333295,
+      "jumps": 0,
+      "parries": 25,
+      "laneSwitches": 56,
+      "frames": 31362,
+      "firstFrameMs": 143.9,
+      "msAvg": 1.89,
+      "msP95": 2.7,
+      "msWorst": 22,
+      "fpsAvg": 528.6,
+      "fpsMin": 382.9,
+      "drawCallsMax": 132,
+      "trianglesMax": 266554,
+      "fingerprint": "44683|155|100|167|333295|17|31362",
+      "log": [],
+      "profile": {
+        "atSimSec": 134,
+        "triangles": 258786,
+        "drawCalls": 114,
+        "top": [
+          {
+            "key": "actors SphereGeometry(117v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 171,
+            "tris": 57456
+          },
+          {
+            "key": "env-kit IcosahedronGeometry(540v) MeshStandardMaterial inst",
+            "objects": 7,
+            "instances": 311,
+            "tris": 55980
+          },
+          {
+            "key": "actors SphereGeometry(117v) MeshBasicMaterial inst",
+            "objects": 2,
+            "instances": 181,
+            "tris": 30408
+          },
+          {
+            "key": "actors SphereGeometry(117v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 171,
+            "tris": 28728
+          },
+          {
+            "key": "actors CapsuleGeometry(72v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 114,
+            "tris": 25536
+          },
+          {
+            "key": "actors CapsuleGeometry(72v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 114,
+            "tris": 12768
+          },
+          {
+            "key": "actors RoundedBoxGeometry(324v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 35,
+            "tris": 7560
+          },
+          {
+            "key": "actors ExtrudeGeometry(144v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 71,
+            "tris": 6816
+          },
+          {
+            "key": "actors RoundedBoxGeometry(324v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 35,
+            "tris": 3780
+          },
+          {
+            "key": "actors ExtrudeGeometry(144v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 71,
+            "tris": 3408
+          },
+          {
+            "key": "env-kit IcosahedronGeometry(540v) MeshBasicMaterial inst",
+            "objects": 4,
+            "instances": 16,
+            "tris": 2880
+          },
+          {
+            "key": "env-kit CylinderGeometry(124v) MeshStandardMaterial inst",
+            "objects": 2,
+            "instances": 32,
+            "tris": 2560
+          }
+        ]
+      },
+      "png": "shots/T08/bot/sweep-sky_sanctuary-three.png",
+      "errors": [],
+      "wallSec": 61
+    },
+    {
+      "stage": "sky_sanctuary",
+      "renderer": "canvas",
+      "loop": 1,
+      "seed": 1,
+      "url": "http://127.0.0.1:51291/?autostart=1&stage=sky_sanctuary&loop=1&renderer=canvas&seed=1&muted=1",
+      "outcome": "victory",
+      "died": true,
+      "deaths": 3,
+      "firstDeathAt": 6.6,
+      "firstDeathProgress": 3,
+      "stuckForever": false,
+      "simSec": 522.7,
+      "progressPct": 100,
+      "teleports": 0,
+      "teleportAt": null,
+      "hp": 100,
+      "minHp": 10,
+      "bossHp": 0,
+      "kills": 167,
+      "score": 333295,
+      "jumps": 0,
+      "parries": 25,
+      "laneSwitches": 56,
+      "frames": 31362,
+      "firstFrameMs": 16.5,
+      "msAvg": 6.07,
+      "msP95": 7.3,
+      "msWorst": 15.6,
+      "fpsAvg": 164.8,
+      "fpsMin": 125.4,
+      "drawCallsMax": null,
+      "trianglesMax": null,
+      "fingerprint": "44683|155|100|167|333295|17|31362",
+      "log": [],
+      "profile": null,
+      "png": "shots/T08/bot/sweep-sky_sanctuary-canvas.png",
+      "errors": [],
+      "wallSec": 192
+    }
+  ]
+}

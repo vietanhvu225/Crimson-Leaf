@@ -369,6 +369,8 @@ function create(ctx: RenderModuleContext): RenderModule {
     for (const en of world.enemies) {
       if (en.hp <= 0 && en.koTimer <= 0) continue;
       if (en.x < f.viewMinX - 150 || en.x > f.viewMaxX + 150) continue;
+      // Vertical stages stack the whole level in one x-range: cull on y too (T08 hot spot).
+      if (en.y < f.viewMinY - 250 || en.y > f.viewMaxY + 250) continue;
       let v = enemyViews.get(en.id);
       if (!v) {
         v = freeViews.pop() ?? { yaw: 0, z: 0, seen: 0 };

@@ -1,0 +1,253 @@
+{
+  "at": "2026-10-16T23:36:37.576Z",
+  "gpu": {
+    "webgl": true,
+    "webgl2": true,
+    "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5070 (0x00002F04) Direct3D11 vs_5_0 ps_5_0, D3D11)"
+  },
+  "width": 1920,
+  "height": 1080,
+  "seed": 1,
+  "loop": 1,
+  "params": "",
+  "results": [
+    {
+      "stage": "autumn",
+      "renderer": "three",
+      "loop": 1,
+      "seed": 1,
+      "url": "http://127.0.0.1:54374/?autostart=1&stage=autumn&loop=1&renderer=three&seed=1&muted=1",
+      "outcome": null,
+      "died": true,
+      "deaths": 1,
+      "firstDeathAt": 67.1,
+      "firstDeathProgress": 7.6,
+      "stuckForever": true,
+      "simSec": 200.1,
+      "progressPct": 24.1,
+      "teleports": 0,
+      "teleportAt": null,
+      "hp": 105,
+      "minHp": 13,
+      "bossHp": 1000,
+      "kills": 45,
+      "score": 146245,
+      "jumps": 208,
+      "parries": 142,
+      "laneSwitches": 1,
+      "frames": 12006,
+      "firstFrameMs": 571.5,
+      "msAvg": 2.74,
+      "msP95": 3.8,
+      "msWorst": 37,
+      "fpsAvg": 365,
+      "fpsMin": 268,
+      "drawCallsMax": 125,
+      "trianglesMax": 1301824,
+      "fingerprint": "652|21489|105|45|146245|104|12006",
+      "log": [],
+      "profile": {
+        "atSimSec": 0,
+        "triangles": 1269894,
+        "drawCalls": 96,
+        "top": [
+          {
+            "key": "actors SphereGeometry(117v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 1274,
+            "tris": 428064
+          },
+          {
+            "key": "actors SphereGeometry(117v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 1274,
+            "tris": 214032
+          },
+          {
+            "key": "actors SphereGeometry(117v) MeshBasicMaterial inst",
+            "objects": 2,
+            "instances": 1230,
+            "tris": 206640
+          },
+          {
+            "key": "actors CapsuleGeometry(72v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 756,
+            "tris": 169344
+          },
+          {
+            "key": "actors CapsuleGeometry(72v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 756,
+            "tris": 84672
+          },
+          {
+            "key": "actors RoundedBoxGeometry(324v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 165,
+            "tris": 35640
+          },
+          {
+            "key": "env-kit IcosahedronGeometry(540v) MeshStandardMaterial inst",
+            "objects": 7,
+            "instances": 128,
+            "tris": 23040
+          },
+          {
+            "key": "actors ExtrudeGeometry(144v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 217,
+            "tris": 20832
+          },
+          {
+            "key": "actors RoundedBoxGeometry(324v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 165,
+            "tris": 17820
+          },
+          {
+            "key": "actors ExtrudeGeometry(144v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 217,
+            "tris": 10416
+          },
+          {
+            "key": "actors BoxGeometry(24v) MeshBasicMaterial inst",
+            "objects": 1,
+            "instances": 477,
+            "tris": 5724
+          },
+          {
+            "key": "actors CylinderGeometry(64v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 70,
+            "tris": 5600
+          }
+        ]
+      },
+      "png": "shots/T08/bot/prof1-autumn-three.png",
+      "errors": [],
+      "wallSec": 35
+    },
+    {
+      "stage": "spring",
+      "renderer": "three",
+      "loop": 1,
+      "seed": 1,
+      "url": "http://127.0.0.1:54374/?autostart=1&stage=spring&loop=1&renderer=three&seed=1&muted=1",
+      "outcome": "victory",
+      "died": true,
+      "deaths": 1,
+      "firstDeathAt": 52.9,
+      "firstDeathProgress": 20.5,
+      "stuckForever": false,
+      "simSec": 95.5,
+      "progressPct": 23.2,
+      "teleports": 1,
+      "teleportAt": 91.4,
+      "hp": 84,
+      "minHp": 14,
+      "bossHp": 0,
+      "kills": 46,
+      "score": 41135,
+      "jumps": 18,
+      "parries": 22,
+      "laneSwitches": 10,
+      "frames": 5730,
+      "firstFrameMs": 151.5,
+      "msAvg": 2.13,
+      "msP95": 3,
+      "msWorst": 21.7,
+      "fpsAvg": 468.9,
+      "fpsMin": 370.8,
+      "drawCallsMax": 140,
+      "trianglesMax": 291772,
+      "fingerprint": "35513|560|84|46|41135|122|5730",
+      "log": [
+        "stuck at x=8265 y=11 lane=0 t=91.4s focus=- -> teleportToBoss"
+      ],
+      "profile": {
+        "atSimSec": 51,
+        "triangles": 275626,
+        "drawCalls": 126,
+        "top": [
+          {
+            "key": "actors SphereGeometry(117v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 157,
+            "tris": 52752
+          },
+          {
+            "key": "env-kit IcosahedronGeometry(240v) MeshStandardMaterial inst",
+            "objects": 2,
+            "instances": 599,
+            "tris": 47920
+          },
+          {
+            "key": "actors SphereGeometry(117v) MeshBasicMaterial inst",
+            "objects": 2,
+            "instances": 164,
+            "tris": 27552
+          },
+          {
+            "key": "env-kit IcosahedronGeometry(540v) MeshStandardMaterial inst",
+            "objects": 7,
+            "instances": 152,
+            "tris": 27360
+          },
+          {
+            "key": "actors SphereGeometry(117v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 157,
+            "tris": 26376
+          },
+          {
+            "key": "actors CapsuleGeometry(72v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 102,
+            "tris": 22848
+          },
+          {
+            "key": "actors CapsuleGeometry(72v) ShaderMaterial inst",
+            "objects": 1,
+            "instances": 102,
+            "tris": 11424
+          },
+          {
+            "key": "env-kit CylinderGeometry(76v) MeshStandardMaterial inst",
+            "objects": 2,
+            "instances": 202,
+            "tris": 9696
+          },
+          {
+            "key": "env-kit IcosahedronGeometry(540v) MeshBasicMaterial inst",
+            "objects": 4,
+            "instances": 51,
+            "tris": 9180
+          },
+          {
+            "key": "actors RoundedBoxGeometry(324v) MeshToonMaterial +shadow inst",
+            "objects": 1,
+            "instances": 29,
+            "tris": 6264
+          },
+          {
+            "key": "env-kit BoxGeometry(24v) MeshStandardMaterial inst",
+            "objects": 6,
+            "instances": 346,
+            "tris": 4152
+          },
+          {
+            "key": "env-kit BoxGeometry(24v) MeshStandardMaterial +shadow inst",
+            "objects": 3,
+            "instances": 141,
+            "tris": 3384
+          }
+        ]
+      },
+      "png": "shots/T08/bot/prof1-spring-three.png",
+      "errors": [],
+      "wallSec": 13
+    }
+  ]
+}
