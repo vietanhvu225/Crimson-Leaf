@@ -12,3 +12,6 @@ threejs-port/logs/
 /shots/smoke/
 /shots/calib*/
 /shots/manual/
+
+# quyền cục bộ của máy này, không chia sẻ
+.claude/settings.local.json
